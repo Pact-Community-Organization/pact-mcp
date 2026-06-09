@@ -1,0 +1,6 @@
+* @SmartPacts/developer
+
+/.github/ @SmartPacts/github-architect
+/packages/ @SmartPacts/developer @SmartPacts/tester
+/scripts/ @SmartPacts/devops
+/docs/ @SmartPacts/architect

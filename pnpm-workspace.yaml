@@ -1,2 +1,4 @@
+# [Developer] MCP monorepo workspace configuration
+# ADR-MCP-001 Phase 1.1: Monorepo scaffold
 packages:
-  - "packages/*"
+  - 'packages/*'

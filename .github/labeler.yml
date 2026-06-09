@@ -1,0 +1,9 @@
+mcp-server:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'packages/*/src/**'
+tool-schema:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'packages/*/src/tools/**'
+          - 'tools.lock.json'

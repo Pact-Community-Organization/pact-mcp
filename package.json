@@ -1,14 +1,38 @@
 {
-  "name": "pact-mcp",
+  "name": "@pact-community/mcp-monorepo",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.1.0",
-  "description": "Community MCP servers for Pact and Chainweb tooling",
-  "packageManager": "pnpm@9.12.0",
+  "description": "Pact Community Model Context Protocol servers monorepo",
+  "engines": {
+    "node": ">=20.11.0",
+    "pnpm": ">=9"
+  },
+  "type": "module",
   "scripts": {
-    "test": "vitest run"
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint",
+    "audit": "pnpm -r audit --audit-level=high"
   },
   "devDependencies": {
-    "typescript": "^5.6.2",
-    "vitest": "^2.1.1"
+    "@types/node": "20.11.0",
+    "eslint": "9.15.0",
+    "prettier": "3.3.3",
+    "typescript": "5.6.3",
+    "vitest": "4.1.7"
+  },
+  "packageManager": "pnpm@9.15.1",
+  "pnpm": {
+    "overrides": {
+      "zod-to-json-schema": "3.25.2"
+    }
+  },
+  "author": "Pact Community",
+  "license": "MIT",
+  "homepage": "https://github.com/Pact-Community-Organization/pact-mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pact-Community-Organization/pact-mcp.git"
   }
 }

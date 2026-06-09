@@ -1,0 +1,48 @@
+{
+  "name": "@pact-community/mcp-shared",
+  "version": "1.0.0",
+  "description": "Shared security baseline and utilities for Pact Community MCP servers",
+  "type": "module",
+  "private": false,
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "SECURITY.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo 'lint: skipped for Phase 1.1'",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "20.11.0",
+    "@vitest/coverage-v8": "4.1.7",
+    "typescript": "5.6.3",
+    "vitest": "4.1.7"
+  },
+  "author": "Pact Community",
+  "license": "MIT",
+  "homepage": "https://github.com/Pact-Community-Organization/dao#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pact-Community-Organization/dao.git",
+    "directory": "mcp/packages/mcp-shared"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

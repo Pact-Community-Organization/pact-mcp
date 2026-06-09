@@ -1,0 +1,35 @@
+/**
+ * @fileoverview Lifecycle gating — `LIFECYCLE_FORBIDDEN` and
+ *               `VOLUME_WIPE_FORBIDDEN`.
+ * @author Developer
+ */
+
+import { McpToolError } from '@pact-community/mcp-shared';
+
+/** Resolved runtime flags read from the environment at startup. */
+export interface LifecycleFlags {
+  /** SMARTPACTS_DEVNET_ALLOW_LIFECYCLE === "true" */
+  readonly lifecycle: boolean;
+  /** SMARTPACTS_DEVNET_ALLOW_VOLUME_WIPE === "true" */
+  readonly volumeWipe: boolean;
+}
+
+export function assertLifecycleAllowed(flags: LifecycleFlags): void {
+  if (!flags.lifecycle) {
+    throw new McpToolError(
+      'LIFECYCLE_FORBIDDEN',
+      "Destructive devnet operations require SMARTPACTS_DEVNET_ALLOW_LIFECYCLE='true'",
+      false
+    );
+  }
+}
+
+export function assertVolumeWipeAllowed(flags: LifecycleFlags): void {
+  if (!flags.volumeWipe) {
+    throw new McpToolError(
+      'VOLUME_WIPE_FORBIDDEN',
+      "Volume wipe requires SMARTPACTS_DEVNET_ALLOW_VOLUME_WIPE='true'",
+      false
+    );
+  }
+}

@@ -1,0 +1,74 @@
+name: PR Auto-Assign
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+
+# Security H-2: workflow-scope read-only baseline
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-assign-${{ github.ref }}-${{ github.event.number }}
+  cancel-in-progress: true
+
+jobs:
+  label:
+    name: Apply path labels
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: actions/labeler@8558fd74291d67161a8a6ce71e0f9b1c66fa3a8d # v5.0.0
+        continue-on-error: true  # Graceful failure if labeler.yml missing on first deploy
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/labeler.yml
+
+  assign-reviewers:
+    name: Assign review labels + notify
+    runs-on: ubuntu-latest
+    needs: label
+    # always() ensures this runs even if label job fails (e.g. missing labeler.yml)
+    if: always() && github.event.pull_request.draft == false
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              labels: ['needs-review', 'needs-tester', 'needs-security']
+            });
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body: [
+                '## [Bot] PR Governance Activated',
+                '',
+                'This PR has been registered in the Pact-Community-Organization zero-backlog system.',
+                '',
+                '| Requirement | Status |',
+                '|-------------|--------|',
+                '| Reviewer approval (native) | 🔴 Awaiting |',
+                '| Tester approval (`tester-approved` label) | 🔴 Awaiting |',
+                '| Security approval (`security-approved` label) | 🔴 Awaiting |',
+                '| All status checks | 🔴 Pending |',
+                '',
+                '**Auto-merge** will trigger once all four conditions are green.',
+                '**Auto-close** will trigger after 72 hours with no activity.',
+              ].join('\n')
+            });

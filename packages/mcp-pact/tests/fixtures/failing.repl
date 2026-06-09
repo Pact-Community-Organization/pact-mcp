@@ -1,0 +1,14 @@
+;; Failing REPL test for mcp-pact testing  
+;; [Developer] Test with expect-failure cases
+
+(begin-tx "failing-test")
+
+(expect "this should pass" 10 (+ 4 6))
+
+(expect-failure "division by zero" "Numerical domain error"
+  (/ 1 0))
+
+(expect-failure "invalid function call" "Cannot resolve"
+  (non-existent-function 123))
+
+(commit-tx)

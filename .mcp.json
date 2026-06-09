@@ -1,0 +1,123 @@
+{
+  "mcpVersion": "2024-11-05",
+  "name": "pact-community-mcp-workspace",
+  "version": "1.0.0",
+  "description": "Pact Community MCP servers for Kadena blockchain tooling",
+  "servers": {
+    "pact-community-shared": {
+      "command": "node",
+      "args": ["./packages/mcp-shared/dist/index.js"],
+      "env": {
+        "NODE_ENV": "production",
+        "SMARTPACTS_WORKSPACE": "<local-path>
+      },
+      "_disabled": true,
+      "_note": "Phase 1.1 - Shared package has no server, just utilities"
+    },
+    "pact-community-pact": {
+      "command": "node", 
+      "args": ["./packages/mcp-pact/dist/bin.js"],
+      "env": {
+        "NODE_ENV": "production",
+        "SMARTPACTS_WORKSPACE_ROOT": "<local-path>
+        "SMARTPACTS_PACT_BIN": "pact"
+      },
+      "_note": "Phase 1.2a - Pact smart contract tooling complete"
+    },
+    "pact-community-chainweb": {
+      "command": "node",
+      "args": ["./packages/mcp-chainweb/dist/bin.js"],
+      "env": {
+        "NODE_ENV": "production",
+        "SMARTPACTS_WORKSPACE_ROOT": "<local-path>
+        "SMARTPACTS_CHAINWEB_MODE": "devnet",
+        "SMARTPACTS_CHAINWEB_BASE_URL": "http://localhost:8081",
+        "SMARTPACTS_CHAINWEB_NETWORK_ID": "development"
+      },
+      "_note": "Phase 1.2b - Chainweb HTTP tools (info, chain_time, local, send, poll). Devnet-only. MVP 0.1.0."
+    },
+    "pact-community-coordination": {
+      "command": "node",
+      "args": ["./packages/mcp-coordination/dist/bin.js"],
+      "env": {
+        "NODE_ENV": "production",
+        "SMARTPACTS_WORKSPACE_ROOT": "<local-path>
+        "SMARTPACTS_COORDINATION_ROOT": "<local-path>
+      },
+      "_note": "Phase 1.2c - Inter-agent coordination tools (10 tools: task queue, mailbox, status, memory). Full v0.1.0."
+    },
+    "pact-community-devnet": {
+      "command": "node",
+      "args": ["./packages/mcp-devnet/dist/bin.js"],
+      "env": {
+        "NODE_ENV": "production",
+        "SMARTPACTS_WORKSPACE_ROOT": "<local-path>
+        "SMARTPACTS_DEVNET_MODE": "devnet",
+        "_SMARTPACTS_DEVNET_ALLOW_LIFECYCLE": "set to 'true' only when you want to allow up/down/reset",
+        "_SMARTPACTS_DEVNET_ALLOW_VOLUME_WIPE": "set to 'true' only when you want to allow `down -v` or reset (DATA LOSS)"
+      },
+      "_note": "Phase 1.2d - Devnet Docker lifecycle tools (6 tools: status, health, logs, up, down, reset). Mutating tools gated by explicit env flags. v0.1.0."
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--isolated",
+        "--allowed-origins",
+        "http://localhost:3000;http://localhost:3001;http://localhost:4321;http://localhost:8081;http://localhost:8082;http://localhost:8083",
+        "--viewport-size",
+        "1280x720",
+        "--caps",
+        "vision,testing",
+        "--output-dir",
+        "<local-path>
+      ],
+      "_note": "Browser automation for visual testing. Enables WebDev/Tester/Security to drive browsers, take screenshots, test accessibility. v0.0.70."
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": [
+        "chrome-devtools-mcp@latest",
+        "--isolated",
+        "--headless",
+        "--viewport",
+        "1280x720"
+      ],
+      "_note": "Chrome DevTools integration for live DOM/CSS inspection, network analysis, console logs, performance traces. Used for diagnosing visual test failures. v0.23.0."
+    },
+    "pact-community-deploy": {
+      "command": "node",
+      "args": ["./packages/mcp-deploy/dist/index.js"],
+      "env": {
+        "NODE_ENV": "production",
+        "SMARTPACTS_WORKSPACE": "<local-path>
+        "DOCKER_COMPOSE_FILE": "<local-path>
+      },
+      "_disabled": true,
+      "_note": "Phase 1.3 - Module deployment and devnet management"
+    },
+    "pact-community-scan": {
+      "command": "node",
+      "args": ["./packages/mcp-scan/dist/index.js"],
+      "env": {
+        "NODE_ENV": "production", 
+        "SMARTPACTS_WORKSPACE": "<local-path>
+      },
+      "_disabled": true,
+      "_note": "Phase 1.3 - Security scanning and audit tooling"
+    }
+  },
+  "globalSettings": {
+    "logLevel": "info",
+    "timeout": 30000,
+    "security": {
+      "auditLog": "~/.pact-community/mcp-audit.log",
+      "allowedNetworks": [
+        "http://localhost:8081",
+        "https://api.testnet.chainweb.com", 
+        "https://api.chainweb-community.org"
+      ],
+      "workspaceRoot": "<local-path>
+    }
+  }
+}

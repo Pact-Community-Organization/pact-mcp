@@ -1,0 +1,53 @@
+{
+  "name": "@pact-community/mcp-chainweb",
+  "version": "0.2.0",
+  "description": "MCP server for Kadena chainweb HTTP API - devnet-only (info, chain_time, local, send, poll, read_table, keys, principal_namespace, deploy_module, continue_pact, spv_proof)",
+  "type": "module",
+  "private": false,
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "main": "./dist/server.js",
+  "types": "./dist/server.d.ts",
+  "bin": {
+    "pact-community-chainweb": "./dist/bin.js"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "SECURITY.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo 'lint: skipped for MVP'",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo"
+  },
+  "dependencies": {
+    "@kadena/client": "1.18.3",
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "@pact-community/mcp-shared": "workspace:*",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "20.11.0",
+    "@vitest/coverage-v8": "4.1.7",
+    "typescript": "5.6.3",
+    "vitest": "4.1.7"
+  },
+  "author": "Pact Community",
+  "license": "MIT",
+  "homepage": "https://github.com/Pact-Community-Organization/dao#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pact-Community-Organization/dao.git",
+    "directory": "mcp/packages/mcp-chainweb"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}
