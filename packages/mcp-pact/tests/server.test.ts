@@ -47,9 +47,9 @@ describe('server', () => {
     for (const key of Object.keys(process.env)) delete process.env[key];
     process.env['PATH'] = originalEnv['PATH'] ?? '/usr/bin:/bin';
     process.env['HOME'] = originalEnv['HOME'] ?? tempWorkspace;
-    process.env['SMARTPACTS_WORKSPACE_ROOT'] = tempWorkspace;
-    process.env['SMARTPACTS_PACT_BIN'] = 'pact';
-    process.env['SMARTPACTS_TOOLS_LOCKFILE'] = tempLock;
+    process.env['PACT_COMMUNITY_WORKSPACE_ROOT'] = tempWorkspace;
+    process.env['PACT_COMMUNITY_PACT_BIN'] = 'pact';
+    process.env['PACT_COMMUNITY_TOOLS_LOCKFILE'] = tempLock;
   });
 
   afterEach(() => {
@@ -99,7 +99,7 @@ describe('server', () => {
   });
 
   test('resolveConfig uses a default lockfile path when env var unset', () => {
-    delete process.env['SMARTPACTS_TOOLS_LOCKFILE'];
+    delete process.env['PACT_COMMUNITY_TOOLS_LOCKFILE'];
     // With no lockfile at ./tools.lock.json (cwd), resolveConfig throws.
     expect(() => resolveConfig()).toThrowError();
   });

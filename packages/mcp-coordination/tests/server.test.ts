@@ -38,30 +38,30 @@ describe('server metadata', () => {
 describe('resolveConfig', () => {
   it('returns config when env is valid', () => {
     mkdirSync(path.join(tmp, 'coordination'), { recursive: true });
-    process.env.SMARTPACTS_WORKSPACE_ROOT = tmp;
-    process.env.SMARTPACTS_TOOLS_LOCKFILE = REAL_LOCKFILE;
-    delete process.env.SMARTPACTS_COORDINATION_ROOT;
+    process.env.PACT_COMMUNITY_WORKSPACE_ROOT = tmp;
+    process.env.PACT_COMMUNITY_TOOLS_LOCKFILE = REAL_LOCKFILE;
+    delete process.env.PACT_COMMUNITY_COORDINATION_ROOT;
     const c = resolveConfig();
     expect(c.workspaceRoot).toBe(tmp);
     expect(c.coordinationRoot).toBe(path.join(tmp, 'coordination'));
   });
 
-  it('throws when SMARTPACTS_WORKSPACE_ROOT is missing', () => {
-    delete process.env.SMARTPACTS_WORKSPACE_ROOT;
+  it('throws when PACT_COMMUNITY_WORKSPACE_ROOT is missing', () => {
+    delete process.env.PACT_COMMUNITY_WORKSPACE_ROOT;
     expect(() => resolveConfig()).toThrow();
   });
 
-  it('throws when SMARTPACTS_WORKSPACE_ROOT is not absolute', () => {
-    process.env.SMARTPACTS_WORKSPACE_ROOT = 'relative/path';
+  it('throws when PACT_COMMUNITY_WORKSPACE_ROOT is not absolute', () => {
+    process.env.PACT_COMMUNITY_WORKSPACE_ROOT = 'relative/path';
     expect(() => resolveConfig()).toThrow();
   });
 
-  it('accepts explicit SMARTPACTS_COORDINATION_ROOT under workspace root', () => {
+  it('accepts explicit PACT_COMMUNITY_COORDINATION_ROOT under workspace root', () => {
     const coord = path.join(tmp, 'custom-coord');
     mkdirSync(coord, { recursive: true });
-    process.env.SMARTPACTS_WORKSPACE_ROOT = tmp;
-    process.env.SMARTPACTS_COORDINATION_ROOT = coord;
-    process.env.SMARTPACTS_TOOLS_LOCKFILE = REAL_LOCKFILE;
+    process.env.PACT_COMMUNITY_WORKSPACE_ROOT = tmp;
+    process.env.PACT_COMMUNITY_COORDINATION_ROOT = coord;
+    process.env.PACT_COMMUNITY_TOOLS_LOCKFILE = REAL_LOCKFILE;
     const c = resolveConfig();
     expect(c.coordinationRoot).toBe(coord);
   });

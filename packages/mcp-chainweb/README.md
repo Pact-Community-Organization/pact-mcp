@@ -45,11 +45,11 @@ unsigned envelope for external signing.
 
 | Variable | Default | Required | Description |
 |---|---|---|---|
-| `SMARTPACTS_WORKSPACE_ROOT` | — | ✅ | Absolute path, must not be `/` |
-| `SMARTPACTS_CHAINWEB_MODE` | — | ✅ | Must be exactly `devnet` |
-| `SMARTPACTS_CHAINWEB_BASE_URL` | `http://localhost:8081` | | Origin must be in the devnet allowlist |
-| `SMARTPACTS_CHAINWEB_NETWORK_ID` | `development` | | Strictly validated against node `/info` |
-| `SMARTPACTS_TOOLS_LOCKFILE` | `./tools.lock.json` | | Used to detect tool-schema drift |
+| `PACT_COMMUNITY_WORKSPACE_ROOT` | — | ✅ | Absolute path, must not be `/` |
+| `PACT_COMMUNITY_CHAINWEB_MODE` | — | ✅ | Must be exactly `devnet` |
+| `PACT_COMMUNITY_CHAINWEB_BASE_URL` | `http://localhost:8081` | | Origin must be in the devnet allowlist |
+| `PACT_COMMUNITY_CHAINWEB_NETWORK_ID` | `development` | | Strictly validated against node `/info` |
+| `PACT_COMMUNITY_TOOLS_LOCKFILE` | `./tools.lock.json` | | Used to detect tool-schema drift |
 
 Production allowlist (hard-coded, not configurable):
 `http://localhost:8081`, `http://localhost:8082`, `http://localhost:8083`.
@@ -69,10 +69,10 @@ Via the workspace `.mcp.json` entry:
   "args": ["./packages/mcp-chainweb/dist/bin.js"],
   "env": {
     "NODE_ENV": "production",
-    "SMARTPACTS_WORKSPACE_ROOT": "<local-path>
-    "SMARTPACTS_CHAINWEB_MODE": "devnet",
-    "SMARTPACTS_CHAINWEB_BASE_URL": "http://localhost:8081",
-    "SMARTPACTS_CHAINWEB_NETWORK_ID": "development"
+    "PACT_COMMUNITY_WORKSPACE_ROOT": "<local-path>
+    "PACT_COMMUNITY_CHAINWEB_MODE": "devnet",
+    "PACT_COMMUNITY_CHAINWEB_BASE_URL": "http://localhost:8081",
+    "PACT_COMMUNITY_CHAINWEB_NETWORK_ID": "development"
   }
 }
 ```

@@ -400,13 +400,13 @@ devnets (Developer 8081 / Tester 8082 / Security 8083). Six tools:
 
 Key design points:
 
-- **Two-layer gating**. `SMARTPACTS_DEVNET_MODE=devnet` is required to
-  start. `SMARTPACTS_DEVNET_ALLOW_LIFECYCLE=true` enables up/down/reset
-  at runtime. `SMARTPACTS_DEVNET_ALLOW_VOLUME_WIPE=true` enables `-v`
+- **Two-layer gating**. `PACT_COMMUNITY_DEVNET_MODE=devnet` is required to
+  start. `PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE=true` enables up/down/reset
+  at runtime. `PACT_COMMUNITY_DEVNET_ALLOW_VOLUME_WIPE=true` enables `-v`
   on down/reset. Flags are read per-call so they can be toggled
   mid-session.
 - **Minimal child env**. Only `PATH`, `HOME`, `DOCKER_HOST` are forwarded
-  to the `docker` subprocess. SMARTPACTS_* variables never leak into
+  to the `docker` subprocess. PACT_COMMUNITY_* variables never leak into
   containers.
 - **Compose preflight**. Every compose file whose path resolves inside
   the workspace is content-scanned at startup; container_names outside

@@ -73,9 +73,9 @@ export const SERVER_NAME = 'pact-community-coordination';
 export const SERVER_VERSION = '0.1.0';
 
 export const ALLOWED_ENV = [
-  'SMARTPACTS_WORKSPACE_ROOT',
-  'SMARTPACTS_COORDINATION_ROOT',
-  'SMARTPACTS_TOOLS_LOCKFILE',
+  'PACT_COMMUNITY_WORKSPACE_ROOT',
+  'PACT_COMMUNITY_COORDINATION_ROOT',
+  'PACT_COMMUNITY_TOOLS_LOCKFILE',
   'NODE_ENV',
   'PATH',
   'HOME',
@@ -104,24 +104,24 @@ export function resolveConfig(): ResolvedConfig {
 
   const envResult = validateEnv({ allowed: ALLOWED_ENV, strict: false });
 
-  const workspaceRoot = envResult.env['SMARTPACTS_WORKSPACE_ROOT'];
+  const workspaceRoot = envResult.env['PACT_COMMUNITY_WORKSPACE_ROOT'];
   if (!workspaceRoot || workspaceRoot.length === 0) {
     // eslint-disable-next-line no-console
     console.error(
-      '[pact-community-coordination] SMARTPACTS_WORKSPACE_ROOT environment variable is required'
+      '[pact-community-coordination] PACT_COMMUNITY_WORKSPACE_ROOT environment variable is required'
     );
     process.exit(13);
   }
   if (!path.isAbsolute(workspaceRoot)) {
     // eslint-disable-next-line no-console
     console.error(
-      `[pact-community-coordination] SMARTPACTS_WORKSPACE_ROOT must be absolute (got ${workspaceRoot})`
+      `[pact-community-coordination] PACT_COMMUNITY_WORKSPACE_ROOT must be absolute (got ${workspaceRoot})`
     );
     process.exit(13);
   }
 
   const coordRoot =
-    envResult.env['SMARTPACTS_COORDINATION_ROOT'] ??
+    envResult.env['PACT_COMMUNITY_COORDINATION_ROOT'] ??
     path.join(workspaceRoot, 'coordination');
 
   let canonicalCoordRoot: string;
@@ -134,7 +134,7 @@ export function resolveConfig(): ResolvedConfig {
   }
 
   const lockfilePath =
-    envResult.env['SMARTPACTS_TOOLS_LOCKFILE'] ?? './tools.lock.json';
+    envResult.env['PACT_COMMUNITY_TOOLS_LOCKFILE'] ?? './tools.lock.json';
 
   verifyToolsLock(SERVER_NAME, getToolSchemaObjects(), lockfilePath);
 

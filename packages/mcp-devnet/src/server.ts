@@ -14,7 +14,7 @@
  *   1. Root refusal.
  *   2. Audit log init.
  *   3. Env allowlist validation (non-strict).
- *   4. SMARTPACTS_DEVNET_MODE === "devnet" assertion.
+ *   4. PACT_COMMUNITY_DEVNET_MODE === "devnet" assertion.
  *   5. docker binary resolution (which-alike).
  *   6. Tool schema drift check (tools.lock.json).
  *   7. Compose-file content validation for every agent whose file exists.
@@ -81,14 +81,14 @@ export const SERVER_VERSION = '0.1.0';
 
 /** Env vars accepted from the parent process. */
 export const ALLOWED_ENV = [
-  'SMARTPACTS_WORKSPACE_ROOT',
-  'SMARTPACTS_DEVNET_MODE',
-  'SMARTPACTS_DEVNET_ALLOW_LIFECYCLE',
-  'SMARTPACTS_DEVNET_ALLOW_VOLUME_WIPE',
-  'SMARTPACTS_DEVNET_DOCKER_BIN',
-  'SMARTPACTS_TOOLS_LOCKFILE',
-  'SMARTPACTS_TEST_ALLOW_ORIGINS',
-  'SMARTPACTS_TEST_AGENT_BASE_URLS',
+  'PACT_COMMUNITY_WORKSPACE_ROOT',
+  'PACT_COMMUNITY_DEVNET_MODE',
+  'PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE',
+  'PACT_COMMUNITY_DEVNET_ALLOW_VOLUME_WIPE',
+  'PACT_COMMUNITY_DEVNET_DOCKER_BIN',
+  'PACT_COMMUNITY_TOOLS_LOCKFILE',
+  'PACT_COMMUNITY_TEST_ALLOW_ORIGINS',
+  'PACT_COMMUNITY_TEST_AGENT_BASE_URLS',
   'NODE_ENV',
   'PATH',
   'HOME',
@@ -139,49 +139,49 @@ export function resolveConfig(): ResolvedConfig {
   const envResult = validateEnv({ allowed: ALLOWED_ENV, strict: false });
 
   // 4. Mode assertion.
-  const mode = envResult.env['SMARTPACTS_DEVNET_MODE'];
+  const mode = envResult.env['PACT_COMMUNITY_DEVNET_MODE'];
   if (mode !== 'devnet') {
     // eslint-disable-next-line no-console
     console.error(
-      `[pact-community-devnet] SMARTPACTS_DEVNET_MODE must be 'devnet' (got '${mode ?? '<unset>'}')`
+      `[pact-community-devnet] PACT_COMMUNITY_DEVNET_MODE must be 'devnet' (got '${mode ?? '<unset>'}')`
     );
     process.exit(13);
   }
 
   // 5. Workspace root.
-  const workspaceRoot = envResult.env['SMARTPACTS_WORKSPACE_ROOT'];
+  const workspaceRoot = envResult.env['PACT_COMMUNITY_WORKSPACE_ROOT'];
   if (!workspaceRoot || workspaceRoot.length === 0) {
     throw new McpToolError(
       'CONFIG_MISSING',
-      'SMARTPACTS_WORKSPACE_ROOT environment variable is required',
+      'PACT_COMMUNITY_WORKSPACE_ROOT environment variable is required',
       false
     );
   }
   if (!fs.existsSync(workspaceRoot) || !fs.statSync(workspaceRoot).isDirectory()) {
     throw new McpToolError(
       'CONFIG_INVALID',
-      `SMARTPACTS_WORKSPACE_ROOT is not a directory: ${workspaceRoot}`,
+      `PACT_COMMUNITY_WORKSPACE_ROOT is not a directory: ${workspaceRoot}`,
       false
     );
   }
 
   // 6. Docker binary resolution.
   const dockerBin = resolveDockerBinary(
-    envResult.env['SMARTPACTS_DEVNET_DOCKER_BIN'],
+    envResult.env['PACT_COMMUNITY_DEVNET_DOCKER_BIN'],
     envResult.env['PATH']
   );
 
   // 7. Lockfile drift check.
   const lockfilePath =
-    envResult.env['SMARTPACTS_TOOLS_LOCKFILE'] ?? './tools.lock.json';
+    envResult.env['PACT_COMMUNITY_TOOLS_LOCKFILE'] ?? './tools.lock.json';
   verifyToolsLock(SERVER_NAME, getToolSchemaObjects(), lockfilePath);
 
   // 8. Lifecycle flags.
   const flags: LifecycleFlags = {
     lifecycle:
-      envResult.env['SMARTPACTS_DEVNET_ALLOW_LIFECYCLE'] === 'true',
+      envResult.env['PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE'] === 'true',
     volumeWipe:
-      envResult.env['SMARTPACTS_DEVNET_ALLOW_VOLUME_WIPE'] === 'true'
+      envResult.env['PACT_COMMUNITY_DEVNET_ALLOW_VOLUME_WIPE'] === 'true'
   };
 
   // 9. Compose-file content validation for each agent whose file exists.
@@ -215,12 +215,12 @@ export function resolveConfig(): ResolvedConfig {
 }
 
 /**
- * [Developer] Parse SMARTPACTS_TEST_ALLOW_ORIGINS. Honored ONLY when
+ * [Developer] Parse PACT_COMMUNITY_TEST_ALLOW_ORIGINS. Honored ONLY when
  * NODE_ENV === 'test'. Any value in production is silently dropped.
  */
 function resolveTestOrigins(env: Record<string, string>): string[] {
   if (env['NODE_ENV'] !== 'test') return [];
-  const raw = env['SMARTPACTS_TEST_ALLOW_ORIGINS'] ?? '';
+  const raw = env['PACT_COMMUNITY_TEST_ALLOW_ORIGINS'] ?? '';
   return raw
     .split(',')
     .map((s) => s.trim())
@@ -228,14 +228,14 @@ function resolveTestOrigins(env: Record<string, string>): string[] {
 }
 
 /**
- * [Developer] Parse SMARTPACTS_TEST_AGENT_BASE_URLS. Honored ONLY when
+ * [Developer] Parse PACT_COMMUNITY_TEST_AGENT_BASE_URLS. Honored ONLY when
  * NODE_ENV === 'test'. Format: `Developer=http://127.0.0.1:33001,Tester=...`.
  */
 function resolveTestAgentBaseUrls(
   env: Record<string, string>
 ): Partial<Record<AgentName, string>> {
   if (env['NODE_ENV'] !== 'test') return {};
-  const raw = env['SMARTPACTS_TEST_AGENT_BASE_URLS'] ?? '';
+  const raw = env['PACT_COMMUNITY_TEST_AGENT_BASE_URLS'] ?? '';
   const out: Partial<Record<AgentName, string>> = {};
   for (const pair of raw.split(',')) {
     const trimmed = pair.trim();
@@ -367,7 +367,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
     {
       title: 'Devnet start (GATED)',
       description:
-        'Start the devnet stack via docker compose up -d. REQUIRES SMARTPACTS_DEVNET_ALLOW_LIFECYCLE=true. Timeout 120s.',
+        'Start the devnet stack via docker compose up -d. REQUIRES PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE=true. Timeout 120s.',
       inputSchema: UpInputShape,
       annotations: {
         readOnlyHint: false,
@@ -387,7 +387,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
     {
       title: 'Devnet stop + remove containers (GATED, DANGER)',
       description:
-        'docker compose down. With wipeVolumes=true, also removes named volumes (DATA LOSS). REQUIRES SMARTPACTS_DEVNET_ALLOW_LIFECYCLE=true, and SMARTPACTS_DEVNET_ALLOW_VOLUME_WIPE=true for wipeVolumes.',
+        'docker compose down. With wipeVolumes=true, also removes named volumes (DATA LOSS). REQUIRES PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE=true, and PACT_COMMUNITY_DEVNET_ALLOW_VOLUME_WIPE=true for wipeVolumes.',
       inputSchema: DownInputShape,
       annotations: {
         readOnlyHint: false,
@@ -407,7 +407,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
     {
       title: 'Devnet reset (GATED, DANGER — DATA LOSS)',
       description:
-        'Convenience: down -v followed by up --force-recreate. Full fresh devnet. REQUIRES both SMARTPACTS_DEVNET_ALLOW_LIFECYCLE=true and SMARTPACTS_DEVNET_ALLOW_VOLUME_WIPE=true.',
+        'Convenience: down -v followed by up --force-recreate. Full fresh devnet. REQUIRES both PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE=true and PACT_COMMUNITY_DEVNET_ALLOW_VOLUME_WIPE=true.',
       inputSchema: ResetInputShape,
       annotations: {
         readOnlyHint: false,
@@ -445,7 +445,7 @@ export function getToolSchemaObjects(): Record<
 // ---------------------------------------------------------------------------
 
 /**
- * [Developer] Resolve the docker binary. Honors SMARTPACTS_DEVNET_DOCKER_BIN
+ * [Developer] Resolve the docker binary. Honors PACT_COMMUNITY_DEVNET_DOCKER_BIN
  * (absolute path) if set; otherwise walks PATH for a `docker` executable.
  * Exits 13 if none is found.
  */
@@ -457,14 +457,14 @@ export function resolveDockerBinary(
     if (!path.isAbsolute(override)) {
       // eslint-disable-next-line no-console
       console.error(
-        `[pact-community-devnet] SMARTPACTS_DEVNET_DOCKER_BIN must be an absolute path (got '${override}')`
+        `[pact-community-devnet] PACT_COMMUNITY_DEVNET_DOCKER_BIN must be an absolute path (got '${override}')`
       );
       process.exit(13);
     }
     if (!fs.existsSync(override)) {
       // eslint-disable-next-line no-console
       console.error(
-        `[pact-community-devnet] docker binary not found at SMARTPACTS_DEVNET_DOCKER_BIN='${override}'`
+        `[pact-community-devnet] docker binary not found at PACT_COMMUNITY_DEVNET_DOCKER_BIN='${override}'`
       );
       process.exit(13);
     }
@@ -487,7 +487,7 @@ export function resolveDockerBinary(
   }
   // eslint-disable-next-line no-console
   console.error(
-    `[pact-community-devnet] docker binary not found on PATH. Set SMARTPACTS_DEVNET_DOCKER_BIN to override.`
+    `[pact-community-devnet] docker binary not found on PATH. Set PACT_COMMUNITY_DEVNET_DOCKER_BIN to override.`
   );
   process.exit(13);
 }

@@ -37,7 +37,7 @@ describe('chainweb.principal_namespace', () => {
       reqKey: 'rk',
       result: {
         status: 'success',
-        data: 'n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9'
+        data: '<namespace-principal>'
       },
       gas: 100
     });
@@ -47,7 +47,7 @@ describe('chainweb.principal_namespace', () => {
       keyset: { keys: [KEY_A], pred: 'keys-all' }
     });
     expect(content[0]!.namespace).toBe(
-      'n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9'
+      '<namespace-principal>'
     );
     expect(content[0]!.gasUsed).toBe(100);
   });
@@ -103,7 +103,7 @@ describe('chainweb.principal_namespace', () => {
       reqKey: 'rk',
       result: {
         status: 'success',
-        data: 'n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9'
+        data: '<namespace-principal>'
       },
       gas: 10
     });

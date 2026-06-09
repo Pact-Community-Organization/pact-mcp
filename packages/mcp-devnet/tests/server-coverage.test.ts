@@ -37,7 +37,7 @@ const LOCKFILE_PATH = path.resolve(__dirname, '..', '..', '..', 'tools.lock.json
 
 function resetEnv(): void {
   for (const k of Object.keys(process.env)) {
-    if (k.startsWith('SMARTPACTS_') || k === 'NODE_ENV') {
+    if (k.startsWith('PACT_COMMUNITY_') || k === 'NODE_ENV') {
       delete (process.env as Record<string, string | undefined>)[k];
     }
   }
@@ -60,10 +60,10 @@ describe('[coverage] resolveConfig', () => {
       'pact-examples/docker-compose.security.yml': VALID_COMPOSE_CONTENT
     });
     fakeDocker = createFakeDocker({ stdout: '', exitCode: 0 });
-    process.env['SMARTPACTS_DEVNET_MODE'] = 'devnet';
-    process.env['SMARTPACTS_WORKSPACE_ROOT'] = workspace;
-    process.env['SMARTPACTS_DEVNET_DOCKER_BIN'] = fakeDocker;
-    process.env['SMARTPACTS_TOOLS_LOCKFILE'] = LOCKFILE_PATH;
+    process.env['PACT_COMMUNITY_DEVNET_MODE'] = 'devnet';
+    process.env['PACT_COMMUNITY_WORKSPACE_ROOT'] = workspace;
+    process.env['PACT_COMMUNITY_DEVNET_DOCKER_BIN'] = fakeDocker;
+    process.env['PACT_COMMUNITY_TOOLS_LOCKFILE'] = LOCKFILE_PATH;
   });
 
   afterEach(() => {
@@ -86,17 +86,17 @@ describe('[coverage] resolveConfig', () => {
     expect(config.childEnv['PATH']).toBeDefined();
   });
 
-  it('picks up SMARTPACTS_DEVNET_ALLOW_LIFECYCLE=true', () => {
-    process.env['SMARTPACTS_DEVNET_ALLOW_LIFECYCLE'] = 'true';
-    process.env['SMARTPACTS_DEVNET_ALLOW_VOLUME_WIPE'] = 'true';
+  it('picks up PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE=true', () => {
+    process.env['PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE'] = 'true';
+    process.env['PACT_COMMUNITY_DEVNET_ALLOW_VOLUME_WIPE'] = 'true';
     const config = resolveConfig();
     expect(config.flags.lifecycle).toBe(true);
     expect(config.flags.volumeWipe).toBe(true);
   });
 
-  it('honors NODE_ENV=test for SMARTPACTS_TEST_ALLOW_ORIGINS', () => {
+  it('honors NODE_ENV=test for PACT_COMMUNITY_TEST_ALLOW_ORIGINS', () => {
     process.env['NODE_ENV'] = 'test';
-    process.env['SMARTPACTS_TEST_ALLOW_ORIGINS'] =
+    process.env['PACT_COMMUNITY_TEST_ALLOW_ORIGINS'] =
       'http://127.0.0.1:33001,http://127.0.0.1:33002';
     const config = resolveConfig();
     expect(config.additionalAllowedOrigins).toEqual([
@@ -105,16 +105,16 @@ describe('[coverage] resolveConfig', () => {
     ]);
   });
 
-  it('silently drops SMARTPACTS_TEST_ALLOW_ORIGINS when NODE_ENV!=test', () => {
+  it('silently drops PACT_COMMUNITY_TEST_ALLOW_ORIGINS when NODE_ENV!=test', () => {
     process.env['NODE_ENV'] = 'production';
-    process.env['SMARTPACTS_TEST_ALLOW_ORIGINS'] = 'http://evil.example:80';
+    process.env['PACT_COMMUNITY_TEST_ALLOW_ORIGINS'] = 'http://evil.example:80';
     const config = resolveConfig();
     expect(config.additionalAllowedOrigins).toEqual([]);
   });
 
-  it('parses SMARTPACTS_TEST_AGENT_BASE_URLS in test mode', () => {
+  it('parses PACT_COMMUNITY_TEST_AGENT_BASE_URLS in test mode', () => {
     process.env['NODE_ENV'] = 'test';
-    process.env['SMARTPACTS_TEST_AGENT_BASE_URLS'] =
+    process.env['PACT_COMMUNITY_TEST_AGENT_BASE_URLS'] =
       'Developer=http://127.0.0.1:33001,Tester=http://127.0.0.1:33002,Unknown=http://x:1,bad';
     const config = resolveConfig();
     expect(config.testAgentBaseUrls).toEqual({
@@ -123,9 +123,9 @@ describe('[coverage] resolveConfig', () => {
     });
   });
 
-  it('drops SMARTPACTS_TEST_AGENT_BASE_URLS outside of test mode', () => {
+  it('drops PACT_COMMUNITY_TEST_AGENT_BASE_URLS outside of test mode', () => {
     process.env['NODE_ENV'] = 'production';
-    process.env['SMARTPACTS_TEST_AGENT_BASE_URLS'] =
+    process.env['PACT_COMMUNITY_TEST_AGENT_BASE_URLS'] =
       'Developer=http://evil:1';
     const config = resolveConfig();
     expect(config.testAgentBaseUrls).toEqual({});
@@ -133,7 +133,7 @@ describe('[coverage] resolveConfig', () => {
 
   it('throws CONFIG_MISSING when workspace root is unset', () => {
     delete (process.env as Record<string, string | undefined>)[
-      'SMARTPACTS_WORKSPACE_ROOT'
+      'PACT_COMMUNITY_WORKSPACE_ROOT'
     ];
     expect(() => resolveConfig()).toThrowError(
       expect.objectContaining({ code: 'CONFIG_MISSING' })
@@ -143,7 +143,7 @@ describe('[coverage] resolveConfig', () => {
   it('throws CONFIG_INVALID when workspace root is not a directory', () => {
     const tmpFile = path.join(os.tmpdir(), `not-a-dir-${Date.now()}`);
     fs.writeFileSync(tmpFile, 'x');
-    process.env['SMARTPACTS_WORKSPACE_ROOT'] = tmpFile;
+    process.env['PACT_COMMUNITY_WORKSPACE_ROOT'] = tmpFile;
     try {
       expect(() => resolveConfig()).toThrowError(
         expect.objectContaining({ code: 'CONFIG_INVALID' })
@@ -153,8 +153,8 @@ describe('[coverage] resolveConfig', () => {
     }
   });
 
-  it('exits 13 when SMARTPACTS_DEVNET_MODE is wrong', () => {
-    process.env['SMARTPACTS_DEVNET_MODE'] = 'production';
+  it('exits 13 when PACT_COMMUNITY_DEVNET_MODE is wrong', () => {
+    process.env['PACT_COMMUNITY_DEVNET_MODE'] = 'production';
     const exitSpy = vi
       .spyOn(process, 'exit')
       .mockImplementation(((code?: number) => {
@@ -183,7 +183,7 @@ describe('[coverage] resolveConfig', () => {
     const badWorkspace = createTempWorkspace({
       'pact-examples/docker-compose.forge.yml': SUSPICIOUS_COMPOSE_CONTENT
     });
-    process.env['SMARTPACTS_WORKSPACE_ROOT'] = badWorkspace;
+    process.env['PACT_COMMUNITY_WORKSPACE_ROOT'] = badWorkspace;
     try {
       expect(() => resolveConfig()).toThrowError(
         expect.objectContaining({ code: 'COMPOSE_FILE_SUSPICIOUS' })

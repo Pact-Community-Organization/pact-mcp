@@ -8,9 +8,9 @@ Chainweb HTTP node. The agent cannot be trusted; the node is devnet
 
 ### Controls
 
-1. **Devnet-only runtime.** `SMARTPACTS_CHAINWEB_MODE` must equal
+1. **Devnet-only runtime.** `PACT_COMMUNITY_CHAINWEB_MODE` must equal
    `devnet`. Anything else exits 13 at startup.
-2. **Origin allowlist.** `SMARTPACTS_CHAINWEB_BASE_URL` must resolve to
+2. **Origin allowlist.** `PACT_COMMUNITY_CHAINWEB_BASE_URL` must resolve to
    an origin in the hard-coded production list
    (`http://localhost:8081`, `:8082`, `:8083`). Checked at startup and
    re-checked on every `fetch()` call (defence in depth — DNS rebind
@@ -30,7 +30,7 @@ Chainweb HTTP node. The agent cannot be trusted; the node is devnet
 7. **Env allowlist.** Only the documented variables reach the process.
    `process.env` is cleaned on startup via `validateEnv`.
 8. **Workspace root refusal.** Refuses to start with
-   `SMARTPACTS_WORKSPACE_ROOT=/`.
+   `PACT_COMMUNITY_WORKSPACE_ROOT=/`.
 9. **Audit log.** Every tool call records `{tool, inputHash, exitStatus,
    durationMs}` — no raw arguments.
 10. **Tool-schema drift.** The server verifies `tools.lock.json` at
@@ -38,7 +38,7 @@ Chainweb HTTP node. The agent cannot be trusted; the node is devnet
 
 ### Test-only escape hatch
 
-`SMARTPACTS_TEST_ALLOW_ORIGINS` is honored **only** when
+`PACT_COMMUNITY_TEST_ALLOW_ORIGINS` is honored **only** when
 `NODE_ENV === 'test'`. It extends the fetch allowlist to additional
 origins so the integration test can target an in-process mock chainweb
 bound to `127.0.0.1:{ephemeral}`. In production (`NODE_ENV !== 'test'`)

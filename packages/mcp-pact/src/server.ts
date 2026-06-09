@@ -59,9 +59,9 @@ export const SERVER_VERSION = '0.2.0';
 
 /** Environment variables the server accepts from its parent process. */
 export const ALLOWED_ENV = [
-  'SMARTPACTS_WORKSPACE_ROOT',
-  'SMARTPACTS_PACT_BIN',
-  'SMARTPACTS_TOOLS_LOCKFILE',
+  'PACT_COMMUNITY_WORKSPACE_ROOT',
+  'PACT_COMMUNITY_PACT_BIN',
+  'PACT_COMMUNITY_TOOLS_LOCKFILE',
   'NODE_ENV',
   'PATH',
   'HOME',
@@ -86,8 +86,8 @@ const CHILD_ENV_ALLOW = new Set([
   'TZ',
   'PWD',
   'TMPDIR',
-  'SMARTPACTS_WORKSPACE_ROOT',
-  'SMARTPACTS_PACT_BIN'
+  'PACT_COMMUNITY_WORKSPACE_ROOT',
+  'PACT_COMMUNITY_PACT_BIN'
 ]);
 
 export interface ResolvedConfig {
@@ -119,25 +119,25 @@ export function resolveConfig(): ResolvedConfig {
   //    the child env, which is what actually matters for sandboxing).
   const envResult = validateEnv({ allowed: ALLOWED_ENV, strict: false });
 
-  const workspaceRoot = envResult.env['SMARTPACTS_WORKSPACE_ROOT'];
+  const workspaceRoot = envResult.env['PACT_COMMUNITY_WORKSPACE_ROOT'];
   if (!workspaceRoot || workspaceRoot.length === 0) {
     throw new McpToolError(
       'CONFIG_MISSING',
-      'SMARTPACTS_WORKSPACE_ROOT environment variable is required',
+      'PACT_COMMUNITY_WORKSPACE_ROOT environment variable is required',
       false
     );
   }
   if (!fs.existsSync(workspaceRoot) || !fs.statSync(workspaceRoot).isDirectory()) {
     throw new McpToolError(
       'CONFIG_INVALID',
-      `SMARTPACTS_WORKSPACE_ROOT is not a directory: ${workspaceRoot}`,
+      `PACT_COMMUNITY_WORKSPACE_ROOT is not a directory: ${workspaceRoot}`,
       false
     );
   }
 
-  const pactBin = envResult.env['SMARTPACTS_PACT_BIN'] ?? 'pact';
+  const pactBin = envResult.env['PACT_COMMUNITY_PACT_BIN'] ?? 'pact';
   const lockfilePath =
-    envResult.env['SMARTPACTS_TOOLS_LOCKFILE'] ??
+    envResult.env['PACT_COMMUNITY_TOOLS_LOCKFILE'] ??
     defaultLockfilePath();
 
   // 4. Tool schema drift check via tools.lock.json.
@@ -475,7 +475,7 @@ export function getToolSchemaObjects(): Record<
 function defaultLockfilePath(): string {
   // The workspace lockfile lives at <repo>/mcp/tools.lock.json. When bin.js is
   // run via `node mcp/packages/mcp-pact/dist/bin.js`, cwd may vary; callers can
-  // override with SMARTPACTS_TOOLS_LOCKFILE. The baseline default is cwd-relative
+  // override with PACT_COMMUNITY_TOOLS_LOCKFILE. The baseline default is cwd-relative
   // which matches the shared library's behaviour.
   return './tools.lock.json';
 }

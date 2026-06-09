@@ -67,8 +67,8 @@ describe('MCP coordination server — integration (stdio)', () => {
         PATH: process.env['PATH'] ?? '/usr/bin:/bin',
         HOME: process.env['HOME'] ?? '/tmp',
         NODE_ENV: 'test',
-        SMARTPACTS_WORKSPACE_ROOT: workspaceRoot,
-        SMARTPACTS_TOOLS_LOCKFILE: lockPath
+        PACT_COMMUNITY_WORKSPACE_ROOT: workspaceRoot,
+        PACT_COMMUNITY_TOOLS_LOCKFILE: lockPath
       }
     });
 

@@ -34,7 +34,7 @@ describe('read_table: key injection guard', () => {
     const cases = [
       'alice',
       'k:368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca',
-      'n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9',
+      '<namespace-principal>',
       '1234-abcd.user',
       'a'.repeat(256)
     ];

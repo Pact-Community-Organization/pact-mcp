@@ -162,7 +162,7 @@ describe('[security] logs service name injection', () => {
 });
 
 describe('[security] docker binary resolution refuses relative or missing paths', () => {
-  it('relative SMARTPACTS_DEVNET_DOCKER_BIN causes process.exit(13)', () => {
+  it('relative PACT_COMMUNITY_DEVNET_DOCKER_BIN causes process.exit(13)', () => {
     // We can't actually exit in-test; stub process.exit.
     const orig = process.exit;
     let exitCode: number | undefined;
@@ -212,7 +212,7 @@ describe('[security] SPAWN_TIMEOUT classification', () => {
 });
 
 describe('[security] child env allowlist', () => {
-  it('child process receives only PATH/HOME/DOCKER_HOST even if parent env has more', async () => {
+  it('child process receives only PATH, HOME, and DOCKER_HOST even if parent env has more', async () => {
     const outFile = path.join(os.tmpdir(), `envdump-${Date.now()}.json`);
     const script = path.join(os.tmpdir(), `fake-env-dump-${Date.now()}`);
     const src = `#!/usr/bin/env node

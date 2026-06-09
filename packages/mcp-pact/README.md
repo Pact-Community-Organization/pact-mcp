@@ -27,8 +27,8 @@ MCP server for Pact 5 smart contract tooling. Provides REPL testing, module scan
 
 ## Environment Variables
 
-- `SMARTPACTS_WORKSPACE_ROOT` (required): Workspace root directory
-- `SMARTPACTS_PACT_BIN` (optional): Path to pact binary (default: 'pact')
+- `PACT_COMMUNITY_WORKSPACE_ROOT` (required): Workspace root directory
+- `PACT_COMMUNITY_PACT_BIN` (optional): Path to pact binary (default: 'pact')
 
 ## Security
 

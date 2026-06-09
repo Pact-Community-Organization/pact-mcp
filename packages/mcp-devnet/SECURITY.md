@@ -20,15 +20,15 @@ is load-bearing.
 | Control | File | Notes |
 | --- | --- | --- |
 | Root refusal | `src/server.ts :: resolveConfig` | exits via `REFUSE_ROOT` if `getuid() === 0` |
-| Env allowlist (ADR-MCP-001 §4) | `src/server.ts :: ALLOWED_ENV` | `validateEnv({strict:false})` — rejects unknown `SMARTPACTS_*` |
-| Mode assertion | `src/server.ts` | `SMARTPACTS_DEVNET_MODE !== 'devnet'` → `process.exit(13)` |
+| Env allowlist (ADR-MCP-001 §4) | `src/server.ts :: ALLOWED_ENV` | `validateEnv({strict:false})` — rejects unknown `PACT_COMMUNITY_*` |
+| Mode assertion | `src/server.ts` | `PACT_COMMUNITY_DEVNET_MODE !== 'devnet'` → `process.exit(13)` |
 | Docker binary path | `src/server.ts :: resolveDockerBinary` | override must be absolute AND exist; PATH scan otherwise |
 | Compose file resolution | `src/docker/compose.ts :: resolveComposeFile` | uses `resolveInsideWorkspace` (symlink escape protected) |
 | Compose content validation | `src/docker/compose.ts :: validateComposeFileContent` | 32 KB read, requires `/^services\s*:\s*$/m`, rejects non-agent `container_name` values |
 | Lifecycle gate | `src/gating.ts :: assertLifecycleAllowed` | throws `LIFECYCLE_FORBIDDEN` unless env flag `=true` |
 | Volume-wipe gate | `src/gating.ts :: assertVolumeWipeAllowed` | throws `VOLUME_WIPE_FORBIDDEN` unless env flag `=true` |
 | Shell-metachar scrubbing | `@pact-community/mcp-shared :: spawnSafe` | forces `shell:false`, rejects `; & \| \` $ ( ) < > { } [ ] ! ? * ~ #` in argv |
-| Minimal child env | `src/server.ts :: CHILD_ENV_ALLOW` | `{PATH, HOME, DOCKER_HOST}` only — docker cannot leak SMARTPACTS_* into containers |
+| Minimal child env | `src/server.ts :: CHILD_ENV_ALLOW` | `{PATH, HOME, DOCKER_HOST}` only — docker cannot leak PACT_COMMUNITY_* into containers |
 | `service` regex | `src/tools/logs.ts` | `/^[a-z][a-z0-9-]{0,63}$/` — no `.`, no `/`, no special chars |
 | `since` regex | `src/tools/logs.ts` | duration `/^[1-9][0-9]{0,4}[smhd]$/` OR ISO-8601 |
 | Stream caps | `src/docker/spawn.ts :: STREAM_CAP_BYTES` | 1 MB per-stream, `truncated:true` on overflow |
@@ -44,8 +44,8 @@ is load-bearing.
 Without any env flags, the server is **read-only**:
 
 ```
-SMARTPACTS_DEVNET_MODE=devnet
-SMARTPACTS_WORKSPACE_ROOT=/abs/path
+PACT_COMMUNITY_DEVNET_MODE=devnet
+PACT_COMMUNITY_WORKSPACE_ROOT=/abs/path
 ```
 
 Under this default, `devnet.up`, `devnet.down`, and `devnet.reset`
@@ -56,10 +56,10 @@ Under this default, `devnet.up`, `devnet.down`, and `devnet.reset`
 
 ```bash
 # Allow start/stop (no volume wipe).
-SMARTPACTS_DEVNET_ALLOW_LIFECYCLE=true
+PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE=true
 
 # Allow `down -v` and `reset` (DATA LOSS).
-SMARTPACTS_DEVNET_ALLOW_VOLUME_WIPE=true
+PACT_COMMUNITY_DEVNET_ALLOW_VOLUME_WIPE=true
 ```
 
 These flags are read **every call** — they are not cached at startup.
@@ -91,7 +91,7 @@ COMPOSE_FILE_SUSPICIOUS    — preflight scan flagged foreign container_name
 DOCKER_NOT_FOUND           — docker binary absent
 SPAWN_TIMEOUT              — child exceeded timeout budget (retryable)
 REFUSE_ROOT                — process running as uid 0
-CONFIG_MISSING             — SMARTPACTS_WORKSPACE_ROOT unset
-CONFIG_INVALID             — SMARTPACTS_WORKSPACE_ROOT not a directory
+CONFIG_MISSING             — PACT_COMMUNITY_WORKSPACE_ROOT unset
+CONFIG_INVALID             — PACT_COMMUNITY_WORKSPACE_ROOT not a directory
 NETWORK_ALLOWLIST_VIOLATION — HTTP host not in allowlist
 ```

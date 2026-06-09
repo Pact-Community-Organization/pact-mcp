@@ -5,7 +5,7 @@ tools — task queue, mailbox, per-agent status, and append-only memory log —
 under a single workspace-scoped coordination root.
 
 No network I/O. No subprocess spawn. All persistence lives under a
-validated directory pinned by `SMARTPACTS_COORDINATION_ROOT`.
+validated directory pinned by `PACT_COMMUNITY_COORDINATION_ROOT`.
 
 ## Tools
 
@@ -26,9 +26,9 @@ validated directory pinned by `SMARTPACTS_COORDINATION_ROOT`.
 
 | Var                               | Required | Description                                 |
 |-----------------------------------|----------|---------------------------------------------|
-| `SMARTPACTS_WORKSPACE_ROOT`       | yes      | Absolute workspace root.                    |
-| `SMARTPACTS_COORDINATION_ROOT`    | no       | Defaults to `$WORKSPACE_ROOT/coordination`. |
-| `SMARTPACTS_TOOLS_LOCKFILE`       | no       | Defaults to `./tools.lock.json`.            |
+| `PACT_COMMUNITY_WORKSPACE_ROOT`       | yes      | Absolute workspace root.                    |
+| `PACT_COMMUNITY_COORDINATION_ROOT`    | no       | Defaults to `$WORKSPACE_ROOT/coordination`. |
+| `PACT_COMMUNITY_TOOLS_LOCKFILE`       | no       | Defaults to `./tools.lock.json`.            |
 
 ## Layout (under the coordination root)
 
