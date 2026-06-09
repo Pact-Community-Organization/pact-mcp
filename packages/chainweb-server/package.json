@@ -1,0 +1,11 @@
+{
+  "name": "@pact-mcp/chainweb-server",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@pact-mcp/shared": "workspace:*"
+  }
+}
