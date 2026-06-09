@@ -1,0 +1,30 @@
+- name: needs-review
+  color: "fbca04"
+  description: "PR awaiting initial review assignment"
+- name: needs-tester
+  color: "e4e669"
+  description: "PR requires Tester agent review"
+- name: needs-security
+  color: "d93f0b"
+  description: "PR requires Security agent review"
+- name: tester-approved
+  color: "0e8a16"
+  description: "Tester agent has approved this PR"
+- name: security-approved
+  color: "006b75"
+  description: "Security agent has approved this PR"
+- name: do-not-merge
+  color: "b60205"
+  description: "Block auto-merge — human escalation required"
+- name: auto-merge-enabled
+  color: "1d76db"
+  description: "Auto-merge will trigger when all checks pass"
+- name: stale
+  color: "ededed"
+  description: "No activity for 72 hours — scheduled for auto-close"
+- name: mcp-server
+  color: "c2e0c6"
+  description: "Changes to MCP server implementation"
+- name: tool-schema
+  color: "d4c5f9"
+  description: "Changes to MCP tool schemas or tools.lock.json"

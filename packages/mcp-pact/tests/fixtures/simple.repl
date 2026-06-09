@@ -1,0 +1,20 @@
+;; Simple REPL test for mcp-pact testing
+;; [Developer] Basic test that should load successfully
+
+(begin-tx "simple-test")
+
+(env-data 
+  { "test-keyset": { "keys": ["test-key"], "pred": "keys-all" }
+  })
+
+(define-keyset "test-keyset" (read-keyset "test-keyset"))
+
+(expect "simple math works" 5 (+ 2 3))
+
+(expect "string concatenation" "hello world" 
+  (+ "hello" " world"))
+
+(commit-tx)
+
+;; Test expectations
+(expect "final check" true true)

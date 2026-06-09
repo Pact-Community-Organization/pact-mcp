@@ -1,0 +1,121 @@
+name: PR Quality Gate
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+# Security H-2: workflow-scope read-only baseline
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-quality-gate-${{ github.ref }}-${{ github.event.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate-metadata:
+    name: Validate PR metadata
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      statuses: write
+    steps:
+      - name: Validate head ref (Security H-1)
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          if ! echo "$HEAD_REF" | grep -qE '^[A-Za-z0-9._/-]+$'; then
+            echo "::error::Invalid branch name — only alphanumeric, dots, underscores, hyphens, and slashes allowed"
+            exit 1
+          fi
+
+      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        id: validate
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const prBody = pr.body || '';
+            const title = pr.title || '';
+            const errors = [];
+
+            // [GitHubArchitect] Dependabot actor exemption (Change 2, 2026-05-29):
+            // Body/metadata rules (Rules 2-5) are incompatible with auto-generated Dependabot PRs.
+            // Rule 1 (title format) is still enforced — dependabot.yml prefix is now "chore"
+            // so titles like "chore(deps): Bump zod from 3.x to 4.x" will pass.
+            const isDependabot = pr.user.login === 'dependabot[bot]';
+
+            // Rule 1: Conventional commits title (ReDoS-safe pattern)
+            const TITLE_RE = /^(feat|fix|chore|docs|test|refactor|perf|ci|build|revert|security)(\([a-z0-9-]+\))?: .{3,}/;
+            if (!TITLE_RE.test(title)) {
+              errors.push('❌ **Title** must follow conventional commits: `type(scope): description` (min 3 chars after colon)\n   Valid types: feat, fix, chore, docs, test, refactor, perf, ci, build, revert, security');
+            }
+
+            if (!isDependabot) {
+              // Rule 2: diff-spec must be present and non-empty
+              const diffSpecMatch = prBody.match(/diff-spec:\s*(\S+)/);
+              if (!diffSpecMatch || !diffSpecMatch[1] || diffSpecMatch[1].trim() === '') {
+                errors.push('❌ **diff-spec** is required. Add `diff-spec: <url>` to your PR body linking the approved technical approach or ADR.');
+              }
+
+              // Rule 3: Issue link required
+              if (!/Closes #\d+/.test(prBody)) {
+                errors.push('❌ **Issue link** is required. Add `Closes #<issue-number>` to your PR body.');
+              }
+
+              // Rule 4: Quality gate phase must be checked
+              if (!/- \[x\] Gate [123]/i.test(prBody)) {
+                errors.push('❌ **Quality Gate Phase** must have one checkbox selected (Gate 1, 2, or 3).');
+              }
+
+              // Rule 5: Auto-merge acknowledgment must be checked
+              if (!/- \[x\] I acknowledge this PR will be auto-merged/.test(prBody)) {
+                errors.push('❌ **Auto-merge acknowledgment** must be checked.');
+              }
+            }
+
+            const findBotComment = async () => {
+              const { data: comments } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+              });
+              return comments.find(c =>
+                c.user.type === 'Bot' && c.body.includes('PR Quality Gate')
+              );
+            };
+
+            const upsertComment = async (commentBody) => {
+              const existing = await findBotComment();
+              if (existing) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: existing.id,
+                  body: commentBody,
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: pr.number,
+                  body: commentBody,
+                });
+              }
+            };
+
+            if (errors.length > 0) {
+              await upsertComment([
+                '## [Bot] PR Quality Gate — ❌ FAILED',
+                '',
+                'Fix the following before review can be assigned:',
+                '',
+                errors.join('\n'),
+                '',
+                'See `.github/BRANCH-PROTECTION.md` for governance details.',
+              ].join('\n'));
+
+              core.setFailed(`PR quality gate failed with ${errors.length} error(s)`);
+            } else {
+              await upsertComment('## [Bot] PR Quality Gate — ✅ PASSED\n\nAll required metadata present. Review assignment proceeding.');
+            }

@@ -1,0 +1,17 @@
+;; Gas measurement test for mcp-pact testing
+;; [Developer] REPL test that measures gas consumption
+
+(env-gaslimit 1000000)
+
+(begin-tx "gas-test")
+
+;; Simple operations to measure gas
+(expect "low gas operation" 42 (+ 20 22))
+
+;; String operation  
+(expect "string gas" "test" "test")
+
+;; Math operation
+(expect "math gas" 100 (* 10 10))
+
+(commit-tx)

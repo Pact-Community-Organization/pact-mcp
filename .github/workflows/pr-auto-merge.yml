@@ -1,0 +1,195 @@
+name: PR Auto-Merge
+
+on:
+  pull_request_review:
+    types: [submitted]
+  check_suite:
+    types: [completed]
+
+# Security H-2: workflow-scope read-only baseline
+permissions:
+  contents: read
+
+concurrency:
+  group: auto-merge-${{ github.event.pull_request.number || github.event.check_suite.pull_requests[0].number || 'noop' }}
+  cancel-in-progress: true
+
+jobs:
+  check-and-merge:
+    name: Evaluate merge readiness
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: read
+    steps:
+      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            // Security H2: Guard check_suite events — only process successful suites with PRs
+            if (context.eventName === 'check_suite') {
+              const suite = context.payload.check_suite;
+              if (suite.conclusion !== 'success') {
+                console.log(`check_suite conclusion was '${suite.conclusion}' — skipping auto-merge evaluation`);
+                return;
+              }
+              if (!suite.pull_requests || suite.pull_requests.length === 0) {
+                console.log('check_suite has no associated PRs — skipping');
+                return;
+              }
+            }
+
+            // Determine PR number
+            let prNumber;
+            if (context.eventName === 'pull_request_review') {
+              prNumber = context.payload.pull_request.number;
+            } else if (context.eventName === 'check_suite') {
+              prNumber = context.payload.check_suite.pull_requests[0].number;
+            }
+            if (!prNumber) return;
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+
+            // Skip drafts and closed PRs
+            if (pr.draft || pr.state !== 'open') return;
+
+            // Check do-not-merge label
+            const labels = pr.labels.map(l => l.name);
+            if (labels.includes('do-not-merge')) {
+              console.log('Blocked: do-not-merge label present');
+              return;
+            }
+
+            // Security H1 fix: Require label-based approvals
+            const hasTestersApproval = labels.includes('tester-approved');
+            const hasSecurityApproval = labels.includes('security-approved');
+
+            // Security H1 fix: Require native GitHub review approval in addition to labels
+            // This prevents label-persistence attack where labels survive new commits
+            const { data: reviews } = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+            // Deduplicate by reviewer — keep latest review state per user
+            const latestByUser = {};
+            for (const review of reviews) {
+              const uid = review.user.login;
+              if (!latestByUser[uid] ||
+                  new Date(review.submitted_at) > new Date(latestByUser[uid].submitted_at)) {
+                latestByUser[uid] = review;
+              }
+            }
+            const hasNativeApproval = Object.values(latestByUser).some(r => r.state === 'APPROVED');
+
+            // Security H1 fix: Verify approval labels post-date the current HEAD commit
+            // Prevents: approve clean PR → push malicious commit → labels still present
+            const headSha = pr.head.sha;
+            const { data: headCommit } = await github.rest.git.getCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: headSha,
+            });
+            const headCommitDate = new Date(headCommit.committer.date);
+
+            const { data: labelEvents } = await github.rest.issues.listEvents({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+
+            const checkLabelFresh = (labelName) => {
+              const events = labelEvents
+                .filter(e => e.event === 'labeled' && e.label && e.label.name === labelName);
+              if (events.length === 0) return false;
+              const latestLabelDate = new Date(events[events.length - 1].created_at);
+              return latestLabelDate >= headCommitDate;
+            };
+
+            const testerApprovalFresh = hasTestersApproval && checkLabelFresh('tester-approved');
+            const securityApprovalFresh = hasSecurityApproval && checkLabelFresh('security-approved');
+
+            // [GitHubArchitect] Dependabot actor exemption (Change 3, 2026-05-29):
+            // Dependency-only PRs from dependabot[bot] require CI + security-approved only.
+            // tester-approved is waived — if CI catches regressions, the merge is already blocked.
+            const isDependabot = pr.user.login === 'dependabot[bot]';
+
+            // Check all status checks pass
+            const { data: checkRuns } = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: headSha,
+            });
+            const allChecksPass = checkRuns.check_runs.length > 0 &&
+              checkRuns.check_runs.every(r =>
+                r.status === 'completed' && r.conclusion === 'success'
+              );
+
+            const ready = hasNativeApproval &&
+              (isDependabot || testerApprovalFresh) &&
+              securityApprovalFresh &&
+              allChecksPass;
+
+            const statusRows = [
+              `| Native review approval | ${hasNativeApproval ? '✅' : '🔴'} |`,
+              ...(isDependabot ? [] : [`| Tester approved (post-HEAD) | ${testerApprovalFresh ? '✅' : '🔴'} |`]),
+              `| Security approved (post-HEAD) | ${securityApprovalFresh ? '✅' : '🔴'} |`,
+              `| All status checks pass | ${allChecksPass ? '✅' : '🔴'} |`,
+            ];
+
+            const commentBody = [
+              '## [Bot] Auto-Merge Status',
+              '',
+              '| Requirement | Status |',
+              '|-------------|--------|',
+              ...statusRows,
+              '',
+              ready
+                ? '**✅ All requirements met — merging now.**'
+                : '**🔴 Auto-merge blocked — requirements not yet met.**',
+            ].join('\n');
+
+            // Update or create status comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+            const botComment = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes('Auto-Merge Status')
+            );
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: commentBody,
+              });
+            }
+
+            if (ready) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                labels: ['auto-merge-enabled'],
+              });
+
+              await github.rest.pulls.merge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                merge_method: 'squash',
+              });
+            }

@@ -1,0 +1,167 @@
+# [GitHubArchitect] Dependabot configuration for Pact Community MCP monorepo
+# ADR-MCP-001: Weekly dependency updates with grouping
+# Change 1 (2026-05-29): commit-message.prefix changed from agent-tag strings to "chore"
+# so Dependabot PR titles satisfy pr-quality-gate.yml conventional-commits pattern.
+# Grouping improvement: dev-dependencies groups now include "major" update-type so
+# large-version bumps (typescript 5→6, eslint 9→10, etc.) don't create ungrouped PRs.
+
+version: 2
+updates:
+  # Root package dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    reviewers:
+      - "@Pact-Community-Organization/security"
+    assignees:
+      - "@Pact-Community-Organization/devops"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"
+    groups:
+      # Group MCP SDK updates
+      modelcontextprotocol:
+        patterns:
+          - "@modelcontextprotocol/*"
+      # Group development dependencies — major included so large bumps don't create ungrouped PRs
+      dev-dependencies:
+        patterns:
+          - "@types/*"
+          - "typescript"
+          - "vitest"
+          - "@vitest/*"
+          - "eslint"
+          - "prettier"
+        update-types:
+          - "major"
+          - "minor"
+          - "patch"
+
+  # mcp-shared package
+  - package-ecosystem: "npm"
+    directory: "/packages/mcp-shared"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    reviewers:
+      - "@Pact-Community-Organization/security"
+    assignees:
+      - "@Pact-Community-Organization/devops"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"
+    groups:
+      modelcontextprotocol:
+        patterns:
+          - "@modelcontextprotocol/*"
+      zod:
+        patterns:
+          - "zod"
+      # major included so large bumps don't create ungrouped PRs
+      dev-dependencies:
+        patterns:
+          - "@types/*"
+          - "typescript"
+          - "vitest"
+          - "@vitest/*"
+        update-types:
+          - "major"
+          - "minor"
+          - "patch"
+
+  # Future packages (Phase 1.2+)
+  - package-ecosystem: "npm"
+    directory: "/packages/mcp-pact"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    reviewers:
+      - "@Pact-Community-Organization/security"
+    assignees:
+      - "@Pact-Community-Organization/devops"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      kadena:
+        patterns:
+          - "@kadena/*"
+      modelcontextprotocol:
+        patterns:
+          - "@modelcontextprotocol/*"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/mcp-chainweb"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    reviewers:
+      - "@Pact-Community-Organization/security"
+    assignees:
+      - "@Pact-Community-Organization/devops"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      kadena:
+        patterns:
+          - "@kadena/*"
+      modelcontextprotocol:
+        patterns:
+          - "@modelcontextprotocol/*"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/mcp-deploy"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    reviewers:
+      - "@Pact-Community-Organization/devops"
+      - "@Pact-Community-Organization/security"
+    assignees:
+      - "@Pact-Community-Organization/devops"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/mcp-scan"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    reviewers:
+      - "@Pact-Community-Organization/security"
+    assignees:
+      - "@Pact-Community-Organization/security"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+  # GitHub Actions — keeps SHA-pinned actions current (P0 CI hardening)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "@Pact-Community-Organization/devops"
+    assignees:
+      - "@Pact-Community-Organization/devops"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - dependencies
+      - github-actions
