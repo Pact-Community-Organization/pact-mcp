@@ -75,9 +75,9 @@ describe('MCP pact server — integration', () => {
         PATH: process.env['PATH'] ?? '/usr/bin:/bin',
         HOME: process.env['HOME'] ?? '/tmp',
         NODE_ENV: 'test',
-        SMARTPACTS_WORKSPACE_ROOT: fixtures,
-        SMARTPACTS_PACT_BIN: mockPact,
-        SMARTPACTS_TOOLS_LOCKFILE: lockPath
+        PACT_COMMUNITY_WORKSPACE_ROOT: fixtures,
+        PACT_COMMUNITY_PACT_BIN: mockPact,
+        PACT_COMMUNITY_TOOLS_LOCKFILE: lockPath
       }
     });
 

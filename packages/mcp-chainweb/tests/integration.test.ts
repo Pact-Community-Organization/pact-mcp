@@ -74,12 +74,12 @@ describe('MCP chainweb server — integration', () => {
         PATH: process.env['PATH'] ?? '/usr/bin:/bin',
         HOME: process.env['HOME'] ?? '/tmp',
         NODE_ENV: 'test',
-        SMARTPACTS_WORKSPACE_ROOT: tempRoot,
-        SMARTPACTS_CHAINWEB_MODE: 'devnet',
-        SMARTPACTS_CHAINWEB_BASE_URL: mock.baseUrl,
-        SMARTPACTS_CHAINWEB_NETWORK_ID: 'development',
-        SMARTPACTS_TOOLS_LOCKFILE: lockPath,
-        SMARTPACTS_TEST_ALLOW_ORIGINS: mock.origin
+        PACT_COMMUNITY_WORKSPACE_ROOT: tempRoot,
+        PACT_COMMUNITY_CHAINWEB_MODE: 'devnet',
+        PACT_COMMUNITY_CHAINWEB_BASE_URL: mock.baseUrl,
+        PACT_COMMUNITY_CHAINWEB_NETWORK_ID: 'development',
+        PACT_COMMUNITY_TOOLS_LOCKFILE: lockPath,
+        PACT_COMMUNITY_TEST_ALLOW_ORIGINS: mock.origin
       }
     });
 
@@ -298,7 +298,7 @@ describe('MCP chainweb server — integration', () => {
       reqKey: 'rk',
       result: {
         status: 'success',
-        data: 'n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9'
+        data: '<namespace-principal>'
       },
       gas: 5
     });
@@ -319,7 +319,7 @@ describe('MCP chainweb server — integration', () => {
       (result.content as Array<{ text: string }>)[0]!.text
     );
     expect(parsed.namespace).toBe(
-      'n_560eefcee4a090a24f12d7cf68cd48f11d8d2bd9'
+      '<namespace-principal>'
     );
     mock.patch('local', undefined);
   });

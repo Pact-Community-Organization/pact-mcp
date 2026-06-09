@@ -97,17 +97,17 @@ export const SERVER_VERSION = '0.2.0';
 
 /** Environment variables the server accepts from its parent process. */
 export const ALLOWED_ENV = [
-  'SMARTPACTS_WORKSPACE_ROOT',
-  'SMARTPACTS_CHAINWEB_MODE',
-  'SMARTPACTS_CHAINWEB_BASE_URL',
-  'SMARTPACTS_CHAINWEB_NETWORK_ID',
-  'SMARTPACTS_TOOLS_LOCKFILE',
+  'PACT_COMMUNITY_WORKSPACE_ROOT',
+  'PACT_COMMUNITY_CHAINWEB_MODE',
+  'PACT_COMMUNITY_CHAINWEB_BASE_URL',
+  'PACT_COMMUNITY_CHAINWEB_NETWORK_ID',
+  'PACT_COMMUNITY_TOOLS_LOCKFILE',
   // [Developer] Test-only: honored iff NODE_ENV === 'test'. Comma-separated
   // list of extra origins added to the fetch allowlist (e.g. a mock server
   // on 127.0.0.1:43517). In production this var is stripped/ignored — it
   // exists solely so the StdioClientTransport integration test can spawn
   // the built binary against a mock chainweb. Documented in SECURITY.md.
-  'SMARTPACTS_TEST_ALLOW_ORIGINS',
+  'PACT_COMMUNITY_TEST_ALLOW_ORIGINS',
   'NODE_ENV',
   'PATH',
   'HOME',
@@ -142,7 +142,7 @@ export interface ResolvedConfig {
 
 /**
  * [Developer] Apply ADR-MCP-001 baseline and compute the server config.
- * Hard-fails (exit 13) when `SMARTPACTS_CHAINWEB_MODE !== "devnet"`.
+ * Hard-fails (exit 13) when `PACT_COMMUNITY_CHAINWEB_MODE !== "devnet"`.
  */
 export function resolveConfig(): ResolvedConfig {
   // 1. Root refusal.
@@ -161,29 +161,29 @@ export function resolveConfig(): ResolvedConfig {
   //    CI env vars we don't care about).
   const envResult = validateEnv({ allowed: ALLOWED_ENV, strict: false });
 
-  const mode = envResult.env['SMARTPACTS_CHAINWEB_MODE'];
+  const mode = envResult.env['PACT_COMMUNITY_CHAINWEB_MODE'];
   if (mode !== 'devnet') {
     // [Developer] Hard exit 13 per orchestrator spec — this is the
     // devnet-only guarantee, enforced BEFORE tools are registered.
     // eslint-disable-next-line no-console
     console.error(
-      `[pact-community-chainweb] SMARTPACTS_CHAINWEB_MODE must be 'devnet' (got '${mode ?? '<unset>'}')`
+      `[pact-community-chainweb] PACT_COMMUNITY_CHAINWEB_MODE must be 'devnet' (got '${mode ?? '<unset>'}')`
     );
     process.exit(13);
   }
 
   const baseUrl =
-    envResult.env['SMARTPACTS_CHAINWEB_BASE_URL'] ?? 'http://localhost:8081';
+    envResult.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'] ?? 'http://localhost:8081';
   const networkId =
-    envResult.env['SMARTPACTS_CHAINWEB_NETWORK_ID'] ?? 'development';
+    envResult.env['PACT_COMMUNITY_CHAINWEB_NETWORK_ID'] ?? 'development';
   const lockfilePath =
-    envResult.env['SMARTPACTS_TOOLS_LOCKFILE'] ?? './tools.lock.json';
+    envResult.env['PACT_COMMUNITY_TOOLS_LOCKFILE'] ?? './tools.lock.json';
 
   // [Developer] Test-only additional origins. Honored ONLY when
   // NODE_ENV === 'test'. Any value in production is silently dropped.
   let additionalAllowedOrigins: string[] = [];
   if (envResult.env['NODE_ENV'] === 'test') {
-    const raw = envResult.env['SMARTPACTS_TEST_ALLOW_ORIGINS'] ?? '';
+    const raw = envResult.env['PACT_COMMUNITY_TEST_ALLOW_ORIGINS'] ?? '';
     additionalAllowedOrigins = raw
       .split(',')
       .map((s) => s.trim())
@@ -204,14 +204,14 @@ export function resolveConfig(): ResolvedConfig {
     if (!startupAllowlist.includes(parsed.origin)) {
       // eslint-disable-next-line no-console
       console.error(
-        `[pact-community-chainweb] SMARTPACTS_CHAINWEB_BASE_URL origin '${parsed.origin}' is not in the devnet allowlist: ${startupAllowlist.join(', ')}`
+        `[pact-community-chainweb] PACT_COMMUNITY_CHAINWEB_BASE_URL origin '${parsed.origin}' is not in the devnet allowlist: ${startupAllowlist.join(', ')}`
       );
       process.exit(13);
     }
   } catch {
     // eslint-disable-next-line no-console
     console.error(
-      `[pact-community-chainweb] SMARTPACTS_CHAINWEB_BASE_URL is not a valid URL: ${baseUrl}`
+      `[pact-community-chainweb] PACT_COMMUNITY_CHAINWEB_BASE_URL is not a valid URL: ${baseUrl}`
     );
     process.exit(13);
   }

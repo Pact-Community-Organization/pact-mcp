@@ -13,7 +13,7 @@ This MCP server executes Pact REPL files and analyzes Pact source code. The prim
 ## Security Controls
 
 ### File System Access
-- **Workspace Confinement**: All file operations restricted to `SMARTPACTS_WORKSPACE_ROOT`
+- **Workspace Confinement**: All file operations restricted to `PACT_COMMUNITY_WORKSPACE_ROOT`
 - **Symlink Resolution**: Symbolic links resolved and validated before access
 - **Path Traversal Protection**: `../` traversal attempts blocked
 - **Read-Only Analysis**: Module scanning and diff tools never write files
@@ -25,7 +25,7 @@ This MCP server executes Pact REPL files and analyzes Pact source code. The prim
 - **Resource Limits**: 200KB stdout/stderr cap, 30s timeout per spawn
 
 ### Environment Variables
-- **Allowlist**: Only `SMARTPACTS_WORKSPACE_ROOT`, `SMARTPACTS_PACT_BIN`, `PATH` accepted
+- **Allowlist**: Only `PACT_COMMUNITY_WORKSPACE_ROOT`, `PACT_COMMUNITY_PACT_BIN`, `PATH` accepted
 - **Validation**: Environment variables sanitized and validated
 - **No Secrets**: No credentials or sensitive data in environment
 
@@ -45,7 +45,7 @@ This MCP server executes Pact REPL files and analyzes Pact source code. The prim
 
 ## Assumptions
 
-- **Trusted Workspace**: Files in `SMARTPACTS_WORKSPACE_ROOT` are trusted
+- **Trusted Workspace**: Files in `PACT_COMMUNITY_WORKSPACE_ROOT` are trusted
 - **Pact Binary**: The `pact` binary is trusted and properly installed
 - **File Permissions**: OS-level file permissions properly configured
 - **MCP Client**: The MCP client is trusted (Claude Desktop, etc.)

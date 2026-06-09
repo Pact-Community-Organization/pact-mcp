@@ -30,7 +30,7 @@
 
 ## Refusals
 
-- Process exits 13 on startup if `SMARTPACTS_WORKSPACE_ROOT` is missing
+- Process exits 13 on startup if `PACT_COMMUNITY_WORKSPACE_ROOT` is missing
   or not absolute, or if the coordination root is not a directory, not
   absolute, or otherwise un-realpathable.
 - Running as `uid 0` triggers `REFUSE_ROOT`.

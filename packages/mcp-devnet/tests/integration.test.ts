@@ -60,10 +60,10 @@ beforeAll(async () => {
       PATH: process.env['PATH'] ?? '/usr/bin',
       HOME: process.env['HOME'] ?? os.tmpdir(),
       NODE_ENV: 'test',
-      SMARTPACTS_WORKSPACE_ROOT: tempWorkspace,
-      SMARTPACTS_DEVNET_MODE: 'devnet',
-      SMARTPACTS_DEVNET_DOCKER_BIN: fakeDockerBin,
-      SMARTPACTS_TOOLS_LOCKFILE: lockfilePath
+      PACT_COMMUNITY_WORKSPACE_ROOT: tempWorkspace,
+      PACT_COMMUNITY_DEVNET_MODE: 'devnet',
+      PACT_COMMUNITY_DEVNET_DOCKER_BIN: fakeDockerBin,
+      PACT_COMMUNITY_TOOLS_LOCKFILE: lockfilePath
     }
   });
 
@@ -128,7 +128,7 @@ describe('[integration] stdio transport end-to-end', () => {
     // Error is communicated via isError:true (SDK protocol).
     expect(r.isError).toBe(true);
     const text = (r.content as Array<{ type: string; text: string }>)[0]!.text;
-    expect(text).toMatch(/SMARTPACTS_DEVNET_ALLOW_LIFECYCLE/);
+    expect(text).toMatch(/PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE/);
   });
 
   it('invalid argv (unknown agent) is rejected with a protocol error', async () => {

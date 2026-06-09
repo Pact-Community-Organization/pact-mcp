@@ -51,10 +51,10 @@ describe('server', () => {
     for (const key of Object.keys(process.env)) delete process.env[key];
     process.env['PATH'] = originalEnv['PATH'] ?? '/usr/bin:/bin';
     process.env['HOME'] = originalEnv['HOME'] ?? tempWorkspace;
-    process.env['SMARTPACTS_WORKSPACE_ROOT'] = tempWorkspace;
-    process.env['SMARTPACTS_CHAINWEB_MODE'] = 'devnet';
-    process.env['SMARTPACTS_CHAINWEB_BASE_URL'] = 'http://localhost:8081';
-    process.env['SMARTPACTS_TOOLS_LOCKFILE'] = tempLock;
+    process.env['PACT_COMMUNITY_WORKSPACE_ROOT'] = tempWorkspace;
+    process.env['PACT_COMMUNITY_CHAINWEB_MODE'] = 'devnet';
+    process.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'] = 'http://localhost:8081';
+    process.env['PACT_COMMUNITY_TOOLS_LOCKFILE'] = tempLock;
   });
 
   afterEach(() => {
@@ -65,8 +65,8 @@ describe('server', () => {
   });
 
   test('ALLOWED_ENV contains the documented vars', () => {
-    expect(ALLOWED_ENV).toContain('SMARTPACTS_CHAINWEB_MODE');
-    expect(ALLOWED_ENV).toContain('SMARTPACTS_CHAINWEB_BASE_URL');
+    expect(ALLOWED_ENV).toContain('PACT_COMMUNITY_CHAINWEB_MODE');
+    expect(ALLOWED_ENV).toContain('PACT_COMMUNITY_CHAINWEB_BASE_URL');
   });
 
   test('PROD_ALLOWED_ORIGINS is exactly the three devnet ports', () => {

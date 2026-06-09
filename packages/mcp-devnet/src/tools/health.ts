@@ -46,7 +46,7 @@ export interface HealthToolConfig {
   /**
    * Optional override for the base URL per agent. Used exclusively by the
    * test harness to point the tool at an ephemeral 127.0.0.1 port that has
-   * been added to the allowlist via SMARTPACTS_TEST_ALLOW_ORIGINS. Production
+   * been added to the allowlist via PACT_COMMUNITY_TEST_ALLOW_ORIGINS. Production
    * uses the default `http://localhost:{port}`.
    */
   baseUrlFor?: (agent: AgentName) => string;

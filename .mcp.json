@@ -9,7 +9,7 @@
       "args": ["./packages/mcp-shared/dist/index.js"],
       "env": {
         "NODE_ENV": "production",
-        "SMARTPACTS_WORKSPACE": "<local-path>
+        "PACT_COMMUNITY_WORKSPACE": "<local-path>
       },
       "_disabled": true,
       "_note": "Phase 1.1 - Shared package has no server, just utilities"
@@ -19,8 +19,8 @@
       "args": ["./packages/mcp-pact/dist/bin.js"],
       "env": {
         "NODE_ENV": "production",
-        "SMARTPACTS_WORKSPACE_ROOT": "<local-path>
-        "SMARTPACTS_PACT_BIN": "pact"
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "<local-path>
+        "PACT_COMMUNITY_PACT_BIN": "pact"
       },
       "_note": "Phase 1.2a - Pact smart contract tooling complete"
     },
@@ -29,10 +29,10 @@
       "args": ["./packages/mcp-chainweb/dist/bin.js"],
       "env": {
         "NODE_ENV": "production",
-        "SMARTPACTS_WORKSPACE_ROOT": "<local-path>
-        "SMARTPACTS_CHAINWEB_MODE": "devnet",
-        "SMARTPACTS_CHAINWEB_BASE_URL": "http://localhost:8081",
-        "SMARTPACTS_CHAINWEB_NETWORK_ID": "development"
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "<local-path>
+        "PACT_COMMUNITY_CHAINWEB_MODE": "devnet",
+        "PACT_COMMUNITY_CHAINWEB_BASE_URL": "http://localhost:8081",
+        "PACT_COMMUNITY_CHAINWEB_NETWORK_ID": "development"
       },
       "_note": "Phase 1.2b - Chainweb HTTP tools (info, chain_time, local, send, poll). Devnet-only. MVP 0.1.0."
     },
@@ -41,8 +41,8 @@
       "args": ["./packages/mcp-coordination/dist/bin.js"],
       "env": {
         "NODE_ENV": "production",
-        "SMARTPACTS_WORKSPACE_ROOT": "<local-path>
-        "SMARTPACTS_COORDINATION_ROOT": "<local-path>
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "<local-path>
+        "PACT_COMMUNITY_COORDINATION_ROOT": "<local-path>
       },
       "_note": "Phase 1.2c - Inter-agent coordination tools (10 tools: task queue, mailbox, status, memory). Full v0.1.0."
     },
@@ -51,10 +51,10 @@
       "args": ["./packages/mcp-devnet/dist/bin.js"],
       "env": {
         "NODE_ENV": "production",
-        "SMARTPACTS_WORKSPACE_ROOT": "<local-path>
-        "SMARTPACTS_DEVNET_MODE": "devnet",
-        "_SMARTPACTS_DEVNET_ALLOW_LIFECYCLE": "set to 'true' only when you want to allow up/down/reset",
-        "_SMARTPACTS_DEVNET_ALLOW_VOLUME_WIPE": "set to 'true' only when you want to allow `down -v` or reset (DATA LOSS)"
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "<local-path>
+        "PACT_COMMUNITY_DEVNET_MODE": "devnet",
+        "_PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE": "set to 'true' only when you want to allow up/down/reset",
+        "_PACT_COMMUNITY_DEVNET_ALLOW_VOLUME_WIPE": "set to 'true' only when you want to allow `down -v` or reset (DATA LOSS)"
       },
       "_note": "Phase 1.2d - Devnet Docker lifecycle tools (6 tools: status, health, logs, up, down, reset). Mutating tools gated by explicit env flags. v0.1.0."
     },
@@ -90,7 +90,7 @@
       "args": ["./packages/mcp-deploy/dist/index.js"],
       "env": {
         "NODE_ENV": "production",
-        "SMARTPACTS_WORKSPACE": "<local-path>
+        "PACT_COMMUNITY_WORKSPACE": "<local-path>
         "DOCKER_COMPOSE_FILE": "<local-path>
       },
       "_disabled": true,
@@ -101,7 +101,7 @@
       "args": ["./packages/mcp-scan/dist/index.js"],
       "env": {
         "NODE_ENV": "production", 
-        "SMARTPACTS_WORKSPACE": "<local-path>
+        "PACT_COMMUNITY_WORKSPACE": "<local-path>
       },
       "_disabled": true,
       "_note": "Phase 1.3 - Security scanning and audit tooling"

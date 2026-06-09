@@ -28,13 +28,13 @@ tools refuse to execute unless the matching **runtime** env flag is set.
 
 ```bash
 # Enable start/stop (no volume wipe)
-export SMARTPACTS_DEVNET_ALLOW_LIFECYCLE=true
+export PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE=true
 
 # Enable `down -v` / `reset` (DATA LOSS)
-export SMARTPACTS_DEVNET_ALLOW_VOLUME_WIPE=true
+export PACT_COMMUNITY_DEVNET_ALLOW_VOLUME_WIPE=true
 ```
 
-`SMARTPACTS_DEVNET_MODE=devnet` is a startup guard — the server refuses to
+`PACT_COMMUNITY_DEVNET_MODE=devnet` is a startup guard — the server refuses to
 start unless this is set.
 
 ## Security controls
@@ -45,7 +45,7 @@ start unless this is set.
   protected) and validated — a container_name like `production-*` will
   fail the preflight.
 - `docker` binary path must be absolute if overridden
-  (`SMARTPACTS_DEVNET_DOCKER_BIN`); relative paths exit 13.
+  (`PACT_COMMUNITY_DEVNET_DOCKER_BIN`); relative paths exit 13.
 - HTTP probes restricted by `createAllowlistedFetch` to `http://localhost:{8081,8082,8083}`.
 - stdout/stderr streams are capped at 1 MB and ANSI-sanitized before return.
 - Every tool invocation writes an audit entry to
@@ -56,12 +56,12 @@ start unless this is set.
 
 | Variable                                | Purpose                                                          | Required      |
 | --------------------------------------- | ---------------------------------------------------------------- | ------------- |
-| `SMARTPACTS_WORKSPACE_ROOT`             | Absolute path to the community workspace                        | yes           |
-| `SMARTPACTS_DEVNET_MODE`                | Must be `devnet`                                                 | yes           |
-| `SMARTPACTS_DEVNET_DOCKER_BIN`          | Override docker binary (absolute path)                           | no (auto on PATH) |
-| `SMARTPACTS_DEVNET_ALLOW_LIFECYCLE`     | Set to `true` to allow `up`/`down`/`reset`                       | no (read-only by default) |
-| `SMARTPACTS_DEVNET_ALLOW_VOLUME_WIPE`   | Set to `true` to allow `down -v` or `reset` (DATA LOSS)          | no            |
-| `SMARTPACTS_TOOLS_LOCKFILE`             | Override path to `tools.lock.json`                               | no            |
+| `PACT_COMMUNITY_WORKSPACE_ROOT`             | Absolute path to the community workspace                        | yes           |
+| `PACT_COMMUNITY_DEVNET_MODE`                | Must be `devnet`                                                 | yes           |
+| `PACT_COMMUNITY_DEVNET_DOCKER_BIN`          | Override docker binary (absolute path)                           | no (auto on PATH) |
+| `PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE`     | Set to `true` to allow `up`/`down`/`reset`                       | no (read-only by default) |
+| `PACT_COMMUNITY_DEVNET_ALLOW_VOLUME_WIPE`   | Set to `true` to allow `down -v` or `reset` (DATA LOSS)          | no            |
+| `PACT_COMMUNITY_TOOLS_LOCKFILE`             | Override path to `tools.lock.json`                               | no            |
 
 ## Testing
 

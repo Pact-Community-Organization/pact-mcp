@@ -137,7 +137,7 @@ Integration test requires actual `pact-community-pact` binary invocation via Std
 ✅ **ADR-MCP-001**: Complete implementation per specification  
 ✅ **Security Baseline**: Full integration with `@pact-community/mcp-shared`  
 ✅ **Tool Schema Lock**: SHA-256 hashes registered in tools.lock.json  
-✅ **Workspace Isolation**: No file access outside `SMARTPACTS_WORKSPACE_ROOT`  
+✅ **Workspace Isolation**: No file access outside `PACT_COMMUNITY_WORKSPACE_ROOT`  
 ✅ **Process Security**: No shell execution, controlled process spawning only  
 
 ---

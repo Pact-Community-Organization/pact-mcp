@@ -1,6 +1,6 @@
-* @SmartPacts/developer
+* @Pact-Community-Organization/maintainers
 
-/.github/ @SmartPacts/github-architect
-/packages/ @SmartPacts/developer @SmartPacts/tester
-/scripts/ @SmartPacts/devops
-/docs/ @SmartPacts/architect
+/.github/ @Pact-Community-Organization/maintainers
+/packages/ @Pact-Community-Organization/maintainers
+/scripts/ @Pact-Community-Organization/maintainers
+/docs/ @Pact-Community-Organization/maintainers

@@ -25,7 +25,7 @@ export interface MockDevnetHandle {
 
 /**
  * [Developer] Start an ephemeral devnet mock on 127.0.0.1:{random}. Returns
- * the bound origin so tests can wire it through `SMARTPACTS_TEST_ALLOW_ORIGINS`
+ * the bound origin so tests can wire it through `PACT_COMMUNITY_TEST_ALLOW_ORIGINS`
  * or pass it directly to `createHealthTool({ baseUrlFor })`.
  */
 export async function startMockDevnet(

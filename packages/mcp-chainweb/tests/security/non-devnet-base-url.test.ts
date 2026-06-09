@@ -1,6 +1,6 @@
 /**
  * @fileoverview Security test: resolveConfig must exit 13 when
- *               SMARTPACTS_CHAINWEB_BASE_URL points outside the devnet
+ *               PACT_COMMUNITY_CHAINWEB_BASE_URL points outside the devnet
  *               allowlist.
  */
 
@@ -47,9 +47,9 @@ describe('non-devnet-base-url', () => {
         2
       )
     );
-    process.env['SMARTPACTS_TOOLS_LOCKFILE'] = lockPath;
-    process.env['SMARTPACTS_WORKSPACE_ROOT'] = tempWorkspace;
-    process.env['SMARTPACTS_CHAINWEB_MODE'] = 'devnet';
+    process.env['PACT_COMMUNITY_TOOLS_LOCKFILE'] = lockPath;
+    process.env['PACT_COMMUNITY_WORKSPACE_ROOT'] = tempWorkspace;
+    process.env['PACT_COMMUNITY_CHAINWEB_MODE'] = 'devnet';
   });
 
   afterEach(() => {
@@ -61,7 +61,7 @@ describe('non-devnet-base-url', () => {
   });
 
   test('exits 13 when base URL origin is outside allowlist', () => {
-    process.env['SMARTPACTS_CHAINWEB_BASE_URL'] = 'http://evil.com';
+    process.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'] = 'http://evil.com';
     const exitSpy = vi
       .spyOn(process, 'exit')
       .mockImplementation(((_code?: number) => {
@@ -74,7 +74,7 @@ describe('non-devnet-base-url', () => {
   });
 
   test('exits 13 when base URL is not a valid URL', () => {
-    process.env['SMARTPACTS_CHAINWEB_BASE_URL'] = 'not a url';
+    process.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'] = 'not a url';
     const exitSpy = vi
       .spyOn(process, 'exit')
       .mockImplementation(((_code?: number) => {
@@ -85,9 +85,9 @@ describe('non-devnet-base-url', () => {
     expect(exitSpy).toHaveBeenCalledWith(13);
   });
 
-  test('exits 13 when SMARTPACTS_CHAINWEB_MODE is missing', () => {
-    delete process.env['SMARTPACTS_CHAINWEB_MODE'];
-    process.env['SMARTPACTS_CHAINWEB_BASE_URL'] = 'http://localhost:8081';
+  test('exits 13 when PACT_COMMUNITY_CHAINWEB_MODE is missing', () => {
+    delete process.env['PACT_COMMUNITY_CHAINWEB_MODE'];
+    process.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'] = 'http://localhost:8081';
     const exitSpy = vi
       .spyOn(process, 'exit')
       .mockImplementation(((_code?: number) => {
@@ -98,9 +98,9 @@ describe('non-devnet-base-url', () => {
     expect(exitSpy).toHaveBeenCalledWith(13);
   });
 
-  test('exits 13 when SMARTPACTS_CHAINWEB_MODE is not "devnet"', () => {
-    process.env['SMARTPACTS_CHAINWEB_MODE'] = 'testnet';
-    process.env['SMARTPACTS_CHAINWEB_BASE_URL'] = 'http://localhost:8081';
+  test('exits 13 when PACT_COMMUNITY_CHAINWEB_MODE is not "devnet"', () => {
+    process.env['PACT_COMMUNITY_CHAINWEB_MODE'] = 'testnet';
+    process.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'] = 'http://localhost:8081';
     const exitSpy = vi
       .spyOn(process, 'exit')
       .mockImplementation(((_code?: number) => {
@@ -112,7 +112,7 @@ describe('non-devnet-base-url', () => {
   });
 
   test('resolves successfully with an allowlisted base URL + devnet mode', () => {
-    process.env['SMARTPACTS_CHAINWEB_BASE_URL'] = 'http://localhost:8082';
+    process.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'] = 'http://localhost:8082';
     const config = resolveConfig();
     expect(config.baseUrl).toBe('http://localhost:8082');
     expect(config.networkId).toBe('development');
