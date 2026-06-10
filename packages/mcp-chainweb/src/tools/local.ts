@@ -61,7 +61,11 @@ export const LocalInputShape = {
     .positive()
     .max(150_000)
     .optional()
-    .describe('Gas limit (≤150_000, the chainweb hard ceiling).')
+    .describe('Gas limit (≤150_000, the chainweb hard ceiling).'),
+  preflight: z
+    .boolean()
+    .optional()
+    .describe('Whether to run full preflight checks (default: true).')
 };
 export const LocalInputSchema = z.object(LocalInputShape);
 
@@ -132,9 +136,10 @@ export function createLocalTool(config: LocalToolConfig) {
       .setNetworkId(config.client.networkId)
       .createTransaction();
 
+    const preflight = input.preflight ?? true;
     const path =
       `/chainweb/0.0/${config.client.networkId}/chain/${input.chainId}` +
-      `/pact/api/v1/local?preflight=true&signatureVerification=false`;
+      `/pact/api/v1/local?preflight=${preflight}&signatureVerification=false`;
     const raw = await config.client.postJson<RawLocalResponse>(path, tx);
 
     const gasUsed = typeof raw.gas === 'number' ? raw.gas : 0;

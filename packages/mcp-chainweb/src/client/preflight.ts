@@ -58,10 +58,10 @@ export async function runLocalPreflight(
   client: ChainwebClient,
   chainId: string,
   tx: unknown,
-  opts: { signatureVerification?: boolean } = {}
+  opts: { preflight?: boolean; signatureVerification?: boolean } = {}
 ): Promise<PreflightResponse> {
   const path = buildLocalPath(client.networkId, chainId, {
-    preflight: true,
+    preflight: opts.preflight ?? true,
     signatureVerification: opts.signatureVerification ?? false
   });
   const raw = await client.postJson<RawLocalResponse>(path, tx);

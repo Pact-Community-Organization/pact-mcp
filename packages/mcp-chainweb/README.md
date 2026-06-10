@@ -11,7 +11,7 @@ Pact Community DAO devnet workflow.
 |---|---|---|---|
 | `chainweb.info` | Fetch `/info`, validate network ID, enumerate chain IDs | ✅ | ❌ |
 | `chainweb.chain_time` | Current chain time in seconds for a given chain | ✅ | ❌ |
-| `chainweb.local` | `/local?preflight=true` — simulate Pact code, unwrapped result | ✅ | ❌ |
+| `chainweb.local` | `/local` Pact simulation with configurable `preflight` (default `true`), unwrapped result | ✅ | ❌ |
 | `chainweb.send` | Preflight then `/send` a pre-signed `{cmd,hash,sigs}` tx | ❌ | ✅ |
 | `chainweb.poll` | `/poll` (not `/listen` — nginx 504 trap) until keys resolve | ✅ | ❌ |
 | `chainweb.read_table` | Read a single Pact table row via `/local` (unwrapped) | ✅ | ❌ |

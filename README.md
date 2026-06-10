@@ -111,7 +111,7 @@ Status labels:
 |---|---|---|---|
 | L1 | Unit tests (`pnpm test`) | Tool registration, schema validation, local logic, error handling | Live node connectivity, real network timing |
 | L2 | Binary smoke tests (`pnpm test`) | Built MCP binaries start and return healthful response shapes over stdio | Full devnet behavior under real chain state |
-| L3 | Devnet E2E lane (`PACT_COMMUNITY_ENABLE_DEVNET_E2E=true pnpm test:e2e:devnet`) | End-to-end read flow against live devnet (`info`, `local`, `keys`) | Production network behavior, signing custody, finality guarantees |
+| L3 | Devnet E2E lane (`PACT_COMMUNITY_ENABLE_DEVNET_E2E=true pnpm test:e2e:devnet`) | End-to-end read flow against live devnet (`info`, `local`, `keys`) with account-agnostic local/keys probes | Production network behavior, signing custody, finality guarantees |
 | L3+ optional | Devnet send/poll (`PACT_COMMUNITY_ENABLE_DEVNET_E2E_SEND_POLL=true` with signed fixture) | Pre-signed send + poll path over devnet | Key management safety, transaction intent correctness |
 
 Run L3 only when an actual devnet is available:
@@ -119,6 +119,14 @@ Run L3 only when an actual devnet is available:
 ```bash
 pnpm build
 PACT_COMMUNITY_ENABLE_DEVNET_E2E=true pnpm test:e2e:devnet
+```
+
+Optional sender override for local diagnostics (not required for default L3):
+
+```bash
+PACT_COMMUNITY_ENABLE_DEVNET_E2E=true \
+PACT_COMMUNITY_DEVNET_E2E_SENDER=k:your-funded-account \
+pnpm test:e2e:devnet
 ```
 
 Enable optional send+poll proof with a pre-signed fixture:
