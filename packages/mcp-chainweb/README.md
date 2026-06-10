@@ -1,9 +1,9 @@
 # @pact-community/mcp-chainweb
 
-MCP server exposing eleven read/write Chainweb HTTP tools for the
-Pact Community DAO devnet workflow.
+MCP server exposing eleven Chainweb HTTP tools for the
+Pact Community workflow (devnet-first with read-only public profiles).
 
-**Status:** 0.2.0 — devnet-only
+**Status:** 0.2.0 — devnet default, `testnet06`/`mainnet` read-only
 
 ## Tools
 
@@ -27,6 +27,9 @@ to be supplied by the caller (e.g. Ledger signer or upstream
 `@kadena/client`). Without `sigs`, the deploy/continue tools return the
 unsigned envelope for external signing.
 
+For `testnet06` and `mainnet` profiles, write tools are intentionally
+blocked with `PROFILE_WRITE_BLOCKED` even if signatures are supplied.
+
 ### v0.2 tool notes
 
 - `read_table` keys are validated to reject `"` and `\\` — prevents Pact
@@ -46,14 +49,16 @@ unsigned envelope for external signing.
 | Variable | Default | Required | Description |
 |---|---|---|---|
 | `PACT_COMMUNITY_WORKSPACE_ROOT` | — | ✅ | Absolute path, must not be `/` |
-| `PACT_COMMUNITY_CHAINWEB_MODE` | — | ✅ | Must be exactly `devnet` |
-| `PACT_COMMUNITY_CHAINWEB_PROFILE` | `devnet` | | Explicit network profile. Current supported value: `devnet` |
-| `PACT_COMMUNITY_CHAINWEB_BASE_URL` | `http://localhost:8081` | | Origin must be in the devnet allowlist |
-| `PACT_COMMUNITY_CHAINWEB_NETWORK_ID` | `development` | | Strictly validated against node `/info` |
+| `PACT_COMMUNITY_CHAINWEB_MODE` | — | ✅ | Must be one of `devnet`, `testnet06`, `mainnet` and match `PACT_COMMUNITY_CHAINWEB_PROFILE` |
+| `PACT_COMMUNITY_CHAINWEB_PROFILE` | `devnet` | | Explicit network profile: `devnet`, `testnet06`, `mainnet` |
+| `PACT_COMMUNITY_CHAINWEB_BASE_URL` | profile default | | Origin must be in the selected profile allowlist |
+| `PACT_COMMUNITY_CHAINWEB_NETWORK_ID` | profile default | | Strictly validated against node `/info` |
 | `PACT_COMMUNITY_TOOLS_LOCKFILE` | `./tools.lock.json` | | Used to detect tool-schema drift |
 
-Production allowlist (hard-coded, not configurable):
-`http://localhost:8081`, `http://localhost:8082`, `http://localhost:8083`.
+Profile allowlists (hard-coded, not configurable):
+- `devnet`: `http://localhost:8081`, `http://localhost:8082`, `http://localhost:8083`
+- `testnet06`: `https://api.testnet.chainweb.com`
+- `mainnet`: `https://api.chainweb-community.org`
 
 ## Quickstart
 
@@ -81,8 +86,9 @@ Via the workspace `.mcp.json` entry:
 
 Network profile roadmap:
 
-- `devnet` is implemented and enforced today.
-- `testnet` and `mainnet` are planned profile names, but are intentionally rejected at startup until their confirmation and signer policies are implemented.
+- `devnet` is the default profile and enables read + write tools.
+- `testnet06` and `mainnet` are implemented as read-only public profiles.
+- Write tools (`send`, `deploy_module`, `continue_pact`) return `PROFILE_WRITE_BLOCKED` on public profiles.
 
 ## Boundary behaviour
 

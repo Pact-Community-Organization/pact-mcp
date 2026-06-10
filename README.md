@@ -96,14 +96,15 @@ Status labels:
 |---|---|---|---|---|
 | `@pact-community/mcp-shared` | implemented | implemented | implemented | implemented |
 | `@pact-community/mcp-pact` | implemented | implemented | planned | planned |
-| `@pact-community/mcp-chainweb` | not supported | implemented | planned | planned |
+| `@pact-community/mcp-chainweb` | not supported | implemented | implemented (read-only) | implemented (read-only) |
 | `@pact-community/mcp-devnet` | not supported | implemented | not supported | not supported |
 | `@pact-community/mcp-coordination` | implemented | implemented | implemented | implemented |
 
 ### Network posture
 
-- `mcp-chainweb` is devnet-only by default and rejects non-devnet modes/profiles at startup.
-- Future `testnet` and `mainnet` profiles are intentionally scaffolded as explicit profile names but are currently blocked until stricter confirmation and signer policies are implemented.
+- `mcp-chainweb` defaults to the `devnet` profile.
+- `mcp-chainweb` supports opt-in public profiles: `testnet06` and `mainnet`.
+- Public profiles are read-only: `chainweb.send`, `chainweb.deploy_module`, and `chainweb.continue_pact` return `PROFILE_WRITE_BLOCKED`.
 
 ## Validation Proof Levels
 

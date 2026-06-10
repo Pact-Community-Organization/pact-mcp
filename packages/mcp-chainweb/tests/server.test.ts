@@ -14,7 +14,9 @@ import {
   SERVER_NAME,
   SERVER_VERSION,
   ALLOWED_ENV,
-  PROD_ALLOWED_ORIGINS
+  PROD_ALLOWED_ORIGINS,
+  TESTNET06_ALLOWED_ORIGINS,
+  MAINNET_ALLOWED_ORIGINS
 } from '../src/server.js';
 import { createChainwebClient } from '../src/client/fetch.js';
 import {
@@ -77,12 +79,49 @@ describe('server', () => {
     ]);
   });
 
+  test('public profile allowlists are pinned to official API origins', () => {
+    expect([...TESTNET06_ALLOWED_ORIGINS]).toEqual([
+      'https://api.testnet.chainweb.com'
+    ]);
+    expect([...MAINNET_ALLOWED_ORIGINS]).toEqual([
+      'https://api.chainweb-community.org'
+    ]);
+  });
+
   test('resolveConfig returns expected fields for a valid env', () => {
     const cfg = resolveConfig();
+    expect(cfg.profile).toBe('devnet');
     expect(cfg.baseUrl).toBe('http://localhost:8081');
     expect(cfg.networkId).toBe('development');
+    expect(cfg.writesEnabled).toBe(true);
     expect(cfg.allowedOrigins).toContain('http://localhost:8081');
     expect(cfg.additionalAllowedOrigins).toEqual([]);
+  });
+
+  test('resolveConfig supports testnet06 profile defaults with writes disabled', () => {
+    process.env['PACT_COMMUNITY_CHAINWEB_MODE'] = 'testnet06';
+    process.env['PACT_COMMUNITY_CHAINWEB_PROFILE'] = 'testnet06';
+    delete process.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'];
+    delete process.env['PACT_COMMUNITY_CHAINWEB_NETWORK_ID'];
+
+    const cfg = resolveConfig();
+    expect(cfg.profile).toBe('testnet06');
+    expect(cfg.baseUrl).toBe('https://api.testnet.chainweb.com');
+    expect(cfg.networkId).toBe('testnet06');
+    expect(cfg.writesEnabled).toBe(false);
+  });
+
+  test('resolveConfig supports mainnet profile defaults with writes disabled', () => {
+    process.env['PACT_COMMUNITY_CHAINWEB_MODE'] = 'mainnet';
+    process.env['PACT_COMMUNITY_CHAINWEB_PROFILE'] = 'mainnet';
+    delete process.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'];
+    delete process.env['PACT_COMMUNITY_CHAINWEB_NETWORK_ID'];
+
+    const cfg = resolveConfig();
+    expect(cfg.profile).toBe('mainnet');
+    expect(cfg.baseUrl).toBe('https://api.chainweb-community.org');
+    expect(cfg.networkId).toBe('mainnet01');
+    expect(cfg.writesEnabled).toBe(false);
   });
 
   test('getToolSchemaObjects returns exactly the 11 v0.2 tools', () => {

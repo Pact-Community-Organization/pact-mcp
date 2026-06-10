@@ -8,13 +8,17 @@ Chainweb HTTP node. The agent cannot be trusted; the node is devnet
 
 ### Controls
 
-1. **Devnet-only runtime.** `PACT_COMMUNITY_CHAINWEB_MODE` must equal
-   `devnet`. Anything else exits 13 at startup.
+1. **Profile-gated runtime.** `PACT_COMMUNITY_CHAINWEB_MODE` and
+   `PACT_COMMUNITY_CHAINWEB_PROFILE` must both be one of
+   `devnet` / `testnet06` / `mainnet`, and must match each other.
+   Invalid or mismatched values exit 13 at startup.
 2. **Origin allowlist.** `PACT_COMMUNITY_CHAINWEB_BASE_URL` must resolve to
-   an origin in the hard-coded production list
-   (`http://localhost:8081`, `:8082`, `:8083`). Checked at startup and
-   re-checked on every `fetch()` call (defence in depth — DNS rebind
-   resistance).
+   an origin in the hard-coded list for the selected profile.
+   - `devnet`: `http://localhost:8081`, `:8082`, `:8083`
+   - `testnet06`: `https://api.testnet.chainweb.com`
+   - `mainnet`: `https://api.chainweb-community.org`
+   Checked at startup and re-checked on every `fetch()` call (defence in
+   depth — DNS rebind resistance).
 3. **Network ID strict match.** `chainweb.info` refuses to return data
    if the node's `networkId` differs from the expected value (default
    `development`). Error message is sanitized.
@@ -24,16 +28,19 @@ Chainweb HTTP node. The agent cannot be trusted; the node is devnet
 5. **Never accepts private keys.** `chainweb.send` requires a pre-signed
    `{cmd, hash, sigs}` transaction. The server has no signing
    capability.
-6. **Boundary unwrapping.** Pact `{int:N}` / `{decimal:"N.M"}` / `{time}`
+6. **Public-profile write blocking.** `chainweb.send`,
+   `chainweb.deploy_module`, and `chainweb.continue_pact` throw
+   `PROFILE_WRITE_BLOCKED` on `testnet06` and `mainnet`.
+7. **Boundary unwrapping.** Pact `{int:N}` / `{decimal:"N.M"}` / `{time}`
    types are recursively unwrapped. Failure shapes are recursively
    sanitized via the mcp-shared allowlisted sanitizer.
-7. **Env allowlist.** Only the documented variables reach the process.
+8. **Env allowlist.** Only the documented variables reach the process.
    `process.env` is cleaned on startup via `validateEnv`.
-8. **Workspace root refusal.** Refuses to start with
+9. **Workspace root refusal.** Refuses to start with
    `PACT_COMMUNITY_WORKSPACE_ROOT=/`.
-9. **Audit log.** Every tool call records `{tool, inputHash, exitStatus,
+10. **Audit log.** Every tool call records `{tool, inputHash, exitStatus,
    durationMs}` — no raw arguments.
-10. **Tool-schema drift.** The server verifies `tools.lock.json` at
+11. **Tool-schema drift.** The server verifies `tools.lock.json` at
     startup and refuses to start if a tool schema has changed.
 
 ### Test-only escape hatch
@@ -46,7 +53,7 @@ the variable is silently discarded.
 
 ## Out of scope
 
-- Mainnet / testnet. Phase 1.2b is explicitly devnet-only.
+- Public profile writes. `testnet06` and `mainnet` are intentionally read-only.
 - Key management. Use the Ledger signer or `@kadena/client` to sign.
 - Multi-step cross-chain flows. Use `chainweb.send` + `chainweb.poll`
   composed by the caller.
