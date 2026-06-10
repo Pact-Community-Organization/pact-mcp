@@ -10,7 +10,8 @@
   "type": "module",
   "scripts": {
     "build": "pnpm -r build",
-    "test": "pnpm -r test",
+    "test": "pnpm -r --workspace-concurrency=1 test",
+    "test:e2e:devnet": "pnpm --filter @pact-community/mcp-chainweb test:e2e:devnet",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm -r lint",
     "audit": "pnpm -r audit --audit-level=high"
@@ -20,7 +21,7 @@
     "eslint": "9.15.0",
     "prettier": "3.3.3",
     "typescript": "5.6.3",
-    "vitest": "4.1.7"
+    "vitest": "3.2.4"
   },
   "packageManager": "pnpm@9.15.1",
   "pnpm": {
@@ -34,5 +35,11 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Pact-Community-Organization/pact-mcp.git"
-  }
+  },
+  "keywords": [
+    "mcp",
+    "pact",
+    "kadena",
+    "chainweb"
+  ]
 }

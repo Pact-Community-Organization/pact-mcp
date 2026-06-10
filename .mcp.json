@@ -9,54 +9,55 @@
       "args": ["./packages/mcp-shared/dist/index.js"],
       "env": {
         "NODE_ENV": "production",
-        "PACT_COMMUNITY_WORKSPACE": "<local-path>
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>"
       },
       "_disabled": true,
-      "_note": "Phase 1.1 - Shared package has no server, just utilities"
+      "_note": "Utility package only; no MCP server entrypoint."
     },
     "pact-community-pact": {
-      "command": "node", 
+      "command": "node",
       "args": ["./packages/mcp-pact/dist/bin.js"],
       "env": {
         "NODE_ENV": "production",
-        "PACT_COMMUNITY_WORKSPACE_ROOT": "<local-path>
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>",
         "PACT_COMMUNITY_PACT_BIN": "pact"
       },
-      "_note": "Phase 1.2a - Pact smart contract tooling complete"
+      "_note": "Pact smart contract tooling server."
     },
     "pact-community-chainweb": {
       "command": "node",
       "args": ["./packages/mcp-chainweb/dist/bin.js"],
       "env": {
         "NODE_ENV": "production",
-        "PACT_COMMUNITY_WORKSPACE_ROOT": "<local-path>
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>",
         "PACT_COMMUNITY_CHAINWEB_MODE": "devnet",
+        "PACT_COMMUNITY_CHAINWEB_PROFILE": "devnet",
         "PACT_COMMUNITY_CHAINWEB_BASE_URL": "http://localhost:8081",
         "PACT_COMMUNITY_CHAINWEB_NETWORK_ID": "development"
       },
-      "_note": "Phase 1.2b - Chainweb HTTP tools (info, chain_time, local, send, poll). Devnet-only. MVP 0.1.0."
+      "_note": "Devnet-only by design. Testnet/mainnet profiles are planned but intentionally unsupported in the current release."
     },
     "pact-community-coordination": {
       "command": "node",
       "args": ["./packages/mcp-coordination/dist/bin.js"],
       "env": {
         "NODE_ENV": "production",
-        "PACT_COMMUNITY_WORKSPACE_ROOT": "<local-path>
-        "PACT_COMMUNITY_COORDINATION_ROOT": "<local-path>
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>",
+        "PACT_COMMUNITY_COORDINATION_ROOT": "<workspace-root>/coordination"
       },
-      "_note": "Phase 1.2c - Inter-agent coordination tools (10 tools: task queue, mailbox, status, memory). Full v0.1.0."
+      "_note": "Inter-agent coordination tools."
     },
     "pact-community-devnet": {
       "command": "node",
       "args": ["./packages/mcp-devnet/dist/bin.js"],
       "env": {
         "NODE_ENV": "production",
-        "PACT_COMMUNITY_WORKSPACE_ROOT": "<local-path>
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>",
         "PACT_COMMUNITY_DEVNET_MODE": "devnet",
-        "_PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE": "set to 'true' only when you want to allow up/down/reset",
-        "_PACT_COMMUNITY_DEVNET_ALLOW_VOLUME_WIPE": "set to 'true' only when you want to allow `down -v` or reset (DATA LOSS)"
+        "PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE": "false",
+        "PACT_COMMUNITY_DEVNET_ALLOW_VOLUME_WIPE": "false"
       },
-      "_note": "Phase 1.2d - Devnet Docker lifecycle tools (6 tools: status, health, logs, up, down, reset). Mutating tools gated by explicit env flags. v0.1.0."
+      "_note": "Lifecycle mutations are disabled by default and require explicit opt-in flags."
     },
     "playwright": {
       "command": "npx",
@@ -70,9 +71,9 @@
         "--caps",
         "vision,testing",
         "--output-dir",
-        "<local-path>
+        "<workspace-root>/docs/artifacts/playwright-mcp"
       ],
-      "_note": "Browser automation for visual testing. Enables WebDev/Tester/Security to drive browsers, take screenshots, test accessibility. v0.0.70."
+      "_note": "Browser automation for visual and accessibility testing."
     },
     "chrome-devtools": {
       "command": "npx",
@@ -83,28 +84,28 @@
         "--viewport",
         "1280x720"
       ],
-      "_note": "Chrome DevTools integration for live DOM/CSS inspection, network analysis, console logs, performance traces. Used for diagnosing visual test failures. v0.23.0."
+      "_note": "Chrome DevTools MCP for DOM/network diagnostics."
     },
     "pact-community-deploy": {
       "command": "node",
       "args": ["./packages/mcp-deploy/dist/index.js"],
       "env": {
         "NODE_ENV": "production",
-        "PACT_COMMUNITY_WORKSPACE": "<local-path>
-        "DOCKER_COMPOSE_FILE": "<local-path>
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>",
+        "DOCKER_COMPOSE_FILE": "<workspace-root>/dao/docker-compose.forge.yml"
       },
       "_disabled": true,
-      "_note": "Phase 1.3 - Module deployment and devnet management"
+      "_note": "Planned server. Disabled by default."
     },
     "pact-community-scan": {
       "command": "node",
       "args": ["./packages/mcp-scan/dist/index.js"],
       "env": {
-        "NODE_ENV": "production", 
-        "PACT_COMMUNITY_WORKSPACE": "<local-path>
+        "NODE_ENV": "production",
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>"
       },
       "_disabled": true,
-      "_note": "Phase 1.3 - Security scanning and audit tooling"
+      "_note": "Planned server. Disabled by default."
     }
   },
   "globalSettings": {
@@ -114,10 +115,10 @@
       "auditLog": "~/.pact-community/mcp-audit.log",
       "allowedNetworks": [
         "http://localhost:8081",
-        "https://api.testnet.chainweb.com", 
+        "https://api.testnet.chainweb.com",
         "https://api.chainweb-community.org"
       ],
-      "workspaceRoot": "<local-path>
+      "workspaceRoot": "<workspace-root>"
     }
   }
 }

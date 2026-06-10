@@ -48,7 +48,7 @@ describe('audit-log', () => {
       const logger = createAuditLogger('test-server');
       
       expect(mockFs.mkdirSync).toHaveBeenCalledWith(
-        '/mock<local-path>
+        '/mock/home/.pact-community',
         { recursive: true, mode: 0o700 }
       );
     });
@@ -64,7 +64,7 @@ describe('audit-log', () => {
     it('should return correct log path for current date', () => {
       const logger = createAuditLogger('test-server');
       
-      expect(logger.getLogPath()).toBe('/mock<local-path>);
+      expect(logger.getLogPath()).toBe('/mock/home/.pact-community/mcp-audit.log.2026-04-21');
     });
   });
 
@@ -89,7 +89,7 @@ describe('audit-log', () => {
       }) + '\n';
 
       expect(mockFs.writeFileSync).toHaveBeenCalledWith(
-        '/mock<local-path>
+        '/mock/home/.pact-community/mcp-audit.log.2026-04-21',
         expectedLogEntry,
         { flag: 'a', mode: 0o600 }
       );
@@ -115,7 +115,7 @@ describe('audit-log', () => {
       }) + '\n';
 
       expect(mockFs.writeFileSync).toHaveBeenCalledWith(
-        '/mock<local-path>
+        '/mock/home/.pact-community/mcp-audit.log.2026-04-21',
         expectedLogEntry,
         { flag: 'a', mode: 0o600 }
       );
@@ -168,13 +168,13 @@ describe('audit-log', () => {
 
       // [Developer] Should have written to different files
       expect(mockFs.writeFileSync).toHaveBeenCalledWith(
-        '/mock<local-path>
+        '/mock/home/.pact-community/mcp-audit.log.2026-04-21',
         expect.stringContaining('sha256:day1'),
         expect.any(Object)
       );
 
       expect(mockFs.writeFileSync).toHaveBeenCalledWith(
-        '/mock<local-path>
+        '/mock/home/.pact-community/mcp-audit.log.2026-04-22',
         expect.stringContaining('sha256:day2'),
         expect.any(Object)
       );

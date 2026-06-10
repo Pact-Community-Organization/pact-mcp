@@ -92,9 +92,10 @@ describe('[security] compose-path outside workspace', () => {
     fs.writeFileSync(evil, VALID_COMPOSE_CONTENT);
     const ws = createTempWorkspace();
     workspaces.push(ws);
+    fs.mkdirSync(path.join(ws, 'pact-examples'), { recursive: true });
     fs.symlinkSync(
       evil,
-      path.join(ws, 'dao', 'docker-compose.forge.yml')
+      path.join(ws, 'pact-examples', 'docker-compose.forge.yml')
     );
     try {
       expect(() =>

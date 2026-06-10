@@ -99,6 +99,7 @@ export const SERVER_VERSION = '0.2.0';
 export const ALLOWED_ENV = [
   'PACT_COMMUNITY_WORKSPACE_ROOT',
   'PACT_COMMUNITY_CHAINWEB_MODE',
+  'PACT_COMMUNITY_CHAINWEB_PROFILE',
   'PACT_COMMUNITY_CHAINWEB_BASE_URL',
   'PACT_COMMUNITY_CHAINWEB_NETWORK_ID',
   'PACT_COMMUNITY_TOOLS_LOCKFILE',
@@ -129,6 +130,7 @@ export const PROD_ALLOWED_ORIGINS: readonly string[] = Object.freeze([
 ]);
 
 export interface ResolvedConfig {
+  profile: 'devnet';
   baseUrl: string;
   networkId: string;
   allowedOrigins: string[];
@@ -168,6 +170,18 @@ export function resolveConfig(): ResolvedConfig {
     // eslint-disable-next-line no-console
     console.error(
       `[pact-community-chainweb] PACT_COMMUNITY_CHAINWEB_MODE must be 'devnet' (got '${mode ?? '<unset>'}')`
+    );
+    process.exit(13);
+  }
+
+  // [Developer] Future-facing network profile scaffold. We parse an explicit
+  // profile now so testnet/mainnet can be added intentionally later without
+  // widening current defaults.
+  const profileRaw = envResult.env['PACT_COMMUNITY_CHAINWEB_PROFILE'] ?? 'devnet';
+  if (profileRaw !== 'devnet') {
+    // eslint-disable-next-line no-console
+    console.error(
+      `[pact-community-chainweb] PACT_COMMUNITY_CHAINWEB_PROFILE='${profileRaw}' is not supported yet. Supported profile: 'devnet'.`
     );
     process.exit(13);
   }
@@ -220,6 +234,7 @@ export function resolveConfig(): ResolvedConfig {
   verifyToolsLock(SERVER_NAME, getToolSchemaObjects(), lockfilePath);
 
   return {
+    profile: 'devnet',
     baseUrl,
     networkId,
     allowedOrigins: [...PROD_ALLOWED_ORIGINS],

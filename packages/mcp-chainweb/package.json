@@ -20,9 +20,10 @@
   ],
   "scripts": {
     "build": "tsc --build",
-    "test": "vitest run",
+    "test": "vitest run --maxWorkers=1",
+    "test:e2e:devnet": "vitest run tests/e2e/devnet-lane.test.ts",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "vitest run --maxWorkers=1 --coverage",
     "typecheck": "tsc --noEmit",
     "lint": "echo 'lint: skipped for MVP'",
     "clean": "rm -rf dist tsconfig.tsbuildinfo"
@@ -35,17 +36,17 @@
   },
   "devDependencies": {
     "@types/node": "20.11.0",
-    "@vitest/coverage-v8": "4.1.7",
+    "@vitest/coverage-v8": "3.2.4",
     "typescript": "5.6.3",
-    "vitest": "4.1.7"
+    "vitest": "3.2.4"
   },
   "author": "Pact Community",
   "license": "MIT",
-  "homepage": "https://github.com/Pact-Community-Organization/dao#readme",
+  "homepage": "https://github.com/Pact-Community-Organization/pact-mcp/tree/main/packages/mcp-chainweb#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Pact-Community-Organization/dao.git",
-    "directory": "mcp/packages/mcp-chainweb"
+    "url": "git+https://github.com/Pact-Community-Organization/pact-mcp.git",
+    "directory": "packages/mcp-chainweb"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

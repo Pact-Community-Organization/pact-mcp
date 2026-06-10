@@ -77,7 +77,7 @@ describe('principal_namespace: MALFORMED_PRINCIPAL', () => {
       reqKey: 'rk',
       result: {
         status: 'success',
-        data: '<namespace-principal>'
+        data: 'n_0123456789abcdef0123456789abcdef01234567'
       },
       gas: 1
     });

@@ -298,7 +298,7 @@ describe('MCP chainweb server — integration', () => {
       reqKey: 'rk',
       result: {
         status: 'success',
-        data: '<namespace-principal>'
+        data: 'n_0123456789abcdef0123456789abcdef01234567'
       },
       gas: 5
     });
@@ -318,9 +318,7 @@ describe('MCP chainweb server — integration', () => {
     const parsed = JSON.parse(
       (result.content as Array<{ text: string }>)[0]!.text
     );
-    expect(parsed.namespace).toBe(
-      '<namespace-principal>'
-    );
+    expect(parsed.namespace).toBe('n_0123456789abcdef0123456789abcdef01234567');
     mock.patch('local', undefined);
   });
 

@@ -54,7 +54,7 @@ describe('errors', () => {
     it('should create sanitized copy of error', () => {
       const original = new McpToolError(
         'FILE_ERROR',
-        'Failed to read <local-path>
+        'Failed to read /tmp/private/module.pact',
         false,
         'file-reader'
       );
@@ -69,7 +69,7 @@ describe('errors', () => {
 
       // [Developer] Message should be sanitized
       expect(sanitized.message).toContain('[FILE_ERROR]');
-      expect(sanitized.message).not.toContain('<local-path>);
+      expect(sanitized.message).not.toContain('/tmp/private/module.pact');
       expect(sanitized.message).toContain('[PATH]');
     });
 
@@ -120,11 +120,11 @@ describe('errors', () => {
     it('should handle multiple sensitive patterns in one message', () => {
       const error = new McpToolError(
         'COMPLEX_ERROR',
-        'Failed to hash file <local-path> with result abc123def456: connection to 10.0.0.1 failed'
+        'Failed to hash file /tmp/private/module.pact with result abc123def456: connection to 10.0.0.1 failed'
       );
       const sanitized = error.sanitize();
 
-      expect(sanitized.message).not.toContain('<local-path>);
+      expect(sanitized.message).not.toContain('/tmp/private/module.pact');
       expect(sanitized.message).not.toContain('abc123def456');
       expect(sanitized.message).not.toContain('10.0.0.1');
       expect(sanitized.message).toContain('[PATH]');
