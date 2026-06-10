@@ -44,7 +44,7 @@ describe('env-allowlist', () => {
       process.env = {
         NODE_ENV: 'production',
         PATH: '/usr/bin',
-        HOME: '<local-path>
+        HOME: '<local-path>',
         USER: 'testuser'
       };
 
@@ -55,7 +55,7 @@ describe('env-allowlist', () => {
 
       expect(result.env.NODE_ENV).toBe('production');
       expect(result.env.PATH).toBe('/usr/bin');
-      expect(result.env.HOME).toBe('<local-path>);
+      expect(result.env.HOME).toBe('<local-path>');
       expect(result.env.USER).toBe('testuser');
     });
 

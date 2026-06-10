@@ -47,6 +47,7 @@ unsigned envelope for external signing.
 |---|---|---|---|
 | `PACT_COMMUNITY_WORKSPACE_ROOT` | — | ✅ | Absolute path, must not be `/` |
 | `PACT_COMMUNITY_CHAINWEB_MODE` | — | ✅ | Must be exactly `devnet` |
+| `PACT_COMMUNITY_CHAINWEB_PROFILE` | `devnet` | | Explicit network profile. Current supported value: `devnet` |
 | `PACT_COMMUNITY_CHAINWEB_BASE_URL` | `http://localhost:8081` | | Origin must be in the devnet allowlist |
 | `PACT_COMMUNITY_CHAINWEB_NETWORK_ID` | `development` | | Strictly validated against node `/info` |
 | `PACT_COMMUNITY_TOOLS_LOCKFILE` | `./tools.lock.json` | | Used to detect tool-schema drift |
@@ -69,13 +70,19 @@ Via the workspace `.mcp.json` entry:
   "args": ["./packages/mcp-chainweb/dist/bin.js"],
   "env": {
     "NODE_ENV": "production",
-    "PACT_COMMUNITY_WORKSPACE_ROOT": "<local-path>
+    "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>",
     "PACT_COMMUNITY_CHAINWEB_MODE": "devnet",
+    "PACT_COMMUNITY_CHAINWEB_PROFILE": "devnet",
     "PACT_COMMUNITY_CHAINWEB_BASE_URL": "http://localhost:8081",
     "PACT_COMMUNITY_CHAINWEB_NETWORK_ID": "development"
   }
 }
 ```
+
+Network profile roadmap:
+
+- `devnet` is implemented and enforced today.
+- `testnet` and `mainnet` are planned profile names, but are intentionally rejected at startup until their confirmation and signer policies are implemented.
 
 ## Boundary behaviour
 

@@ -37,7 +37,7 @@ describe('chainweb.principal_namespace', () => {
       reqKey: 'rk',
       result: {
         status: 'success',
-        data: '<namespace-principal>'
+        data: 'n_0123456789abcdef0123456789abcdef01234567'
       },
       gas: 100
     });
@@ -46,9 +46,7 @@ describe('chainweb.principal_namespace', () => {
       chainId: '0',
       keyset: { keys: [KEY_A], pred: 'keys-all' }
     });
-    expect(content[0]!.namespace).toBe(
-      '<namespace-principal>'
-    );
+    expect(content[0]!.namespace).toBe('n_0123456789abcdef0123456789abcdef01234567');
     expect(content[0]!.gasUsed).toBe(100);
   });
 
@@ -103,7 +101,7 @@ describe('chainweb.principal_namespace', () => {
       reqKey: 'rk',
       result: {
         status: 'success',
-        data: '<namespace-principal>'
+        data: 'n_0123456789abcdef0123456789abcdef01234567'
       },
       gas: 10
     });

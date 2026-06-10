@@ -34,17 +34,17 @@
   },
   "devDependencies": {
     "@types/node": "20.11.0",
-    "@vitest/coverage-v8": "4.1.7",
+    "@vitest/coverage-v8": "3.2.4",
     "typescript": "5.6.3",
-    "vitest": "4.1.7"
+    "vitest": "3.2.4"
   },
   "author": "Pact Community",
   "license": "MIT",
-  "homepage": "https://github.com/Pact-Community-Organization/dao#readme",
+  "homepage": "https://github.com/Pact-Community-Organization/pact-mcp/tree/main/packages/mcp-devnet#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Pact-Community-Organization/dao.git",
-    "directory": "mcp/packages/mcp-devnet"
+    "url": "git+https://github.com/Pact-Community-Organization/pact-mcp.git",
+    "directory": "packages/mcp-devnet"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

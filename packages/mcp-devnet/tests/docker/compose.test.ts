@@ -63,9 +63,10 @@ describe('resolveComposeFile', () => {
     const outsideFile = path.join(outsideDir, 'evil.yml');
     fs.writeFileSync(outsideFile, VALID_COMPOSE_CONTENT);
     const root = ws();
+    fs.mkdirSync(path.join(root, 'pact-examples'), { recursive: true });
     fs.symlinkSync(
       outsideFile,
-      path.join(root, 'dao', 'docker-compose.forge.yml')
+      path.join(root, 'pact-examples', 'docker-compose.forge.yml')
     );
     try {
       expect(() => resolveComposeFile(root, AGENT_MAP.Developer)).toThrow();
