@@ -147,4 +147,46 @@ describe('server in-process wrap()', () => {
     expect(res.isError).toBe(true);
     mock.patch('info', undefined);
   });
+
+  test('write tools are blocked on public profiles with PROFILE_WRITE_BLOCKED', async () => {
+    const httpClient = createChainwebClient({
+      baseUrl: mock.baseUrl,
+      networkId: 'mainnet01',
+      allowedOrigins: [],
+      additionalAllowedOrigins: [mock.origin]
+    });
+    const server = buildMcpServerWithClient(httpClient, {
+      profile: 'mainnet',
+      writesEnabled: false
+    });
+    const [clientT, serverT] = InMemoryTransport.createLinkedPair();
+    await (server as unknown as {
+      connect: (t: unknown) => Promise<void>;
+    }).connect(serverT);
+
+    const readonlyClient = new Client(
+      { name: 'readonly-inproc', version: '0' },
+      { capabilities: {} }
+    );
+    await readonlyClient.connect(clientT);
+
+    const res = await readonlyClient.callTool({
+      name: 'chainweb.send',
+      arguments: {
+        chainId: '0',
+        signedTx: {
+          cmd: '{"networkId":"mainnet01"}',
+          hash: 'h',
+          sigs: [{ sig: 'a'.repeat(128) }]
+        }
+      }
+    });
+
+    expect(res.isError).toBe(true);
+    const payloadText = (res.content as Array<{ text: string }>)[0]!.text;
+    expect(payloadText).toContain('PROFILE_WRITE_BLOCKED');
+
+    await readonlyClient.close();
+    await server.close();
+  });
 });

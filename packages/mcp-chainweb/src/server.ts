@@ -2,7 +2,7 @@
  * @fileoverview MCP Chainweb server - high-level McpServer wiring.
  * @author Developer
  *
- * Devnet-only. Registers 11 tools (v0.2.0):
+ * Devnet-first. Registers 11 tools (v0.2.0):
  *   MVP (v0.1):
  *     - chainweb.info
  *     - chainweb.chain_time
@@ -19,7 +19,7 @@
  *
  * Applies the ADR-MCP-001 security baseline inline (same pattern as
  * mcp-pact), then constructs an allowlisted HTTP client pointed at the
- * configured devnet base URL.
+ * configured profile base URL.
  */
 
 import process from 'node:process';
@@ -129,11 +129,54 @@ export const PROD_ALLOWED_ORIGINS: readonly string[] = Object.freeze([
   'http://localhost:8083'
 ]);
 
+export const TESTNET06_ALLOWED_ORIGINS: readonly string[] = Object.freeze([
+  'https://api.testnet.chainweb.com'
+]);
+
+export const MAINNET_ALLOWED_ORIGINS: readonly string[] = Object.freeze([
+  'https://api.chainweb-community.org'
+]);
+
+export type ChainwebProfile = 'devnet' | 'testnet06' | 'mainnet';
+
+interface ProfileDefaults {
+  profile: ChainwebProfile;
+  defaultBaseUrl: string;
+  defaultNetworkId: string;
+  allowedOrigins: readonly string[];
+  writesEnabled: boolean;
+}
+
+const PROFILE_DEFAULTS: Readonly<Record<ChainwebProfile, ProfileDefaults>> = {
+  devnet: {
+    profile: 'devnet',
+    defaultBaseUrl: 'http://localhost:8081',
+    defaultNetworkId: 'development',
+    allowedOrigins: PROD_ALLOWED_ORIGINS,
+    writesEnabled: true
+  },
+  testnet06: {
+    profile: 'testnet06',
+    defaultBaseUrl: 'https://api.testnet.chainweb.com',
+    defaultNetworkId: 'testnet06',
+    allowedOrigins: TESTNET06_ALLOWED_ORIGINS,
+    writesEnabled: false
+  },
+  mainnet: {
+    profile: 'mainnet',
+    defaultBaseUrl: 'https://api.chainweb-community.org',
+    defaultNetworkId: 'mainnet01',
+    allowedOrigins: MAINNET_ALLOWED_ORIGINS,
+    writesEnabled: false
+  }
+};
+
 export interface ResolvedConfig {
-  profile: 'devnet';
+  profile: ChainwebProfile;
   baseUrl: string;
   networkId: string;
   allowedOrigins: string[];
+  writesEnabled: boolean;
   /**
    * Programmatic test-only extension (never set from env). The bin entry
    * point does NOT populate this — only in-process test harnesses do.
@@ -144,7 +187,6 @@ export interface ResolvedConfig {
 
 /**
  * [Developer] Apply ADR-MCP-001 baseline and compute the server config.
- * Hard-fails (exit 13) when `PACT_COMMUNITY_CHAINWEB_MODE !== "devnet"`.
  */
 export function resolveConfig(): ResolvedConfig {
   // 1. Root refusal.
@@ -164,32 +206,37 @@ export function resolveConfig(): ResolvedConfig {
   const envResult = validateEnv({ allowed: ALLOWED_ENV, strict: false });
 
   const mode = envResult.env['PACT_COMMUNITY_CHAINWEB_MODE'];
-  if (mode !== 'devnet') {
-    // [Developer] Hard exit 13 per orchestrator spec — this is the
-    // devnet-only guarantee, enforced BEFORE tools are registered.
+  const profileRaw = envResult.env['PACT_COMMUNITY_CHAINWEB_PROFILE'] ?? 'devnet';
+  if (!isSupportedProfile(mode)) {
     // eslint-disable-next-line no-console
     console.error(
-      `[pact-community-chainweb] PACT_COMMUNITY_CHAINWEB_MODE must be 'devnet' (got '${mode ?? '<unset>'}')`
+      `[pact-community-chainweb] PACT_COMMUNITY_CHAINWEB_MODE must be one of: devnet, testnet06, mainnet (got '${mode ?? '<unset>'}')`
+    );
+    process.exit(13);
+  }
+  if (!isSupportedProfile(profileRaw)) {
+    // eslint-disable-next-line no-console
+    console.error(
+      `[pact-community-chainweb] PACT_COMMUNITY_CHAINWEB_PROFILE must be one of: devnet, testnet06, mainnet (got '${profileRaw}')`
     );
     process.exit(13);
   }
 
-  // [Developer] Future-facing network profile scaffold. We parse an explicit
-  // profile now so testnet/mainnet can be added intentionally later without
-  // widening current defaults.
-  const profileRaw = envResult.env['PACT_COMMUNITY_CHAINWEB_PROFILE'] ?? 'devnet';
-  if (profileRaw !== 'devnet') {
+  if (mode !== profileRaw) {
     // eslint-disable-next-line no-console
     console.error(
-      `[pact-community-chainweb] PACT_COMMUNITY_CHAINWEB_PROFILE='${profileRaw}' is not supported yet. Supported profile: 'devnet'.`
+      `[pact-community-chainweb] PACT_COMMUNITY_CHAINWEB_MODE ('${mode}') must match PACT_COMMUNITY_CHAINWEB_PROFILE ('${profileRaw}')`
     );
     process.exit(13);
   }
+
+  const profile = profileRaw;
+  const defaults = PROFILE_DEFAULTS[profile];
 
   const baseUrl =
-    envResult.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'] ?? 'http://localhost:8081';
+    envResult.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'] ?? defaults.defaultBaseUrl;
   const networkId =
-    envResult.env['PACT_COMMUNITY_CHAINWEB_NETWORK_ID'] ?? 'development';
+    envResult.env['PACT_COMMUNITY_CHAINWEB_NETWORK_ID'] ?? defaults.defaultNetworkId;
   const lockfilePath =
     envResult.env['PACT_COMMUNITY_TOOLS_LOCKFILE'] ?? './tools.lock.json';
 
@@ -204,21 +251,18 @@ export function resolveConfig(): ResolvedConfig {
       .filter((s) => s.length > 0);
   }
 
-  // 4. Re-validate baseUrl against the production allowlist (defence in
+  // 4. Re-validate baseUrl against the selected profile allowlist (defence in
   //    depth: the allowlisted fetch does this too, but failing here at
   //    startup is a clearer signal). When test-mode extra origins are
   //    active, include them in the check so the integration test can point
   //    the server at a 127.0.0.1:{ephemeral} mock without loosening prod.
-  const startupAllowlist = [
-    ...PROD_ALLOWED_ORIGINS,
-    ...additionalAllowedOrigins
-  ];
+  const startupAllowlist = [...defaults.allowedOrigins, ...additionalAllowedOrigins];
   try {
     const parsed = new URL(baseUrl);
     if (!startupAllowlist.includes(parsed.origin)) {
       // eslint-disable-next-line no-console
       console.error(
-        `[pact-community-chainweb] PACT_COMMUNITY_CHAINWEB_BASE_URL origin '${parsed.origin}' is not in the devnet allowlist: ${startupAllowlist.join(', ')}`
+        `[pact-community-chainweb] PACT_COMMUNITY_CHAINWEB_BASE_URL origin '${parsed.origin}' is not in the ${profile} allowlist: ${startupAllowlist.join(', ')}`
       );
       process.exit(13);
     }
@@ -234,10 +278,11 @@ export function resolveConfig(): ResolvedConfig {
   verifyToolsLock(SERVER_NAME, getToolSchemaObjects(), lockfilePath);
 
   return {
-    profile: 'devnet',
+    profile,
     baseUrl,
     networkId,
-    allowedOrigins: [...PROD_ALLOWED_ORIGINS],
+    allowedOrigins: [...defaults.allowedOrigins],
+    writesEnabled: defaults.writesEnabled,
     additionalAllowedOrigins,
     lockfilePath
   };
@@ -257,15 +302,23 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
       ? { additionalAllowedOrigins: config.additionalAllowedOrigins }
       : {})
   });
-  return buildMcpServerWithClient(client);
+  return buildMcpServerWithClient(client, {
+    profile: config.profile,
+    writesEnabled: config.writesEnabled
+  });
 }
 
 /**
  * [Developer] Lower-level factory used by unit tests that want to inject a
  * pre-built client directly (e.g. with a stubbed mock base URL).
  */
-export function buildMcpServerWithClient(client: ChainwebClient): McpServer {
+export function buildMcpServerWithClient(
+  client: ChainwebClient,
+  options: { profile?: ChainwebProfile; writesEnabled?: boolean } = {}
+): McpServer {
   const auditLog = createAuditLogger(SERVER_NAME);
+  const runtimeProfile = options.profile ?? 'devnet';
+  const writesEnabled = options.writesEnabled ?? true;
 
   const mcp = new McpServer(
     { name: SERVER_NAME, version: SERVER_VERSION },
@@ -289,7 +342,7 @@ export function buildMcpServerWithClient(client: ChainwebClient): McpServer {
     {
       title: 'Chainweb node info',
       description:
-        'Fetch /info and /cut from the devnet chainweb node. Refuses if the network id is not "development".',
+        'Fetch /info and /cut from the configured chainweb profile. Refuses if the network id differs from the configured expectation.',
       inputSchema: InfoInputShape,
       annotations: {
         readOnlyHint: true,
@@ -359,6 +412,7 @@ export function buildMcpServerWithClient(client: ChainwebClient): McpServer {
       }
     },
     async (args) => wrap(auditLog, 'chainweb.send', args, async () => {
+      ensureWritesAllowed(runtimeProfile, writesEnabled, 'chainweb.send');
       const { content } = await send(args);
       return content[0] as SendResult;
     })
@@ -461,6 +515,11 @@ export function buildMcpServerWithClient(client: ChainwebClient): McpServer {
     },
     async (args) =>
       wrap(auditLog, 'chainweb.deploy_module', args, async () => {
+        ensureWritesAllowed(
+          runtimeProfile,
+          writesEnabled,
+          'chainweb.deploy_module'
+        );
         const { content } = await deployModule(args);
         return content[0] as DeployModuleResult;
       })
@@ -482,6 +541,11 @@ export function buildMcpServerWithClient(client: ChainwebClient): McpServer {
     },
     async (args) =>
       wrap(auditLog, 'chainweb.continue_pact', args, async () => {
+        ensureWritesAllowed(
+          runtimeProfile,
+          writesEnabled,
+          'chainweb.continue_pact'
+        );
         const { content } = await continuePact(args);
         return content[0] as ContinuePactResult;
       })
@@ -586,4 +650,21 @@ function hashArgs(args: unknown): string {
 function errorCode(error: unknown): string | number {
   if (error instanceof McpToolError) return error.code;
   return 1;
+}
+
+function isSupportedProfile(value: string | undefined): value is ChainwebProfile {
+  return value === 'devnet' || value === 'testnet06' || value === 'mainnet';
+}
+
+function ensureWritesAllowed(
+  profile: ChainwebProfile,
+  writesEnabled: boolean,
+  toolName: string
+): void {
+  if (writesEnabled) return;
+  throw new McpToolError(
+    'PROFILE_WRITE_BLOCKED',
+    `PROFILE_WRITE_BLOCKED: ${toolName} is disabled for profile '${profile}'. Public profiles are read-only; use profile 'devnet' for mutating operations.`,
+    false
+  );
 }

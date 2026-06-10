@@ -35,7 +35,35 @@
         "PACT_COMMUNITY_CHAINWEB_BASE_URL": "http://localhost:8081",
         "PACT_COMMUNITY_CHAINWEB_NETWORK_ID": "development"
       },
-      "_note": "Devnet-only by design. Testnet/mainnet profiles are planned but intentionally unsupported in the current release."
+      "_note": "Default devnet profile with full read/write tool availability."
+    },
+    "pact-community-chainweb-testnet06-readonly": {
+      "command": "node",
+      "args": ["./packages/mcp-chainweb/dist/bin.js"],
+      "env": {
+        "NODE_ENV": "production",
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>",
+        "PACT_COMMUNITY_CHAINWEB_MODE": "testnet06",
+        "PACT_COMMUNITY_CHAINWEB_PROFILE": "testnet06",
+        "PACT_COMMUNITY_CHAINWEB_BASE_URL": "https://api.testnet.chainweb.com",
+        "PACT_COMMUNITY_CHAINWEB_NETWORK_ID": "testnet06"
+      },
+      "_disabled": true,
+      "_note": "Opt-in read-only profile. Write tools return PROFILE_WRITE_BLOCKED."
+    },
+    "pact-community-chainweb-mainnet-readonly": {
+      "command": "node",
+      "args": ["./packages/mcp-chainweb/dist/bin.js"],
+      "env": {
+        "NODE_ENV": "production",
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>",
+        "PACT_COMMUNITY_CHAINWEB_MODE": "mainnet",
+        "PACT_COMMUNITY_CHAINWEB_PROFILE": "mainnet",
+        "PACT_COMMUNITY_CHAINWEB_BASE_URL": "https://api.chainweb-community.org",
+        "PACT_COMMUNITY_CHAINWEB_NETWORK_ID": "mainnet01"
+      },
+      "_disabled": true,
+      "_note": "Opt-in read-only profile. Write tools return PROFILE_WRITE_BLOCKED."
     },
     "pact-community-coordination": {
       "command": "node",

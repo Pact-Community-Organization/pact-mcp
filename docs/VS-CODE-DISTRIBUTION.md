@@ -39,15 +39,16 @@ extension-root/
       mcp.template.json
       profiles/
         devnet.json
-        testnet.future.json
-        mainnet.future.json
+        testnet06.readonly.json
+        mainnet.readonly.json
   scripts/
     package-servers.mjs
 ```
 
 Implementation notes:
 - Keep devnet as the default active profile.
-- Keep testnet/mainnet profile files present but disabled unless explicit user opt-in is implemented.
+- Keep testnet06/mainnet profile files present but disabled unless explicit user opt-in is implemented.
+- Public profiles must remain read-only (`PROFILE_WRITE_BLOCKED` on mutating tools).
 - Write generated user config to workspace-local settings, never overwrite existing user customizations silently.
 
 ## Marketplace Publication Prerequisites
@@ -72,13 +73,14 @@ Implementation notes:
 
 - Default-safe profiles:
   - Ship only devnet profile enabled by default.
+  - Ship testnet06/mainnet entries as opt-in disabled read-only profiles.
   - Keep lifecycle-mutating devnet actions disabled unless explicit env flags are set.
 - Signed release pipeline:
   - Tag-based releases from protected branch.
   - Publish VSIX only from CI after full checks.
 - Update channels:
   - Stable channel for Marketplace.
-  - Optional prerelease channel for experimental profile work.
+  - Optional prerelease channel for profile refinements that preserve read-only public safety.
 - Rollback:
   - Keep previous known-good server bundle in extension cache.
   - Fall back automatically if startup smoke checks fail after update.

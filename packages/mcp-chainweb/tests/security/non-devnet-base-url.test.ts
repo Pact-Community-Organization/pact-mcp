@@ -1,7 +1,6 @@
 /**
- * @fileoverview Security test: resolveConfig must exit 13 when
- *               PACT_COMMUNITY_CHAINWEB_BASE_URL points outside the devnet
- *               allowlist.
+ * @fileoverview Security tests for profile-aware base URL allowlists and
+ *               mode/profile validation.
  */
 
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
@@ -19,7 +18,7 @@ import {
   getToolSchemaObjects
 } from '../../src/server.js';
 
-describe('non-devnet-base-url', () => {
+describe('profile base-url allowlists', () => {
   let originalEnv: Record<string, string | undefined>;
   let tempWorkspace: string;
   let lockPath: string;
@@ -50,6 +49,7 @@ describe('non-devnet-base-url', () => {
     process.env['PACT_COMMUNITY_TOOLS_LOCKFILE'] = lockPath;
     process.env['PACT_COMMUNITY_WORKSPACE_ROOT'] = tempWorkspace;
     process.env['PACT_COMMUNITY_CHAINWEB_MODE'] = 'devnet';
+    process.env['PACT_COMMUNITY_CHAINWEB_PROFILE'] = 'devnet';
   });
 
   afterEach(() => {
@@ -111,11 +111,66 @@ describe('non-devnet-base-url', () => {
     expect(exitSpy).toHaveBeenCalledWith(13);
   });
 
+  test('exits 13 when mode/profile mismatch', () => {
+    process.env['PACT_COMMUNITY_CHAINWEB_MODE'] = 'devnet';
+    process.env['PACT_COMMUNITY_CHAINWEB_PROFILE'] = 'testnet06';
+    process.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'] = 'http://localhost:8081';
+    const exitSpy = vi
+      .spyOn(process, 'exit')
+      .mockImplementation(((_code?: number) => {
+        throw new Error('__EXIT_MOCK__');
+      }) as never);
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    expect(() => resolveConfig()).toThrow('__EXIT_MOCK__');
+    expect(exitSpy).toHaveBeenCalledWith(13);
+  });
+
   test('resolves successfully with an allowlisted base URL + devnet mode', () => {
     process.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'] = 'http://localhost:8082';
     const config = resolveConfig();
+    expect(config.profile).toBe('devnet');
     expect(config.baseUrl).toBe('http://localhost:8082');
     expect(config.networkId).toBe('development');
     expect(config.additionalAllowedOrigins).toEqual([]);
+  });
+
+  test('resolves testnet06 profile with official API origin', () => {
+    process.env['PACT_COMMUNITY_CHAINWEB_MODE'] = 'testnet06';
+    process.env['PACT_COMMUNITY_CHAINWEB_PROFILE'] = 'testnet06';
+    process.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'] =
+      'https://api.testnet.chainweb.com';
+    process.env['PACT_COMMUNITY_CHAINWEB_NETWORK_ID'] = 'testnet06';
+
+    const config = resolveConfig();
+    expect(config.profile).toBe('testnet06');
+    expect(config.writesEnabled).toBe(false);
+  });
+
+  test('exits 13 when testnet06 profile uses non-allowlisted origin', () => {
+    process.env['PACT_COMMUNITY_CHAINWEB_MODE'] = 'testnet06';
+    process.env['PACT_COMMUNITY_CHAINWEB_PROFILE'] = 'testnet06';
+    process.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'] = 'http://localhost:8081';
+    process.env['PACT_COMMUNITY_CHAINWEB_NETWORK_ID'] = 'testnet06';
+
+    const exitSpy = vi
+      .spyOn(process, 'exit')
+      .mockImplementation(((_code?: number) => {
+        throw new Error('__EXIT_MOCK__');
+      }) as never);
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    expect(() => resolveConfig()).toThrow('__EXIT_MOCK__');
+    expect(exitSpy).toHaveBeenCalledWith(13);
+  });
+
+  test('resolves mainnet profile with official API origin', () => {
+    process.env['PACT_COMMUNITY_CHAINWEB_MODE'] = 'mainnet';
+    process.env['PACT_COMMUNITY_CHAINWEB_PROFILE'] = 'mainnet';
+    process.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'] =
+      'https://api.chainweb-community.org';
+    process.env['PACT_COMMUNITY_CHAINWEB_NETWORK_ID'] = 'mainnet01';
+
+    const config = resolveConfig();
+    expect(config.profile).toBe('mainnet');
+    expect(config.writesEnabled).toBe(false);
   });
 });

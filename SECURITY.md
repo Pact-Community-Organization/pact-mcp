@@ -34,6 +34,12 @@ Every MCP server MUST implement:
 - [ ] **Filesystem boundaries**: Prevent path traversal and symlink escapes
 - [ ] **Safe process spawning**: Never use `shell: true`, validate all arguments
 
+### Chainweb Public Profile Safety
+
+- `@pact-community/mcp-chainweb` defaults to `devnet`.
+- Opt-in public profiles `testnet06` and `mainnet` are read-only.
+- Mutating tools (`chainweb.send`, `chainweb.deploy_module`, `chainweb.continue_pact`) must fail with `PROFILE_WRITE_BLOCKED` on public profiles.
+
 ### 📊 Audit Format
 
 Each audit entry contains:
