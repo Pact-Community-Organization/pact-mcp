@@ -103,6 +103,26 @@ describe('chainweb.local', () => {
     expect(req!.body).toContain('amount');
   });
 
+  test('supports preflight=false for read-only probes', async () => {
+    mock.patch('local', {
+      reqKey: 'rk',
+      result: { status: 'success', data: { int: '3' } },
+      gas: 0,
+      logs: null
+    });
+    const tool = createLocalTool({ client: makeClient() });
+    const before = mock.requests.length;
+    const { content } = await tool({
+      chainId: '0',
+      code: '(+ 1 2)',
+      preflight: false
+    });
+    expect(content[0]!.status).toBe('success');
+    const req = mock.requests.slice(before).find((r) => /\/local/.test(r.url));
+    expect(req).toBeDefined();
+    expect(req!.url).toContain('preflight=false');
+  });
+
   test('rejects gasLimit > 150_000', async () => {
     const tool = createLocalTool({ client: makeClient() });
     await expect(

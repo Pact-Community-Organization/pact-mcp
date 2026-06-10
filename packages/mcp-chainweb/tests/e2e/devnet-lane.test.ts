@@ -8,6 +8,7 @@ import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 
 const runDevnetE2E = process.env['PACT_COMMUNITY_ENABLE_DEVNET_E2E'] === 'true';
 const runSendPoll = process.env['PACT_COMMUNITY_ENABLE_DEVNET_E2E_SEND_POLL'] === 'true';
+const e2eSender = process.env['PACT_COMMUNITY_DEVNET_E2E_SENDER'];
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(here, '..', '..');
@@ -66,7 +67,9 @@ describeIf('devnet e2e lane (opt-in)', () => {
       name: 'chainweb.local',
       arguments: {
         chainId: '0',
-        code: '(+ 1 2)'
+        code: '(+ 1 2)',
+        preflight: false,
+        ...(e2eSender ? { sender: e2eSender } : {})
       }
     });
     expect(local.isError).toBeFalsy();
