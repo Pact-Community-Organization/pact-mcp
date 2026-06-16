@@ -29,10 +29,10 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
-    "@types/node": "20.11.0",
-    "@vitest/coverage-v8": "3.2.4",
-    "typescript": "5.6.3",
-    "vitest": "3.2.4"
+    "@types/node": "25.9.3",
+    "@vitest/coverage-v8": "4.1.9",
+    "typescript": "6.0.3",
+    "vitest": "4.1.9"
   },
   "author": "Pact Community",
   "license": "MIT",
