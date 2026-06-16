@@ -65,7 +65,7 @@ export const DeployModuleInputShape = {
     })
     .describe('Pact module to deploy.'),
   envData: z
-    .record(z.unknown())
+    .record(z.string(), z.unknown())
     .optional()
     .describe(
       'Optional env-data. Typically `{ ns: "...", ns-keyset: { keys, pred } }`.'

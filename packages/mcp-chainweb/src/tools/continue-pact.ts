@@ -54,7 +54,7 @@ export const ContinuePactInputShape = {
       'Base64 SPV proof. Required when the continuation spans chains. Fetch via `chainweb.spv_proof`.'
     ),
   envData: z
-    .record(z.unknown())
+    .record(z.string(), z.unknown())
     .optional()
     .describe('Optional env-data for the continuation step.'),
   signerKey: z
