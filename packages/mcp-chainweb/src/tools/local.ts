@@ -27,7 +27,7 @@ export const LocalInputShape = {
     .min(1)
     .describe('Pact code to execute in read-only mode.'),
   data: z
-    .record(z.unknown())
+    .record(z.string(), z.unknown())
     .optional()
     .describe('Optional env-data object passed to the Pact interpreter.'),
   sender: z
