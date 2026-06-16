@@ -30,7 +30,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.29.0",
     "@pact-community/mcp-shared": "workspace:*",
-    "zod": "3.25.76"
+    "zod": "4.4.3"
   },
   "devDependencies": {
     "@types/node": "25.9.3",
