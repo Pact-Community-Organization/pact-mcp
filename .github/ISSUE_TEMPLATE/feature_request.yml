@@ -1,0 +1,50 @@
+name: "Feature Request / RFC"
+description: "Propose a new capability or a larger design idea for pact-mcp."
+title: "[FEATURE] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea. Concrete, scoped requests stay here; large open-ended
+        proposals may be moved to **Discussions** so they can evolve as a design
+        conversation. **Opening this is not a commitment from maintainers to build it.**
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / Motivation
+      description: "What problem does this solve? Who benefits?"
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution
+      description: "What you'd like to see. Separate extensions of existing pact-mcp capabilities from net-new product."
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+  - type: textarea
+    id: scope
+    attributes:
+      label: Smallest Useful Slice
+      description: "If we built just one part first, what would it be?"
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: "Links, prior art, related issues."
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submission checks
+      options:
+        - label: I searched existing issues/discussions and this is not a duplicate.
+          required: true
+        - label: I understand opening this does not guarantee it will be built.
+          required: true
+        - label: Any third-party or maintainer conversations referenced here are described accurately and not presented as commitments.
+          required: true

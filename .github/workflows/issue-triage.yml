@@ -1,0 +1,39 @@
+name: Issue Triage Label
+
+# Applies a triage label to newly opened issues so maintainers can see the queue.
+# Intentionally does NOT post any comment on issues — acknowledgement is handled
+# manually by a maintainer (human-in-the-loop). No auto-replies.
+
+on:
+  issues:
+    types: [opened, reopened]
+
+# Security: workflow-scope read-only baseline
+permissions:
+  contents: read
+
+concurrency:
+  group: issue-triage-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  label:
+    name: Apply needs-triage label
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Add needs-triage
+        uses: actions/github-script@e69ef5462fd455e02edcaf4dd7708eda96b9eda0 # v7.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const labels = (context.payload.issue.labels || []).map(l => l.name);
+            if (!labels.includes('needs-triage')) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.issue.number,
+                labels: ['needs-triage'],
+              });
+            }
