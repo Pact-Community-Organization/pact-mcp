@@ -69,13 +69,21 @@ Each audit entry contains:
 
 ## Reporting Security Issues
 
-Report security vulnerabilities to the Security agent via GitHub issue with label `security`.
+**Do not report security vulnerabilities through public GitHub issues, Discussions,
+or pull requests.** Report them privately through a **GitHub Security Advisory**:
+
+- Repository **Security** tab → **Report a vulnerability**, or
+  https://github.com/Pact-Community-Organization/pact-mcp/security/advisories/new
+- Or email **info@pact-community.org**.
 
 Include:
 1. **Attack vector** description
 2. **Impact assessment** (data exposure, privilege escalation, etc.)
 3. **Proof of concept** (if safe to share)
 4. **Suggested mitigation**
+
+We aim to acknowledge reports within 3 business days (best effort) and will keep
+you updated through resolution.
 
 ## Compliance
 
