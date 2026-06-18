@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question / Usage Help
+    url: https://github.com/Pact-Community-Organization/pact-mcp/discussions
+    about: For how-to questions and usage help, please start a Discussion.
+  - name: Ideas & RFCs (Discussions)
+    url: https://github.com/Pact-Community-Organization/pact-mcp/discussions
+    about: Open-ended proposals and design ideas belong in Discussions, not the issue tracker.
+  - name: Report a Security Vulnerability (Private)
+    url: https://github.com/Pact-Community-Organization/pact-mcp/security/advisories/new
+    about: Never file security issues publicly — use a private advisory.

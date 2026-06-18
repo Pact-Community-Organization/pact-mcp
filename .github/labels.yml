@@ -28,3 +28,63 @@
 - name: tool-schema
   color: "d4c5f9"
   description: "Changes to MCP tool schemas or tools.lock.json"
+
+# --- Issue triage: type ---
+- name: bug
+  color: "d73a4a"
+  description: "Reproducible defect"
+- name: enhancement
+  color: "a2eeef"
+  description: "New feature or capability request"
+- name: rfc
+  color: "5319e7"
+  description: "Open-ended design proposal — discuss before building"
+- name: question
+  color: "d876e3"
+  description: "Usage question or support request"
+- name: docs
+  color: "0075ca"
+  description: "Documentation gap or improvement"
+- name: security
+  color: "b60205"
+  description: "Security-related (report vulnerabilities privately, not here)"
+
+# --- Issue triage: status ---
+- name: needs-triage
+  color: "ededed"
+  description: "Awaiting initial triage by a maintainer"
+- name: needs-info
+  color: "fef2c0"
+  description: "Waiting on more information from the reporter"
+- name: triaged
+  color: "c5def5"
+  description: "Triaged and classified"
+- name: accepted
+  color: "0e8a16"
+  description: "Accepted for work"
+- name: declined
+  color: "e99695"
+  description: "Will not be actioned (out of scope or misaligned)"
+- name: wontfix
+  color: "ffffff"
+  description: "Acknowledged but will not be fixed"
+- name: duplicate
+  color: "cfd3d7"
+  description: "Already tracked by another issue"
+- name: spam
+  color: "000000"
+  description: "Promotional, off-topic, or automated noise"
+
+# --- Issue triage: priority ---
+- name: P0-critical
+  color: "b60205"
+  description: "Critical — drop everything"
+- name: P1-high
+  color: "d93f0b"
+  description: "High priority"
+- name: P2-normal
+  color: "fbca04"
+  description: "Normal priority"
+- name: P3-low
+  color: "0e8a16"
+  description: "Low priority / nice to have"
