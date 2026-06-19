@@ -18,7 +18,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: EndBug/label-sync@52718c1f8e857e70e9e3c70b738e098bce56a4c3 # v2.3.3
+      - uses: EndBug/label-sync@52074158190acb45f3077f9099fea818aa43f97a # v2.3.3
         with:
           config-file: .github/labels.yml
           token: ${{ secrets.GITHUB_TOKEN }}
