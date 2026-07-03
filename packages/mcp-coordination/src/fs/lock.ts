@@ -1,6 +1,5 @@
 /**
  * @fileoverview Cooperative file locks using O_EXCL|O_CREAT lockfiles.
- * @author Developer
  *
  * A lock file lives at `<target>.lock` and contains `{pid, hostname,
  * acquiredAtMs}` as JSON. The owner retains the lock for the duration
@@ -15,9 +14,8 @@ import { McpToolError, ErrorCodes } from '@pact-community/mcp-shared';
 
 export const LOCK_STALE_MS = 30_000;
 export const LOCK_RETRY_COUNT = 100;
-// [Developer] Replaced constant delay with jittered exponential backoff
-// to prevent thundering herd under high contention (10+ parallel acquirers).
-// Budget: ~8s worst case with 100 retries.
+// Jittered exponential backoff prevents thundering herd under high
+// contention (10+ parallel acquirers). Budget: ~8s worst case with 100 retries.
 
 export interface LockPayload {
   pid: number;
@@ -41,17 +39,11 @@ export async function acquireLock(absTarget: string): Promise<() => Promise<void
 
   let attempt = 0;
   let stolenOnce = false;
-  // [Developer] Jittered exponential backoff: base 5ms, 1.5× growth, max 200ms per retry, random jitter [0.5, 1.5]×
-  // Total budget: ~8s worst case (100 retries). Prevents thundering herd when 10+ parallel acquirers contend.
   while (attempt <= LOCK_RETRY_COUNT) {
     try {
-      const fh = await fsp.open(lockPath, 'wx', 0o600);
-      try {
-        await fh.writeFile(body, 'utf8');
-        await fh.sync();
-      } finally {
-        await fh.close();
-      }
+      // Single wx write keeps the exists-but-empty window minimal; the
+      // stale check below never trusts an unreadable payload anyway.
+      await fsp.writeFile(lockPath, body, { flag: 'wx', mode: 0o600 });
       return async () => {
         try {
           await fsp.unlink(lockPath);
@@ -70,7 +62,6 @@ export async function acquireLock(absTarget: string): Promise<() => Promise<void
       }
       attempt += 1;
       if (attempt > LOCK_RETRY_COUNT) break;
-      // Jittered exponential backoff: base 5ms, grows by 1.5× each attempt, capped at 200ms
       const baseDelay = Math.min(5 * Math.pow(1.5, attempt), 200);
       const jitteredDelay = baseDelay * (0.5 + Math.random()); // [0.5, 1.5] × baseDelay
       await delay(jitteredDelay);
@@ -109,16 +100,36 @@ async function tryStealStale(lockPath: string): Promise<boolean> {
   } catch {
     payload = null;
   }
-  const acquiredAt = payload?.acquiredAtMs ?? 0;
+  let acquiredAt = payload?.acquiredAtMs;
+  if (acquiredAt === undefined) {
+    // Unreadable payload usually means we raced the owner's initial write.
+    // Trusting a default of 0 here would classify a live lock as 56 years
+    // stale and steal it out from under its holder. Use the file's mtime
+    // instead, and treat a vanished file as "not stale".
+    try {
+      acquiredAt = (await fsp.stat(lockPath)).mtimeMs;
+    } catch {
+      return false;
+    }
+  }
   if (Date.now() - acquiredAt < LOCK_STALE_MS) {
     return false;
   }
+  // Steal by atomic rename: if two contenders race, only one rename
+  // succeeds, so a freshly re-acquired lock can never be deleted by the
+  // losing stealer.
+  const graveyard = `${lockPath}.stale.${process.pid}.${Date.now()}`;
   try {
-    await fsp.unlink(lockPath);
-    return true;
+    await fsp.rename(lockPath, graveyard);
   } catch {
     return false;
   }
+  try {
+    await fsp.unlink(graveyard);
+  } catch {
+    /* ignore — best-effort cleanup */
+  }
+  return true;
 }
 
 function delay(ms: number): Promise<void> {
