@@ -77,7 +77,7 @@ import {
 } from './tools/reset.js';
 
 export const SERVER_NAME = 'pact-community-devnet';
-export const SERVER_VERSION = '0.1.0';
+export const SERVER_VERSION = '0.1.1';
 
 /** Env vars accepted from the parent process. */
 export const ALLOWED_ENV = [

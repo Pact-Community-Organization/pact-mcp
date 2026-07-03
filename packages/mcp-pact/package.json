@@ -1,6 +1,6 @@
 {
   "name": "@pact-community/mcp-pact",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "MCP server for Pact 5 smart contract tooling - REPL testing, module scanning, gas analysis, interface diff, fmt check",
   "type": "module",
   "private": false,
@@ -63,5 +63,5 @@
   "bugs": {
     "url": "https://github.com/Pact-Community-Organization/pact-mcp/issues"
   },
-  "mcpName": "io.github.pact-community-organization/pact"
+  "mcpName": "io.github.Pact-Community-Organization/pact"
 }

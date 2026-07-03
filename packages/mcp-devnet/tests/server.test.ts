@@ -57,6 +57,11 @@ describe('buildMcpServer', () => {
     // exported the constants for lockfile drift. Just prove we can build.
     expect(mcp).toBeDefined();
     expect(SERVER_NAME).toBe('pact-community-devnet');
-    expect(SERVER_VERSION).toBe('0.1.0');
+    // Assert against package.json rather than a hardcoded literal so a
+    // version bump doesn't require touching this test.
+    const pkgVersion = JSON.parse(
+      fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8')
+    ).version;
+    expect(SERVER_VERSION).toBe(pkgVersion);
   });
 });

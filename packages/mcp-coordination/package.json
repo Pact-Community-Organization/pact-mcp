@@ -1,6 +1,6 @@
 {
   "name": "@pact-community/mcp-coordination",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server for Pact Community multi-agent coordination \u2014 task queue, mailbox, status, memory.",
   "type": "module",
   "private": false,
@@ -63,5 +63,5 @@
   "bugs": {
     "url": "https://github.com/Pact-Community-Organization/pact-mcp/issues"
   },
-  "mcpName": "io.github.pact-community-organization/coordination"
+  "mcpName": "io.github.Pact-Community-Organization/coordination"
 }

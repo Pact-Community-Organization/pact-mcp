@@ -1,18 +1,18 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.pact-community-organization/devnet",
+  "name": "io.github.Pact-Community-Organization/devnet",
   "description": "Devnet lifecycle: gated docker compose up/down/reset plus status, health, and log tools.",
   "repository": {
     "url": "https://github.com/Pact-Community-Organization/pact-mcp",
     "source": "github"
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@pact-community/mcp-devnet",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "transport": {
         "type": "stdio"
       },

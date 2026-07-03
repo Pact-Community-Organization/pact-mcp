@@ -70,7 +70,7 @@ import {
 } from './tools/memory-append.js';
 
 export const SERVER_NAME = 'pact-community-coordination';
-export const SERVER_VERSION = '0.1.0';
+export const SERVER_VERSION = '0.1.1';
 
 export const ALLOWED_ENV = [
   'PACT_COMMUNITY_WORKSPACE_ROOT',
