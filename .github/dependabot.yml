@@ -1,5 +1,6 @@
 # Dependabot configuration for the pact-mcp monorepo.
-# Weekly grouped updates for every workspace package plus GitHub Actions.
+# Monthly grouped updates for every workspace package plus GitHub Actions,
+# capped per ecosystem to keep notification volume low.
 
 version: 2
 updates:
@@ -7,13 +8,19 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "monthly"
+    open-pull-requests-limit: 3
     commit-message:
       prefix: "chore"
       prefix-development: "chore"
       include: "scope"
+    ignore:
+      # vite is pinned to 6.x for vitest 4 compatibility
+      - dependency-name: "vite"
+        update-types: ["version-update:semver-major"]
+      # typings track the supported Node range (engines >=20.11, CI up to 24)
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
       modelcontextprotocol:
         patterns:
@@ -34,13 +41,19 @@ updates:
   - package-ecosystem: "npm"
     directory: "/packages/mcp-shared"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "monthly"
+    open-pull-requests-limit: 3
     commit-message:
       prefix: "chore"
       prefix-development: "chore"
       include: "scope"
+    ignore:
+      # vite is pinned to 6.x for vitest 4 compatibility
+      - dependency-name: "vite"
+        update-types: ["version-update:semver-major"]
+      # typings track the supported Node range (engines >=20.11, CI up to 24)
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
       modelcontextprotocol:
         patterns:
@@ -62,12 +75,14 @@ updates:
   - package-ecosystem: "npm"
     directory: "/packages/mcp-pact"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "monthly"
+    open-pull-requests-limit: 3
     commit-message:
       prefix: "chore"
       include: "scope"
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
       kadena:
         patterns:
@@ -79,12 +94,14 @@ updates:
   - package-ecosystem: "npm"
     directory: "/packages/mcp-chainweb"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "monthly"
+    open-pull-requests-limit: 3
     commit-message:
       prefix: "chore"
       include: "scope"
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
       kadena:
         patterns:
@@ -96,12 +113,14 @@ updates:
   - package-ecosystem: "npm"
     directory: "/packages/mcp-coordination"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "monthly"
+    open-pull-requests-limit: 3
     commit-message:
       prefix: "chore"
       include: "scope"
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
       modelcontextprotocol:
         patterns:
@@ -110,12 +129,14 @@ updates:
   - package-ecosystem: "npm"
     directory: "/packages/mcp-devnet"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "monthly"
+    open-pull-requests-limit: 3
     commit-message:
       prefix: "chore"
       include: "scope"
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
       modelcontextprotocol:
         patterns:
@@ -125,9 +146,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "monthly"
     open-pull-requests-limit: 5
     commit-message:
       prefix: "chore"
