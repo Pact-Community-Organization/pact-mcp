@@ -3,7 +3,7 @@
 MCP server exposing eleven Chainweb HTTP tools for Pact development
 (devnet-first with read-only public profiles).
 
-**Status:** 0.2.0 — devnet default, `testnet06`/`mainnet` read-only
+**Status:** devnet default, `testnet06`/`mainnet` read-only
 
 ## Tools
 
@@ -57,7 +57,7 @@ blocked with `PROFILE_WRITE_BLOCKED` even if signatures are supplied.
 
 Profile allowlists (hard-coded, not configurable):
 - `devnet`: `http://localhost:8081`, `http://localhost:8082`, `http://localhost:8083`
-- `testnet06`: `https://api.testnet.chainweb.com`
+- `testnet06`: `https://api.testnet.chainweb-community.org`
 - `mainnet`: `https://api.chainweb-community.org`
 
 ## MCP Client Configuration

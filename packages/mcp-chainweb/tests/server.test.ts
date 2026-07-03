@@ -81,7 +81,7 @@ describe('server', () => {
 
   test('public profile allowlists are pinned to official API origins', () => {
     expect([...TESTNET06_ALLOWED_ORIGINS]).toEqual([
-      'https://api.testnet.chainweb.com'
+      'https://api.testnet.chainweb-community.org'
     ]);
     expect([...MAINNET_ALLOWED_ORIGINS]).toEqual([
       'https://api.chainweb-community.org'
@@ -106,7 +106,7 @@ describe('server', () => {
 
     const cfg = resolveConfig();
     expect(cfg.profile).toBe('testnet06');
-    expect(cfg.baseUrl).toBe('https://api.testnet.chainweb.com');
+    expect(cfg.baseUrl).toBe('https://api.testnet.chainweb-community.org');
     expect(cfg.networkId).toBe('testnet06');
     expect(cfg.writesEnabled).toBe(false);
   });

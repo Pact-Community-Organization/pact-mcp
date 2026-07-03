@@ -93,7 +93,7 @@ import {
 } from './tools/spv-proof.js';
 
 export const SERVER_NAME = 'pact-community-chainweb';
-export const SERVER_VERSION = '0.2.2';
+export const SERVER_VERSION = '0.2.3';
 
 /** Environment variables the server accepts from its parent process. */
 export const ALLOWED_ENV = [
@@ -130,7 +130,7 @@ export const PROD_ALLOWED_ORIGINS: readonly string[] = Object.freeze([
 ]);
 
 export const TESTNET06_ALLOWED_ORIGINS: readonly string[] = Object.freeze([
-  'https://api.testnet.chainweb.com'
+  'https://api.testnet.chainweb-community.org'
 ]);
 
 export const MAINNET_ALLOWED_ORIGINS: readonly string[] = Object.freeze([
@@ -157,7 +157,7 @@ const PROFILE_DEFAULTS: Readonly<Record<ChainwebProfile, ProfileDefaults>> = {
   },
   testnet06: {
     profile: 'testnet06',
-    defaultBaseUrl: 'https://api.testnet.chainweb.com',
+    defaultBaseUrl: 'https://api.testnet.chainweb-community.org',
     defaultNetworkId: 'testnet06',
     allowedOrigins: TESTNET06_ALLOWED_ORIGINS,
     writesEnabled: false

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `mcp-chainweb` (0.2.3): `testnet06` default endpoint updated to `api.testnet.chainweb-community.org` (old `api.testnet.chainweb.com` deprecated).
+
 ### Changed
 - Curated the published surface for community launch: `mcp-pact` and
   `mcp-chainweb` (plus the `mcp-shared` library) are the supported public

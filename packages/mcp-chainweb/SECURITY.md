@@ -15,7 +15,7 @@ Chainweb HTTP node. The agent cannot be trusted; the node is devnet
 2. **Origin allowlist.** `PACT_COMMUNITY_CHAINWEB_BASE_URL` must resolve to
    an origin in the hard-coded list for the selected profile.
    - `devnet`: `http://localhost:8081`, `:8082`, `:8083`
-   - `testnet06`: `https://api.testnet.chainweb.com`
+   - `testnet06`: `https://api.testnet.chainweb-community.org`
    - `mainnet`: `https://api.chainweb-community.org`
    Checked at startup and re-checked on every `fetch()` call (defence in
    depth — DNS rebind resistance).

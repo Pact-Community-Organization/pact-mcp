@@ -138,7 +138,7 @@ describe('profile base-url allowlists', () => {
     process.env['PACT_COMMUNITY_CHAINWEB_MODE'] = 'testnet06';
     process.env['PACT_COMMUNITY_CHAINWEB_PROFILE'] = 'testnet06';
     process.env['PACT_COMMUNITY_CHAINWEB_BASE_URL'] =
-      'https://api.testnet.chainweb.com';
+      'https://api.testnet.chainweb-community.org';
     process.env['PACT_COMMUNITY_CHAINWEB_NETWORK_ID'] = 'testnet06';
 
     const config = resolveConfig();

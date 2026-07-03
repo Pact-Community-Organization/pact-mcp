@@ -19,7 +19,7 @@ describe('network-allowlist', () => {
   describe('createAllowlistedFetch', () => {
     const allowedOrigins = [
       'http://localhost:8081',
-      'https://api.testnet.chainweb.com',
+      'https://api.testnet.chainweb-community.org',
       'https://api.chainweb-community.org'
     ];
 
