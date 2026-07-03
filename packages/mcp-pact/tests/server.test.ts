@@ -98,10 +98,13 @@ describe('server', () => {
     expect(() => resolveConfig()).toThrowError(/drift|hash/i);
   });
 
-  test('resolveConfig uses a default lockfile path when env var unset', () => {
+  test('resolveConfig falls back to the packaged lockfile when env var unset', () => {
     delete process.env['PACT_COMMUNITY_TOOLS_LOCKFILE'];
-    // With no lockfile at ./tools.lock.json (cwd), resolveConfig throws.
-    expect(() => resolveConfig()).toThrowError();
+    // The package ships its own tools.lock.json, so startup succeeds from
+    // any working directory and resolves to that packaged file.
+    const config = resolveConfig();
+    expect(config.lockfilePath.endsWith('tools.lock.json')).toBe(true);
+    expect(path.isAbsolute(config.lockfilePath)).toBe(true);
   });
 });
 

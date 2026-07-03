@@ -1,6 +1,5 @@
 /**
  * @fileoverview MCP Devnet server — high-level McpServer wiring.
- * @author Developer
  *
  * Registers 6 tools:
  *   devnet.status  (read-only)
@@ -10,7 +9,7 @@
  *   devnet.down    (GATED — lifecycle flag; volume wipe requires extra flag)
  *   devnet.reset   (GATED — both lifecycle + volume wipe flags required)
  *
- * Applies the ADR-MCP-001 security baseline inline:
+ * Applies the pact-mcp security baseline inline:
  *   1. Root refusal.
  *   2. Audit log init.
  *   3. Env allowlist validation (non-strict).
@@ -30,6 +29,7 @@ import {
   createAllowlistedFetch,
   validateEnv,
   verifyToolsLock,
+  resolveLockfilePath,
   McpToolError,
   type AuditLogger
 } from '@pact-community/mcp-shared';
@@ -119,7 +119,7 @@ export interface ResolvedConfig {
 }
 
 /**
- * [Developer] Apply the security baseline and compute resolved config. Exits
+ * Apply the security baseline and compute resolved config. Exits
  * the process with code 13 on fatal misconfiguration.
  */
 export function resolveConfig(): ResolvedConfig {
@@ -173,7 +173,7 @@ export function resolveConfig(): ResolvedConfig {
 
   // 7. Lockfile drift check.
   const lockfilePath =
-    envResult.env['PACT_COMMUNITY_TOOLS_LOCKFILE'] ?? './tools.lock.json';
+    resolveLockfilePath(import.meta.url, envResult.env['PACT_COMMUNITY_TOOLS_LOCKFILE']);
   verifyToolsLock(SERVER_NAME, getToolSchemaObjects(), lockfilePath);
 
   // 8. Lifecycle flags.
@@ -215,7 +215,7 @@ export function resolveConfig(): ResolvedConfig {
 }
 
 /**
- * [Developer] Parse PACT_COMMUNITY_TEST_ALLOW_ORIGINS. Honored ONLY when
+ * Parse PACT_COMMUNITY_TEST_ALLOW_ORIGINS. Honored ONLY when
  * NODE_ENV === 'test'. Any value in production is silently dropped.
  */
 function resolveTestOrigins(env: Record<string, string>): string[] {
@@ -228,7 +228,7 @@ function resolveTestOrigins(env: Record<string, string>): string[] {
 }
 
 /**
- * [Developer] Parse PACT_COMMUNITY_TEST_AGENT_BASE_URLS. Honored ONLY when
+ * Parse PACT_COMMUNITY_TEST_AGENT_BASE_URLS. Honored ONLY when
  * NODE_ENV === 'test'. Format: `Developer=http://127.0.0.1:33001,Tester=...`.
  */
 function resolveTestAgentBaseUrls(
@@ -252,7 +252,7 @@ function resolveTestAgentBaseUrls(
 }
 
 /**
- * [Developer] Build (but do not connect) an McpServer with all 6 tools
+ * Build (but do not connect) an McpServer with all 6 tools
  * registered. Unit tests use this with a test-shaped config.
  */
 export function buildMcpServer(config: ResolvedConfig): McpServer {
@@ -426,7 +426,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
 }
 
 /**
- * [Developer] Tool schemas for lockfile hashing.
+ * Tool schemas for lockfile hashing.
  */
 export function getToolSchemaObjects(): Record<
   string,
@@ -445,7 +445,7 @@ export function getToolSchemaObjects(): Record<
 // ---------------------------------------------------------------------------
 
 /**
- * [Developer] Resolve the docker binary. Honors PACT_COMMUNITY_DEVNET_DOCKER_BIN
+ * Resolve the docker binary. Honors PACT_COMMUNITY_DEVNET_DOCKER_BIN
  * (absolute path) if set; otherwise walks PATH for a `docker` executable.
  * Exits 13 if none is found.
  */
@@ -495,7 +495,7 @@ export function resolveDockerBinary(
 type WrapOpts = { destructive?: boolean };
 
 /**
- * [Developer] Tool-call envelope — records audit entry and serialises
+ * Tool-call envelope — records audit entry and serialises
  * the payload to an MCP text content block. Exported for coverage tests.
  */
 export async function wrap<T>(
@@ -533,7 +533,7 @@ export async function wrap<T>(
 }
 
 /**
- * [Developer] Derive a short, stable hash of the tool arguments for the audit
+ * Derive a short, stable hash of the tool arguments for the audit
  * log. Non-cryptographic; the audit log is integrity-signed separately.
  * Exported for coverage tests.
  */
@@ -549,7 +549,7 @@ export function hashArgs(args: unknown): string {
 }
 
 /**
- * [Developer] Map a thrown error to an audit log exit status. Exported for
+ * Map a thrown error to an audit log exit status. Exported for
  * coverage tests.
  */
 export function errorCode(error: unknown): string | number {

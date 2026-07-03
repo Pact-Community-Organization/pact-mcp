@@ -1,6 +1,5 @@
 /**
  * @fileoverview MCP Chainweb server - high-level McpServer wiring.
- * @author Developer
  *
  * Devnet-first. Registers 11 tools (v0.2.0):
  *   MVP (v0.1):
@@ -17,7 +16,7 @@
  *     - chainweb.continue_pact
  *     - chainweb.spv_proof
  *
- * Applies the ADR-MCP-001 security baseline inline (same pattern as
+ * Applies the pact-mcp security baseline inline (same pattern as
  * mcp-pact), then constructs an allowlisted HTTP client pointed at the
  * configured profile base URL.
  */
@@ -28,6 +27,7 @@ import {
   createAuditLogger,
   validateEnv,
   verifyToolsLock,
+  resolveLockfilePath,
   McpToolError
 } from '@pact-community/mcp-shared';
 
@@ -103,7 +103,7 @@ export const ALLOWED_ENV = [
   'PACT_COMMUNITY_CHAINWEB_BASE_URL',
   'PACT_COMMUNITY_CHAINWEB_NETWORK_ID',
   'PACT_COMMUNITY_TOOLS_LOCKFILE',
-  // [Developer] Test-only: honored iff NODE_ENV === 'test'. Comma-separated
+  // Test-only: honored iff NODE_ENV === 'test'. Comma-separated
   // list of extra origins added to the fetch allowlist (e.g. a mock server
   // on 127.0.0.1:43517). In production this var is stripped/ignored — it
   // exists solely so the StdioClientTransport integration test can spawn
@@ -186,7 +186,7 @@ export interface ResolvedConfig {
 }
 
 /**
- * [Developer] Apply ADR-MCP-001 baseline and compute the server config.
+ * Apply the pact-mcp security baseline baseline and compute the server config.
  */
 export function resolveConfig(): ResolvedConfig {
   // 1. Root refusal.
@@ -238,9 +238,9 @@ export function resolveConfig(): ResolvedConfig {
   const networkId =
     envResult.env['PACT_COMMUNITY_CHAINWEB_NETWORK_ID'] ?? defaults.defaultNetworkId;
   const lockfilePath =
-    envResult.env['PACT_COMMUNITY_TOOLS_LOCKFILE'] ?? './tools.lock.json';
+    resolveLockfilePath(import.meta.url, envResult.env['PACT_COMMUNITY_TOOLS_LOCKFILE']);
 
-  // [Developer] Test-only additional origins. Honored ONLY when
+  // Test-only additional origins. Honored ONLY when
   // NODE_ENV === 'test'. Any value in production is silently dropped.
   let additionalAllowedOrigins: string[] = [];
   if (envResult.env['NODE_ENV'] === 'test') {
@@ -289,7 +289,7 @@ export function resolveConfig(): ResolvedConfig {
 }
 
 /**
- * [Developer] Build (but do not connect) an McpServer. Test harnesses call
+ * Build (but do not connect) an McpServer. Test harnesses call
  * this with a config that may include `additionalAllowedOrigins` to point
  * the chainweb client at an in-process mock server.
  */
@@ -309,7 +309,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
 }
 
 /**
- * [Developer] Lower-level factory used by unit tests that want to inject a
+ * Lower-level factory used by unit tests that want to inject a
  * pre-built client directly (e.g. with a stubbed mock base URL).
  */
 export function buildMcpServerWithClient(
