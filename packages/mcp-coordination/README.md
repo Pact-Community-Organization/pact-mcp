@@ -7,6 +7,10 @@ single workspace-scoped coordination root.
 No network I/O. No subprocess spawn. All persistence lives under a
 validated directory pinned by `PACT_COMMUNITY_COORDINATION_ROOT`.
 
+> Not published to npm or the MCP registry — build from source to use it. See
+> [`@pact-community/mcp-pact`](../mcp-pact/) and
+> [`@pact-community/mcp-chainweb`](../mcp-chainweb/) for the published servers.
+
 ## Tools
 
 | Tool                     | Purpose                                     |
@@ -42,10 +46,6 @@ keep mailbox and status paths predictable):
 
 Both roots must be **absolute** paths, and the coordination root's parent
 must exist:
-
-> **Internal tooling — not published.** This server encodes our workspace's
-> fixed agent roster and is not distributed on npm or the MCP registry. Build
-> it from this repository and point your client at the local output:
 
 ```json
 {

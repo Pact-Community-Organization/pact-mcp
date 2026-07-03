@@ -1,11 +1,11 @@
 # @pact-community/mcp-devnet
 
-Devnet Docker lifecycle MCP server.
+Docker devnet lifecycle MCP server for local KDA-CE development.
 
-> **Internal tooling — not published.** This server assumes our workspace's
-> compose files (`pact-examples/docker-compose.*.yml`) and port layout, which
-> do not exist outside our own environment. It is built and tested in CI but
-> intentionally not distributed on npm or the MCP registry.
+> Not published to npm or the MCP registry — this server expects a specific set
+> of `docker compose` files and is intended to be built from source. See
+> [`@pact-community/mcp-pact`](../mcp-pact/) and
+> [`@pact-community/mcp-chainweb`](../mcp-chainweb/) for the published servers.
 
 Wraps `docker compose` for role-scoped KDA-CE devnets. Each role owns one
 devnet stack; the compose file paths are fixed in the server (relative to the
