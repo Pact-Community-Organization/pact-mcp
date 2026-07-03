@@ -1,4 +1,6 @@
-# [Developer] MCP monorepo workspace configuration
-# ADR-MCP-001 Phase 1.1: Monorepo scaffold
+# pnpm monorepo workspace configuration.
 packages:
   - 'packages/*'
+
+# pnpm-specific settings (kept out of .npmrc so `npm publish` does not warn).
+autoInstallPeers: true
