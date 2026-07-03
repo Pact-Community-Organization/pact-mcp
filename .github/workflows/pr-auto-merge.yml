@@ -113,7 +113,7 @@ jobs:
             const testerApprovalFresh = hasTestersApproval && checkLabelFresh('tester-approved');
             const securityApprovalFresh = hasSecurityApproval && checkLabelFresh('security-approved');
 
-            // [GitHubArchitect] Dependabot actor exemption (Change 3, 2026-05-29):
+            // Dependabot actor exemption (Change 3, 2026-05-29):
             // Dependency-only PRs from dependabot[bot] require CI + security-approved only.
             // tester-approved is waived — if CI catches regressions, the merge is already blocked.
             const isDependabot = pr.user.login === 'dependabot[bot]';

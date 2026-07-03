@@ -1,33 +1,23 @@
-# [GitHubArchitect] Dependabot configuration for Pact Community MCP monorepo
-# ADR-MCP-001: Weekly dependency updates with grouping
-# Change 1 (2026-05-29): commit-message.prefix changed from agent-tag strings to "chore"
-# so Dependabot PR titles satisfy pr-quality-gate.yml conventional-commits pattern.
-# Grouping improvement: dev-dependencies groups now include "major" update-type so
-# large-version bumps (typescript 5→6, eslint 9→10, etc.) don't create ungrouped PRs.
+# Dependabot configuration for the pact-mcp monorepo.
+# Weekly grouped updates for every workspace package plus GitHub Actions.
 
 version: 2
 updates:
-  # Root package dependencies
+  # Root workspace dependencies
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    reviewers:
-      - "@Pact-Community-Organization/security"
-    assignees:
-      - "@Pact-Community-Organization/devops"
     commit-message:
       prefix: "chore"
       prefix-development: "chore"
       include: "scope"
     groups:
-      # Group MCP SDK updates
       modelcontextprotocol:
         patterns:
           - "@modelcontextprotocol/*"
-      # Group development dependencies — major included so large bumps don't create ungrouped PRs
       dev-dependencies:
         patterns:
           - "@types/*"
@@ -41,17 +31,12 @@ updates:
           - "minor"
           - "patch"
 
-  # mcp-shared package
   - package-ecosystem: "npm"
     directory: "/packages/mcp-shared"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    reviewers:
-      - "@Pact-Community-Organization/security"
-    assignees:
-      - "@Pact-Community-Organization/devops"
     commit-message:
       prefix: "chore"
       prefix-development: "chore"
@@ -63,7 +48,6 @@ updates:
       zod:
         patterns:
           - "zod"
-      # major included so large bumps don't create ungrouped PRs
       dev-dependencies:
         patterns:
           - "@types/*"
@@ -75,17 +59,12 @@ updates:
           - "minor"
           - "patch"
 
-  # Future packages (Phase 1.2+)
   - package-ecosystem: "npm"
     directory: "/packages/mcp-pact"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    reviewers:
-      - "@Pact-Community-Organization/security"
-    assignees:
-      - "@Pact-Community-Organization/devops"
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -103,10 +82,6 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    reviewers:
-      - "@Pact-Community-Organization/security"
-    assignees:
-      - "@Pact-Community-Organization/devops"
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -119,35 +94,34 @@ updates:
           - "@modelcontextprotocol/*"
 
   - package-ecosystem: "npm"
-    directory: "/packages/mcp-deploy"
+    directory: "/packages/mcp-coordination"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    reviewers:
-      - "@Pact-Community-Organization/devops"
-      - "@Pact-Community-Organization/security"
-    assignees:
-      - "@Pact-Community-Organization/devops"
     commit-message:
       prefix: "chore"
       include: "scope"
+    groups:
+      modelcontextprotocol:
+        patterns:
+          - "@modelcontextprotocol/*"
 
   - package-ecosystem: "npm"
-    directory: "/packages/mcp-scan"
+    directory: "/packages/mcp-devnet"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    reviewers:
-      - "@Pact-Community-Organization/security"
-    assignees:
-      - "@Pact-Community-Organization/security"
     commit-message:
       prefix: "chore"
       include: "scope"
+    groups:
+      modelcontextprotocol:
+        patterns:
+          - "@modelcontextprotocol/*"
 
-  # GitHub Actions — keeps SHA-pinned actions current (P0 CI hardening)
+  # GitHub Actions — keeps SHA-pinned actions current
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -155,10 +129,6 @@ updates:
       day: "monday"
       time: "09:00"
     open-pull-requests-limit: 5
-    reviewers:
-      - "@Pact-Community-Organization/devops"
-    assignees:
-      - "@Pact-Community-Organization/devops"
     commit-message:
       prefix: "chore"
       include: "scope"
