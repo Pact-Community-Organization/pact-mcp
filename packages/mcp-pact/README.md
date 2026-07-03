@@ -38,28 +38,16 @@ MCP server for Pact 5 smart contract tooling. Provides REPL testing, module scan
 - Output sanitization prevents prompt injection
 - 200KB output size cap prevents log bombs
 
-## Installation
-
-From this repository (works today):
-
-```bash
-pnpm install && pnpm build
-```
-
-From npm, once the first publish lands:
-
-```bash
-npm install -g @pact-community/mcp-pact
-```
-
 ## MCP Client Configuration
+
+The server runs via `npx` — no install step required:
 
 ```json
 {
   "mcpServers": {
     "pact": {
-      "command": "node",
-      "args": ["/path/to/pact-mcp/packages/mcp-pact/dist/bin.js"],
+      "command": "npx",
+      "args": ["-y", "@pact-community/mcp-pact"],
       "env": {
         "PACT_COMMUNITY_WORKSPACE_ROOT": "/path/to/your/project",
         "PACT_COMMUNITY_PACT_BIN": "pact"
@@ -72,7 +60,7 @@ npm install -g @pact-community/mcp-pact
 To debug interactively:
 
 ```bash
-npx @modelcontextprotocol/inspector node packages/mcp-pact/dist/bin.js
+npx @modelcontextprotocol/inspector npx -y @pact-community/mcp-pact
 ```
 
 ## Examples

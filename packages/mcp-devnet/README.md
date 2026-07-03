@@ -39,6 +39,29 @@ export PACT_COMMUNITY_DEVNET_ALLOW_VOLUME_WIPE=true
 `PACT_COMMUNITY_DEVNET_MODE=devnet` is a startup guard — the server refuses to
 start unless this is set.
 
+## MCP Client Configuration
+
+The server runs via `npx` — no install step required. Read-only tools work out
+of the box; lifecycle mutations stay disabled unless you opt in with the
+`PACT_COMMUNITY_DEVNET_ALLOW_*` flags below.
+
+```json
+{
+  "mcpServers": {
+    "devnet": {
+      "command": "npx",
+      "args": ["-y", "@pact-community/mcp-devnet"],
+      "env": {
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "/path/to/your/project",
+        "PACT_COMMUNITY_DEVNET_MODE": "devnet",
+        "PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE": "false",
+        "PACT_COMMUNITY_DEVNET_ALLOW_VOLUME_WIPE": "false"
+      }
+    }
+  }
+}
+```
+
 ## Security controls
 
 - All `docker` subprocesses use `spawnSafe` (rejects shell metachars).

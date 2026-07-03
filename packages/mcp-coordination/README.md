@@ -47,8 +47,8 @@ must exist:
 {
   "mcpServers": {
     "coordination": {
-      "command": "node",
-      "args": ["/path/to/pact-mcp/packages/mcp-coordination/dist/bin.js"],
+      "command": "npx",
+      "args": ["-y", "@pact-community/mcp-coordination"],
       "env": {
         "PACT_COMMUNITY_WORKSPACE_ROOT": "/path/to/your/project",
         "PACT_COMMUNITY_COORDINATION_ROOT": "/path/to/your/project/coordination"

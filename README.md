@@ -1,6 +1,7 @@
 # pact-mcp — MCP Servers for Pact & Chainweb
 
 [![CI](https://github.com/Pact-Community-Organization/pact-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Pact-Community-Organization/pact-mcp/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@pact-community/mcp-pact.svg?label=mcp-pact)](https://www.npmjs.com/package/@pact-community/mcp-pact)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Node >= 20.11](https://img.shields.io/badge/node-%3E%3D20.11-brightgreen.svg)](package.json)
 
@@ -14,30 +15,24 @@ tested security baseline.
 
 ## Servers
 
-| Package | Tools | Purpose |
-|---------|-------|---------|
-| [`@pact-community/mcp-pact`](packages/mcp-pact/) | 6 | Pact CLI tooling: REPL test runs, static trap scanning, gas estimation, interface diff, format check |
-| [`@pact-community/mcp-chainweb`](packages/mcp-chainweb/) | 11 | Chainweb HTTP API: `/local` simulation, pre-signed `/send`, poll, table reads, SPV proofs, module deploys — devnet-first with read-only public profiles |
-| [`@pact-community/mcp-devnet`](packages/mcp-devnet/) | 6 | Devnet lifecycle: gated `docker compose` up/down/reset plus read-only status, health, and logs |
-| [`@pact-community/mcp-coordination`](packages/mcp-coordination/) | 10 | File-backed multi-agent coordination: task queue, mailboxes, status, memory log — no network, no subprocesses |
-| [`@pact-community/mcp-shared`](packages/mcp-shared/) | — | Shared security baseline library used by every server (not itself an MCP server) |
+| Package | npm | Tools | Purpose |
+|---------|-----|-------|---------|
+| [`@pact-community/mcp-pact`](packages/mcp-pact/) | [![npm](https://img.shields.io/npm/v/@pact-community/mcp-pact.svg)](https://www.npmjs.com/package/@pact-community/mcp-pact) | 6 | Pact CLI tooling: REPL test runs, static trap scanning, gas estimation, interface diff, format check |
+| [`@pact-community/mcp-chainweb`](packages/mcp-chainweb/) | [![npm](https://img.shields.io/npm/v/@pact-community/mcp-chainweb.svg)](https://www.npmjs.com/package/@pact-community/mcp-chainweb) | 11 | Chainweb HTTP API: `/local` simulation, pre-signed `/send`, poll, table reads, SPV proofs, module deploys — devnet-first with read-only public profiles |
+| [`@pact-community/mcp-devnet`](packages/mcp-devnet/) | [![npm](https://img.shields.io/npm/v/@pact-community/mcp-devnet.svg)](https://www.npmjs.com/package/@pact-community/mcp-devnet) | 6 | Devnet lifecycle: gated `docker compose` up/down/reset plus read-only status, health, and logs |
+| [`@pact-community/mcp-coordination`](packages/mcp-coordination/) | [![npm](https://img.shields.io/npm/v/@pact-community/mcp-coordination.svg)](https://www.npmjs.com/package/@pact-community/mcp-coordination) | 10 | File-backed multi-agent coordination: task queue, mailboxes, status, memory log — no network, no subprocesses |
+| [`@pact-community/mcp-shared`](packages/mcp-shared/) | [![npm](https://img.shields.io/npm/v/@pact-community/mcp-shared.svg)](https://www.npmjs.com/package/@pact-community/mcp-shared) | — | Shared security baseline library used by every server (not itself an MCP server) |
 
 ## Quick Start
 
-### From source (clone + build)
+### From npm (recommended)
 
-```bash
-git clone https://github.com/Pact-Community-Organization/pact-mcp.git
-cd pact-mcp
-pnpm install
-pnpm build
-```
-
-Then register the servers with your MCP client. For Claude Code:
+All servers are published to the public npm registry and run via `npx` — no
+clone or build required. Register them with your MCP client. For Claude Code:
 
 ```bash
 claude mcp add pact -e PACT_COMMUNITY_WORKSPACE_ROOT=/path/to/your/project \
-  -- node /path/to/pact-mcp/packages/mcp-pact/dist/bin.js
+  -- npx -y @pact-community/mcp-pact
 ```
 
 Or in JSON client configuration (Claude Desktop, Cursor, VS Code, …):
@@ -46,16 +41,16 @@ Or in JSON client configuration (Claude Desktop, Cursor, VS Code, …):
 {
   "mcpServers": {
     "pact": {
-      "command": "node",
-      "args": ["/path/to/pact-mcp/packages/mcp-pact/dist/bin.js"],
+      "command": "npx",
+      "args": ["-y", "@pact-community/mcp-pact"],
       "env": {
         "PACT_COMMUNITY_WORKSPACE_ROOT": "/path/to/your/project",
         "PACT_COMMUNITY_PACT_BIN": "pact"
       }
     },
     "chainweb": {
-      "command": "node",
-      "args": ["/path/to/pact-mcp/packages/mcp-chainweb/dist/bin.js"],
+      "command": "npx",
+      "args": ["-y", "@pact-community/mcp-chainweb"],
       "env": {
         "PACT_COMMUNITY_WORKSPACE_ROOT": "/path/to/your/project",
         "PACT_COMMUNITY_CHAINWEB_MODE": "devnet",
@@ -68,18 +63,20 @@ Or in JSON client configuration (Claude Desktop, Cursor, VS Code, …):
 }
 ```
 
-A ready-made project configuration for the pact, chainweb, and devnet servers
-ships in [`.mcp.json`](.mcp.json) (used automatically by Claude Code when you
-open this repository). The coordination server requires absolute paths, so it
-is configured per project — see its
-[README](packages/mcp-coordination/README.md). Each package README documents
-its full tool list and environment variables.
+Each package README documents its full tool list and environment variables.
 
-### From npm
+### From source (for contributors)
 
-Packages are prepared for publication to the public npm registry
-(`npx @pact-community/mcp-pact`). Until the first publish lands, use the
-from-source setup above.
+```bash
+git clone https://github.com/Pact-Community-Organization/pact-mcp.git
+cd pact-mcp
+pnpm install
+pnpm build
+```
+
+A ready-made project configuration pointing at the local builds ships in
+[`.mcp.json`](.mcp.json) (used automatically by Claude Code when you open this
+repository).
 
 ## Security Model
 

@@ -60,21 +60,16 @@ Profile allowlists (hard-coded, not configurable):
 - `testnet06`: `https://api.testnet.chainweb.com`
 - `mainnet`: `https://api.chainweb-community.org`
 
-## Quickstart
+## MCP Client Configuration
 
-```bash
-pnpm --filter @pact-community/mcp-chainweb build
-node packages/mcp-chainweb/dist/bin.js  # stdio transport
-```
-
-MCP client configuration:
+The server runs via `npx` — no install step required:
 
 ```json
 {
   "mcpServers": {
     "chainweb": {
-      "command": "node",
-      "args": ["/path/to/pact-mcp/packages/mcp-chainweb/dist/bin.js"],
+      "command": "npx",
+      "args": ["-y", "@pact-community/mcp-chainweb"],
       "env": {
         "PACT_COMMUNITY_WORKSPACE_ROOT": "/path/to/your/project",
         "PACT_COMMUNITY_CHAINWEB_MODE": "devnet",
