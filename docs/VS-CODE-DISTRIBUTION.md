@@ -1,94 +1,61 @@
-# VS Code Distribution Path for pact-mcp
+# Using pact-mcp in VS Code
 
-This document outlines practical ways to deliver Pact Community MCP servers to developers through VS Code.
+`@pact-community/mcp-pact` and `@pact-community/mcp-chainweb` are published to
+npm and the official [MCP registry](https://registry.modelcontextprotocol.io),
+so they work in VS Code (with GitHub Copilot) **today, without any extension.**
 
-## Distribution Options
+## Three ways to install (available now)
 
-1. Thin extension + external Node runtime
-- Package only VS Code glue and MCP configuration templates.
-- Depend on user-managed Node + pnpm installation.
-- Pros: smaller extension, faster publish cycle.
-- Cons: host environment drift risk.
+1. **One-click install links** — the "Install in VS Code" badges in the
+   [README](../README.md#use-in-vs-code-one-click) open VS Code with the server
+   config pre-filled. Nothing to build or maintain.
 
-2. Bundled extension with embedded server artifacts
-- Build and include `packages/*/dist` outputs in the extension package.
-- Ship curated `.mcp.json` templates in extension assets.
-- Pros: deterministic runtime for users.
-- Cons: larger VSIX and stricter update process.
+2. **MCP registry discovery** — open the **MCP Servers** view in VS Code and
+   search; both servers appear because they are in the official registry.
 
-3. Hybrid bootstrap extension (recommended)
-- Ship configuration templates in the extension.
-- On first run, install/update server packages to a controlled extension cache dir.
-- Validate checksums and versions before activation.
-- Pros: controlled updates without huge VSIX size.
+3. **Command line** — `code --add-mcp '<json>'` (see the README for the exact
+   payload).
 
-## Recommended Extension Structure
+For most users, this is the whole story. The servers run via `npx`, so VS Code
+fetches them from npm on first use and keeps them current.
 
-```text
-extension-root/
-  package.json
-  src/
-    extension.ts
-    mcp/
-      resolver.ts
-      install.ts
-      validate.ts
-      activateServers.ts
-  resources/
-    mcp/
-      mcp.template.json
-      profiles/
-        devnet.json
-        testnet06.readonly.json
-        mainnet.readonly.json
-  scripts/
-    package-servers.mjs
+## Optional: a branded Marketplace extension
+
+A published VS Code Marketplace *extension* is only worth building if you want a
+**branded storefront presence** — a "Pact Community" tile that appears when
+someone searches "Pact" or "Kadena" in the Extensions panel, with an icon,
+screenshots, and an install count. It does **not** make the servers more
+capable; the three methods above already register them with VS Code's MCP
+subsystem.
+
+If/when that presence is wanted, the modern approach is small — no bundled
+runtime, no custom installer, no cache directory (all of which the pre-npm
+design assumed and none of which is needed now that the servers are on npm):
+
+### Prerequisites
+
+- An **Azure DevOps** organization and a **Marketplace publisher** (e.g.
+  `pact-community`) — free.
+- A **Personal Access Token** scoped to *Marketplace → Manage*.
+- The **`@vscode/vsce`** CLI (`npm i -g @vscode/vsce`).
+
+### Extension shape
+
+- `package.json` with `engines.vscode`, `publisher`, a 128×128 icon, and a
+  `contributes.mcpServerDefinitionProviders` entry.
+- ~100–200 lines implementing `McpServerDefinitionProvider`, whose whole job is
+  to declare `npx -y @pact-community/mcp-pact` (and `…/mcp-chainweb`) and prompt
+  for the workspace root. VS Code launches and manages them from there.
+- `LICENSE` (Apache-2.0) and a `README` that becomes the storefront page.
+
+### Publish
+
+```bash
+vsce login pact-community      # uses the PAT
+vsce package                   # produces a .vsix
+vsce publish                   # pushes to the Marketplace
 ```
 
-Implementation notes:
-- Keep devnet as the default active profile.
-- Keep testnet06/mainnet profile files present but disabled unless explicit user opt-in is implemented.
-- Public profiles must remain read-only (`PROFILE_WRITE_BLOCKED` on mutating tools).
-- Write generated user config to workspace-local settings, never overwrite existing user customizations silently.
-
-## Marketplace Publication Prerequisites
-
-1. Publisher setup
-- Create a verified Azure DevOps publisher.
-- Reserve extension ID naming (`pact-community.pact-mcp`).
-
-2. Compliance and legal
-- Include LICENSE, privacy statement, and telemetry disclosure.
-- Document subprocess/network behavior for MCP binaries.
-
-3. Build integrity
-- Reproducible builds with locked dependencies.
-- CI must run `pnpm build`, `pnpm typecheck`, and `pnpm test` before packaging.
-
-4. Security review
-- Confirm no unsafe default network broadening.
-- Ensure mutating operations remain opt-in (`PACT_COMMUNITY_DEVNET_ALLOW_*`).
-
-## Security and Update Strategy
-
-- Default-safe profiles:
-  - Ship only devnet profile enabled by default.
-  - Ship testnet06/mainnet entries as opt-in disabled read-only profiles.
-  - Keep lifecycle-mutating devnet actions disabled unless explicit env flags are set.
-- Signed release pipeline:
-  - Tag-based releases from protected branch.
-  - Publish VSIX only from CI after full checks.
-- Update channels:
-  - Stable channel for Marketplace.
-  - Optional prerelease channel for profile refinements that preserve read-only public safety.
-- Rollback:
-  - Keep previous known-good server bundle in extension cache.
-  - Fall back automatically if startup smoke checks fail after update.
-
-## Suggested Developer Flow
-
-1. Install extension.
-2. Run command: `Pact MCP: Initialize Workspace Config`.
-3. Extension writes a valid `.mcp.json` template with `<workspace-root>` placeholders.
-4. Developer replaces placeholders and starts servers.
-5. Extension runs quick smoke checks (`tools/list`) and reports readiness.
+Optionally verify a domain you own (e.g. `pact-community.org`) for the verified
+publisher checkmark. Publishing should run from CI after the full test suite,
+on a tagged release, so the extension version tracks the server versions.

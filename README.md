@@ -35,7 +35,28 @@ that only exists in our own workspace.
 
 ## Quick Start
 
-### From npm (recommended)
+### Use in VS Code (one click)
+
+If you use VS Code with GitHub Copilot, install either server with a single
+click — no clone, no config file:
+
+[![Install mcp-pact in VS Code](https://img.shields.io/badge/VS_Code-Install_mcp--pact-0098FF?logo=visualstudiocode&logoColor=white)](vscode:mcp/install?%7B%22name%22%3A%22pact%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40pact-community/mcp-pact%22%5D%2C%22env%22%3A%7B%22PACT_COMMUNITY_WORKSPACE_ROOT%22%3A%22%24%7BworkspaceFolder%7D%22%2C%22PACT_COMMUNITY_PACT_BIN%22%3A%22pact%22%7D%7D)
+[![Install mcp-chainweb in VS Code](https://img.shields.io/badge/VS_Code-Install_mcp--chainweb-0098FF?logo=visualstudiocode&logoColor=white)](vscode:mcp/install?%7B%22name%22%3A%22chainweb%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40pact-community/mcp-chainweb%22%5D%2C%22env%22%3A%7B%22PACT_COMMUNITY_WORKSPACE_ROOT%22%3A%22%24%7BworkspaceFolder%7D%22%2C%22PACT_COMMUNITY_CHAINWEB_MODE%22%3A%22devnet%22%2C%22PACT_COMMUNITY_CHAINWEB_PROFILE%22%3A%22devnet%22%2C%22PACT_COMMUNITY_CHAINWEB_BASE_URL%22%3A%22http%3A//localhost%3A8081%22%2C%22PACT_COMMUNITY_CHAINWEB_NETWORK_ID%22%3A%22development%22%7D%7D)
+
+The button opens VS Code, pre-fills the server configuration, and asks you to
+confirm. You can also find both servers by opening the **MCP Servers** view and
+searching — they are listed in the official
+[MCP registry](https://registry.modelcontextprotocol.io). Or add from the
+command line:
+
+```bash
+code --add-mcp '{"name":"pact","command":"npx","args":["-y","@pact-community/mcp-pact"],"env":{"PACT_COMMUNITY_WORKSPACE_ROOT":"${workspaceFolder}","PACT_COMMUNITY_PACT_BIN":"pact"}}'
+```
+
+> **Using VS Code Insiders?** Replace `vscode:` with `vscode-insiders:` in the
+> links, or `code` with `code-insiders` in the command.
+
+### From npm (any MCP client)
 
 Both servers are published to the public npm registry and run via `npx` — no
 clone or build required. Register them with your MCP client. For Claude Code:
