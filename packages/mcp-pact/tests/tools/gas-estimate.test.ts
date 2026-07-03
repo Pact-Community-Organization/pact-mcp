@@ -1,6 +1,5 @@
 /**
  * @fileoverview Unit tests for pact.gas_estimate tool
- * @author Developer
  */
 
 import { describe, test, expect, beforeEach, vi } from 'vitest';

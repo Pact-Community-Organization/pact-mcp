@@ -2,7 +2,7 @@
 
 **Shared security baseline and utilities for Pact Community MCP servers.**
 
-This package implements **ADR-MCP-001** security controls that all Pact Community MCP servers must implement.
+This package implements the security controls that every pact-mcp server shares (see the repository [SECURITY.md](../../SECURITY.md) for the full baseline).
 
 ## Features
 
@@ -21,7 +21,7 @@ This package implements **ADR-MCP-001** security controls that all Pact Communit
 ```typescript
 import { startServer } from '@pact-community/mcp-shared';
 
-// [Developer] Create MCP server with security baseline
+// Create MCP server with security baseline
 const server = startServer({
   name: 'my-mcp-server',
   version: '1.0.0',
@@ -142,10 +142,10 @@ try {
 
 This package provides the foundation for all Pact Community MCP servers:
 
-- **@pact-community/mcp-pact** - Pact smart contract interactions  
-- **@pact-community/mcp-chainweb** - Chainweb API and monitoring
-- **@pact-community/mcp-deploy** - Module deployment automation
-- **@pact-community/mcp-scan** - Security scanning tools
+- **@pact-community/mcp-pact** - Pact smart contract tooling (REPL, scan, gas, diff, fmt)
+- **@pact-community/mcp-chainweb** - Chainweb API and transaction tools
+- **@pact-community/mcp-devnet** - Devnet docker lifecycle management
+- **@pact-community/mcp-coordination** - File-backed multi-agent coordination
 
 ## Security
 
@@ -159,4 +159,4 @@ See [SECURITY.md](./SECURITY.md) for security controls and threat model.
 
 ## License
 
-MIT
+[Apache-2.0](../../LICENSE)

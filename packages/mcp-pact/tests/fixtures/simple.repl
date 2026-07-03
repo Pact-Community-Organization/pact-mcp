@@ -1,5 +1,5 @@
 ;; Simple REPL test for mcp-pact testing
-;; [Developer] Basic test that should load successfully
+;; Basic test that should load successfully
 
 (begin-tx "simple-test")
 

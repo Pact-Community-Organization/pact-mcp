@@ -20,7 +20,7 @@ is load-bearing.
 | Control | File | Notes |
 | --- | --- | --- |
 | Root refusal | `src/server.ts :: resolveConfig` | exits via `REFUSE_ROOT` if `getuid() === 0` |
-| Env allowlist (ADR-MCP-001 §4) | `src/server.ts :: ALLOWED_ENV` | `validateEnv({strict:false})` — rejects unknown `PACT_COMMUNITY_*` |
+| Env allowlist (the pact-mcp security baseline §4) | `src/server.ts :: ALLOWED_ENV` | `validateEnv({strict:false})` — rejects unknown `PACT_COMMUNITY_*` |
 | Mode assertion | `src/server.ts` | `PACT_COMMUNITY_DEVNET_MODE !== 'devnet'` → `process.exit(13)` |
 | Docker binary path | `src/server.ts :: resolveDockerBinary` | override must be absolute AND exist; PATH scan otherwise |
 | Compose file resolution | `src/docker/compose.ts :: resolveComposeFile` | uses `resolveInsideWorkspace` (symlink escape protected) |

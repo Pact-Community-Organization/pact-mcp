@@ -16,7 +16,9 @@
     "dist/**/*",
     "README.md",
     "SECURITY.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "tools.lock.json",
+    "server.json"
   ],
   "scripts": {
     "build": "tsc --build",
@@ -24,7 +26,6 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
-    "lint": "echo 'lint: skipped for Phase 1.2'",
     "clean": "rm -rf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
@@ -39,7 +40,7 @@
     "vitest": "4.1.9"
   },
   "author": "Pact Community",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "homepage": "https://github.com/Pact-Community-Organization/pact-mcp/tree/main/packages/mcp-pact#readme",
   "repository": {
     "type": "git",
@@ -47,6 +48,20 @@
     "directory": "packages/mcp-pact"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  }
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "pact",
+    "kadena",
+    "chainweb",
+    "blockchain",
+    "smart-contracts"
+  ],
+  "bugs": {
+    "url": "https://github.com/Pact-Community-Organization/pact-mcp/issues"
+  },
+  "mcpName": "io.github.pact-community-organization/pact"
 }

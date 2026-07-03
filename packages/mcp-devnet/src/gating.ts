@@ -1,7 +1,6 @@
 /**
  * @fileoverview Lifecycle gating — `LIFECYCLE_FORBIDDEN` and
  *               `VOLUME_WIPE_FORBIDDEN`.
- * @author Developer
  */
 
 import { McpToolError } from '@pact-community/mcp-shared';

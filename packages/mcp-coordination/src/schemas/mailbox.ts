@@ -1,6 +1,5 @@
 /**
  * @fileoverview Zod schemas for coord mailbox tools.
- * @author Developer
  */
 
 import { z } from 'zod';

@@ -1,6 +1,5 @@
 /**
  * @fileoverview coord.status_set — set agent status.
- * @author Developer
  */
 
 import {

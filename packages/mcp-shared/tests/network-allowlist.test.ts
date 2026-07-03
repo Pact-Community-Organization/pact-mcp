@@ -1,13 +1,12 @@
 /**
  * @fileoverview Tests for network allowlist controls
- * @author Developer
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createAllowlistedFetch, validateOrigin } from '../src/network-allowlist.js';
 import { McpToolError } from '../src/errors.js';
 
-// [Developer] Mock global fetch
+// Mock global fetch
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
@@ -54,12 +53,12 @@ describe('network-allowlist', () => {
     it('should prevent subdomain attacks', async () => {
       const allowlistedFetch = createAllowlistedFetch(['http://localhost:8081']);
 
-      // [Developer] localhost.evil.com should be rejected
+      // localhost.evil.com should be rejected
       await expect(
         allowlistedFetch('http://localhost.evil.com:8081/api/test')
       ).rejects.toThrow(McpToolError);
 
-      // [Developer] evil.com/localhost should be rejected  
+      // evil.com/localhost should be rejected  
       await expect(
         allowlistedFetch('https://evil.com/localhost:8081/api/test')
       ).rejects.toThrow(McpToolError);
@@ -131,17 +130,17 @@ describe('network-allowlist', () => {
         'https://api.example.com'
       ]);
 
-      // [Developer] HTTP should work
+      // HTTP should work
       await allowlistedFetch('http://localhost:8081/api');
       expect(mockFetch).toHaveBeenCalled();
 
       mockFetch.mockClear();
 
-      // [Developer] HTTPS should work
+      // HTTPS should work
       await allowlistedFetch('https://api.example.com/api');
       expect(mockFetch).toHaveBeenCalled();
 
-      // [Developer] Wrong scheme should fail
+      // Wrong scheme should fail
       await expect(
         allowlistedFetch('https://localhost:8081/api') // HTTPS not allowed for localhost
       ).rejects.toThrow(McpToolError);
@@ -153,11 +152,11 @@ describe('network-allowlist', () => {
         'http://localhost:8082'
       ]);
 
-      // [Developer] Correct port should work
+      // Correct port should work
       await allowlistedFetch('http://localhost:8081/api');
       expect(mockFetch).toHaveBeenCalled();
 
-      // [Developer] Wrong port should fail
+      // Wrong port should fail
       await expect(
         allowlistedFetch('http://localhost:9999/api')
       ).rejects.toThrow(McpToolError);

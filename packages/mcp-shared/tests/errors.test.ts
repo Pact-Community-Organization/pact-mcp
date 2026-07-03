@@ -1,6 +1,5 @@
 /**
  * @fileoverview Tests for MCP error types and factories
- * @author Developer
  */
 
 import { describe, it, expect } from 'vitest';
@@ -67,7 +66,7 @@ describe('errors', () => {
       expect(sanitized.toolName).toBe('file-reader');
       expect(sanitized.sanitized).toBe(true);
 
-      // [Developer] Message should be sanitized
+      // Message should be sanitized
       expect(sanitized.message).toContain('[FILE_ERROR]');
       expect(sanitized.message).not.toContain('/tmp/private/module.pact');
       expect(sanitized.message).toContain('[PATH]');

@@ -1,6 +1,5 @@
 /**
  * @fileoverview pact.repl_run_many tool implementation
- * @author Developer
  * @description Sequentially runs multiple .repl files. Validates every path
  *              upfront, enforces a total wall-clock budget, and supports
  *              fail-fast semantics. Local-only. No network I/O. No shell.
@@ -15,14 +14,14 @@ import {
   McpToolError
 } from '@pact-community/mcp-shared';
 
-// [Developer] Per-file stdout cap (matches repl_run).
+// Per-file stdout cap (matches repl_run).
 const STDOUT_SIZE_CAP = 200 * 1024;
 const STDOUT_TRUNCATION_MARKER = '\n…[truncated at 200KB]';
 
-// [Developer] Wall-clock budget across all files combined. Spec: 5 minutes.
+// Wall-clock budget across all files combined. Spec: 5 minutes.
 const DEFAULT_TOTAL_BUDGET_MS = 5 * 60 * 1000;
 
-// [Developer] Max number of files per call.
+// Max number of files per call.
 const MAX_FILES = 50;
 
 export const ReplRunManyInputShape = {
@@ -75,7 +74,7 @@ export interface ReplRunManyToolConfig {
 }
 
 /**
- * [Developer] Factory for the repl_run_many handler.
+ * Factory for the repl_run_many handler.
  *
  * Contract:
  *  - Validate every path BEFORE spawning anything (fail-fast on bad inputs)
@@ -98,7 +97,7 @@ export function createReplRunManyTool(config: ReplRunManyToolConfig) {
       );
     }
 
-    // [Developer] Validate ALL paths upfront; no side effects until every
+    // Validate ALL paths upfront; no side effects until every
     // path is known-good.
     const resolved: { file: string; path: string }[] = [];
     for (const file of input.files) {
@@ -156,7 +155,7 @@ export function createReplRunManyTool(config: ReplRunManyToolConfig) {
         rawStdout = r.stdout ?? '';
         rawStderr = r.stderr ?? '';
       } catch (error) {
-        // [Developer] Record the failure but don't throw — batch should
+        // Record the failure but don't throw — batch should
         // continue unless failFast.
         rawStderr = `spawn-error: ${(error as Error).message ?? String(error)}`;
         exitCode = null;

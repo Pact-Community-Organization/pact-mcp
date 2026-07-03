@@ -1,6 +1,5 @@
 /**
  * @fileoverview Pact 5 critical trap detection rules
- * @author Developer
  * @description Deterministic static analysis for the 5 critical Pact 5 traps.
  *              No parser; regex + balanced-paren scanning per rule.
  */
@@ -102,7 +101,7 @@ const BUILTIN_NAMES = [
 const DML_OPS = ['insert', 'update', 'write', 'create-table'];
 
 /**
- * [Developer] Analyze Pact source for the 5 critical Pact 5 traps.
+ * Analyze Pact source for the 5 critical Pact 5 traps.
  */
 export function analyzeTraps(source: string): TrapAnalysis {
   const traps: DetectedTrap[] = [
@@ -124,7 +123,7 @@ export function analyzeTraps(source: string): TrapAnalysis {
   };
 }
 
-/** [Developer] Public accessor for the traps resource. */
+/** Public accessor for the traps resource. */
 export function getTrapsCatalog(): {
   version: string;
   traps: TrapCatalogEntry[];
@@ -137,7 +136,7 @@ export function getTrapsCatalog(): {
 // ---------------------------------------------------------------------------
 
 /**
- * [Developer] Non-binary +: find `(+ <arg1> <arg2> <arg3>...)` at the top of a
+ * Non-binary +: find `(+ <arg1> <arg2> <arg3>...)` at the top of a
  * parenthesised form. We scan for `(+ ` and then tokenise the balanced form.
  */
 function detectNonBinaryPlus(source: string): DetectedTrap[] {
@@ -165,7 +164,7 @@ function detectNonBinaryPlus(source: string): DetectedTrap[] {
 }
 
 /**
- * [Developer] Try DML: find `(try ...)` forms, then search inside their body
+ * Try DML: find `(try ...)` forms, then search inside their body
  * for `(insert|update|write|create-table ...)` calls.
  */
 function detectTryDml(source: string): DetectedTrap[] {
@@ -197,7 +196,7 @@ function detectTryDml(source: string): DetectedTrap[] {
 }
 
 /**
- * [Developer] Enforce DB read: find `(enforce <cond>)` and inspect <cond> for
+ * Enforce DB read: find `(enforce <cond>)` and inspect <cond> for
  * read/with-read/select/keys invocations. `with-default-read` is EXCLUDED
  * because it is itself a read-only form.
  */
@@ -230,7 +229,7 @@ function detectEnforceDbRead(source: string): DetectedTrap[] {
 }
 
 /**
- * [Developer] Built-in shadowing: any `let` / `let*` binding, `defun` param,
+ * Built-in shadowing: any `let` / `let*` binding, `defun` param,
  * or `bind` whose name is one of the Pact built-ins.
  */
 function detectBuiltinShadow(source: string): DetectedTrap[] {
@@ -269,7 +268,7 @@ function detectBuiltinShadow(source: string): DetectedTrap[] {
 }
 
 /**
- * [Developer] Bare pact-id guard: `(enforce (= (pact-id) ...))` not composed
+ * Bare pact-id guard: `(enforce (= (pact-id) ...))` not composed
  * with a capability. Heuristic: flag every occurrence; recommend wrapping in
  * a composed capability.
  */
@@ -333,7 +332,7 @@ function findMatchingClose(source: string, openIdx: number): number {
 }
 
 /**
- * [Developer] Split a parenthesised form body into top-level tokens. Strings,
+ * Split a parenthesised form body into top-level tokens. Strings,
  * line comments and nested forms are treated as single tokens.
  */
 function splitTopLevelTokens(body: string): string[] {

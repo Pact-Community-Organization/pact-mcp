@@ -1,6 +1,5 @@
 /**
  * @fileoverview Canonical Pact Community agent registry.
- * @author Developer
  */
 
 import { z } from 'zod';

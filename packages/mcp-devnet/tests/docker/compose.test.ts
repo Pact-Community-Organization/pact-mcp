@@ -1,6 +1,5 @@
 /**
  * @fileoverview Unit tests — src/docker/compose.ts
- * @author Developer
  */
 
 import fs from 'node:fs';

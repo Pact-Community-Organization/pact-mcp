@@ -1,7 +1,6 @@
 /**
  * @fileoverview Test fixture — ephemeral HTTP server mocking the Chainweb API
  *               for devnet.health tests.
- * @author Developer
  */
 
 import http from 'node:http';
@@ -24,7 +23,7 @@ export interface MockDevnetHandle {
 }
 
 /**
- * [Developer] Start an ephemeral devnet mock on 127.0.0.1:{random}. Returns
+ * Start an ephemeral devnet mock on 127.0.0.1:{random}. Returns
  * the bound origin so tests can wire it through `PACT_COMMUNITY_TEST_ALLOW_ORIGINS`
  * or pass it directly to `createHealthTool({ baseUrlFor })`.
  */
@@ -98,7 +97,7 @@ export const DEFAULT_INFO = {
 };
 
 /**
- * [Developer] Build a /cut response whose chain-0 creationTime is
+ * Build a /cut response whose chain-0 creationTime is
  * `wallSec` seconds (wall clock). `offsetSec` shifts it earlier (positive =
  * lag) to simulate the genesis-catchup delay.
  */

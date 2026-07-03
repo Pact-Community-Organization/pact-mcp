@@ -1,7 +1,6 @@
 /**
  * @fileoverview Atomic file primitives: tmp+fsync+rename, O_APPEND JSONL,
  *   tolerant readers, and full-rewrite.
- * @author Developer
  */
 
 import { promises as fsp } from 'node:fs';

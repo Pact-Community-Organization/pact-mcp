@@ -1,6 +1,5 @@
 /**
  * @fileoverview Unit tests — src/tools/health.ts
- * @author Developer
  */
 
 import { describe, it, expect, afterEach } from 'vitest';

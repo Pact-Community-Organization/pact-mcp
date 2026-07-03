@@ -9,7 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 ### Added
 - Initial release. 10 MCP tools covering task queue, mailbox, agent
   status, and scoped memory log.
-- Inline ADR-MCP-001 security baseline (uid refusal, env allowlist,
+- Inline pact-mcp security baseline (uid refusal, env allowlist,
   audit log, tool schema lockfile check).
 - Atomic writes via tmp+fsync+rename; cooperative `<path>.lock` files
   with 30s stale-lock steal; `O_APPEND` for JSONL.

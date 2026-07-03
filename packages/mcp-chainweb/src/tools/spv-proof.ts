@@ -1,6 +1,5 @@
 /**
  * @fileoverview chainweb.spv_proof - fetch an SPV proof for a cross-chain tx.
- * @author Developer
  *
  * Calls `POST /chain/<source>/pact/spv` with `{ requestKey, targetChainId }`.
  * The proof is a base64 string passed through to `chainweb.continue_pact`.
@@ -75,7 +74,7 @@ export function createSpvProofTool(config: SpvProofToolConfig) {
     };
 
     try {
-      // [Developer] Chainweb /spv returns either a JSON-encoded base64
+      // Chainweb /spv returns either a JSON-encoded base64
       // string proof OR a text status like "SPV proof not ready". Both
       // paths come back through the allowlisted fetch.
       const proof = await config.client.postJson<unknown>(path, body, {

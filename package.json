@@ -13,8 +13,8 @@
     "test": "pnpm -r --workspace-concurrency=1 test",
     "test:e2e:devnet": "pnpm --filter @pact-community/mcp-chainweb test:e2e:devnet",
     "typecheck": "pnpm -r typecheck",
-    "lint": "pnpm -r lint",
-    "audit": "pnpm -r audit --audit-level=high"
+    "audit": "pnpm -r audit --audit-level=high",
+    "lock:regen": "node scripts/regen-lockfile.mjs"
   },
   "devDependencies": {
     "@types/node": "25.9.3",
@@ -31,7 +31,7 @@
     }
   },
   "author": "Pact Community",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "homepage": "https://github.com/Pact-Community-Organization/pact-mcp#readme",
   "repository": {
     "type": "git",

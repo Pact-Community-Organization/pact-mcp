@@ -1,6 +1,5 @@
 /**
  * @fileoverview coord.mailbox_read — non-mutating inbox read.
- * @author Developer
  */
 
 import {

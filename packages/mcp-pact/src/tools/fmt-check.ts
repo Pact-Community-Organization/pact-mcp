@@ -1,6 +1,5 @@
 /**
  * @fileoverview pact.fmt_check tool implementation
- * @author Developer
  * @description Conservative formatting check for .pact and .repl files.
  *              Read-only — NEVER writes. Detects trailing whitespace, tabs,
  *              excess blank lines, missing final newline, and CRLF endings.
@@ -72,7 +71,7 @@ export function createFmtCheckTool(config: FmtCheckToolConfig) {
       );
     }
 
-    // [Developer] Validate every path BEFORE reading any content.
+    // Validate every path BEFORE reading any content.
     const resolved: { file: string; path: string }[] = [];
     for (const file of input.files) {
       if (!file.endsWith('.pact') && !file.endsWith('.repl')) {
@@ -129,7 +128,7 @@ export function createFmtCheckTool(config: FmtCheckToolConfig) {
 }
 
 /**
- * [Developer] Apply the five conservative format rules. Read-only analysis.
+ * Apply the five conservative format rules. Read-only analysis.
  */
 export function analyzeFormat(content: string): FmtIssue[] {
   const issues: FmtIssue[] = [];
@@ -141,7 +140,7 @@ export function analyzeFormat(content: string): FmtIssue[] {
 
   // Missing final newline (only if content is non-empty).
   if (content.length > 0 && !content.endsWith('\n')) {
-    // [Developer] Report at the last logical line.
+    // Report at the last logical line.
     const lastLine = content.split('\n').length;
     issues.push({ line: lastLine, kind: 'no-trailing-newline' });
   }
@@ -169,7 +168,7 @@ export function analyzeFormat(content: string): FmtIssue[] {
     if (line.trim().length === 0) {
       blankStreak++;
       if (blankStreak === 2) {
-        // [Developer] Report once per excess run, at the line where the run
+        // Report once per excess run, at the line where the run
         // first exceeds 1.
         issues.push({
           line: lineNum,

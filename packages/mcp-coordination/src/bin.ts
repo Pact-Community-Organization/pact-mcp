@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /**
  * @fileoverview MCP Coordination server binary.
- * @author Developer
  */
 
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';

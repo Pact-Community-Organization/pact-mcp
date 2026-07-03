@@ -1,7 +1,6 @@
 /**
  * @fileoverview Docker spawn wrapper with timeout, kill-escalation, size caps,
  *               and stderr/stdout capture.
- * @author Developer
  *
  * Built on top of mcp-shared's `spawnSafe` (argv-only, shell:false).
  */
@@ -48,7 +47,7 @@ export interface DockerSpawnResult {
 }
 
 /**
- * [Developer] Run the docker binary with a strict timeout and controlled
+ * Run the docker binary with a strict timeout and controlled
  * output capture. Does NOT throw on non-zero exit — callers decide what to do
  * with the structured result. Throws only on spawn-guard violations (e.g. the
  * caller passed shell metacharacters, which is a bug not a runtime failure).
@@ -116,7 +115,7 @@ export async function runDocker(
     let errorMessage: string | undefined;
     let killTimer: NodeJS.Timeout | undefined;
 
-    // [Developer] `close` fires after the process exits AND all stdio streams
+    // `close` fires after the process exits AND all stdio streams
     // close. BUT in some Node builds under load the underlying pipe buffer
     // can still have data the Readable hasn't yet emitted as 'data' — so we
     // gate `finalize` on both `close` *and* stream 'end' events where
@@ -200,7 +199,7 @@ export async function runDocker(
 }
 
 /**
- * [Developer] Convert a timeout result into a structured McpToolError so
+ * Convert a timeout result into a structured McpToolError so
  * tools can surface it consistently.
  */
 export function timeoutError(result: DockerSpawnResult): McpToolError {

@@ -1,6 +1,5 @@
 /**
  * @fileoverview Unit tests for pact.fmt_check tool
- * @author Developer
  */
 
 import { describe, test, expect } from 'vitest';
@@ -116,7 +115,7 @@ describe('analyzeFormat (pure)', () => {
 
 describe('fmt_check does not write', () => {
   test('fs.writeFileSync is never called during fmt_check', async () => {
-    // [Developer] spy on fs.writeFileSync at the package level
+    // spy on fs.writeFileSync at the package level
     const realWrite = fs.writeFileSync;
     let calls = 0;
     (fs as unknown as { writeFileSync: unknown }).writeFileSync = (

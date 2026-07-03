@@ -1,7 +1,6 @@
 /**
  * @fileoverview Filesystem access guards for MCP servers
- * @author Developer
- * @description Implements ADR-MCP-001 filesystem security controls
+ * @description Implements the pact-mcp security baseline filesystem security controls
  */
 
 import fs from 'node:fs';
@@ -11,7 +10,7 @@ import crypto from 'node:crypto';
 import { McpToolError } from './errors.js';
 
 /**
- * [Developer] Resolve path inside workspace with security checks
+ * Resolve path inside workspace with security checks
  * 
  * Prevents:
  * - Path traversal attacks (../../../etc/passwd)
@@ -25,16 +24,16 @@ import { McpToolError } from './errors.js';
  */
 export function resolveInsideWorkspace(workspaceRoot: string, userPath: string): string {
   try {
-    // [Developer] Resolve workspace root to canonical path
+    // Resolve workspace root to canonical path
     const canonicalRoot = fs.realpathSync(workspaceRoot);
     
-    // [Developer] Join user path with workspace root
+    // Join user path with workspace root
     const joinedPath = path.join(canonicalRoot, userPath);
     
-    // [Developer] Resolve to canonical path (follows symlinks)
+    // Resolve to canonical path (follows symlinks)
     const canonicalPath = fs.realpathSync(joinedPath);
     
-    // [Developer] Check if resolved path is still inside workspace
+    // Check if resolved path is still inside workspace
     if (!canonicalPath.startsWith(canonicalRoot + path.sep) && canonicalPath !== canonicalRoot) {
       throw new McpToolError(
         'FILE_OUTSIDE_WORKSPACE',
@@ -49,9 +48,9 @@ export function resolveInsideWorkspace(workspaceRoot: string, userPath: string):
       throw error;
     }
     
-    // [Developer] Handle ENOENT and other filesystem errors
+    // Handle ENOENT and other filesystem errors
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-      // [Developer] For non-existent files, validate the directory part
+      // For non-existent files, validate the directory part
       try {
         const dir = path.dirname(path.join(workspaceRoot, userPath));
         const canonicalRoot = fs.realpathSync(workspaceRoot);
@@ -65,7 +64,7 @@ export function resolveInsideWorkspace(workspaceRoot: string, userPath: string):
           );
         }
         
-        // [Developer] Return the intended path (may not exist yet)
+        // Return the intended path (may not exist yet)
         return path.join(canonicalDir, path.basename(userPath));
       } catch {
         throw new McpToolError(
@@ -85,7 +84,7 @@ export function resolveInsideWorkspace(workspaceRoot: string, userPath: string):
 }
 
 /**
- * [Developer] Create safe temporary directory
+ * Create safe temporary directory
  * 
  * Creates uniquely named temp directory under os.tmpdir() with:
  * - Process ID to avoid conflicts
@@ -114,7 +113,7 @@ export function safeTempDir(prefix: string = 'mcp'): string {
 }
 
 /**
- * [Developer] Check if path is inside workspace (without resolving)
+ * Check if path is inside workspace (without resolving)
  * 
  * Lightweight check for path validation without filesystem access.
  * Use resolveInsideWorkspace() for full security validation.
@@ -125,7 +124,7 @@ export function safeTempDir(prefix: string = 'mcp'): string {
  */
 export function isPathInsideWorkspace(workspaceRoot: string, targetPath: string): boolean {
   try {
-    // [Developer] Normalize and ensure no trailing slash for consistent comparison
+    // Normalize and ensure no trailing slash for consistent comparison
     const normalizedRoot = path.normalize(workspaceRoot).replace(/[/\\]+$/, '');
     const normalizedPath = path.normalize(path.isAbsolute(targetPath) 
       ? targetPath 

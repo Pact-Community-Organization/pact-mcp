@@ -11,6 +11,6 @@
       (let ((id (pact-id)))
         "debit step"))
     (step
-      ;; [Developer] TRAP: bare pact-id used as sole guard.
+      ;; TRAP: bare pact-id used as sole guard.
       (enforce (= (pact-id) "expected-id") "bad guard")))
 )

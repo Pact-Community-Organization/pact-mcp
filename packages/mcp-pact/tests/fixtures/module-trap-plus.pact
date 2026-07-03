@@ -8,7 +8,7 @@
 
   (defun bad-sum:decimal (a:decimal b:decimal c:decimal)
     @doc "Demonstrates ternary + operator trap"
-    ;; [Developer] This is a TRAP - + operator only accepts 2 args
+    ;; This is a TRAP - + operator only accepts 2 args
     (+ a b c))
 
   (defun good-sum:decimal (a:decimal b:decimal c:decimal)  

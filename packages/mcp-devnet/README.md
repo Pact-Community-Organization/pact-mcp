@@ -1,11 +1,13 @@
 # @pact-community/mcp-devnet
 
-Devnet Docker lifecycle MCP server — 4th and final Pact Community MCP package.
+Devnet Docker lifecycle MCP server.
 
-Wraps `docker compose` for agent-owned KDA-CE devnets:
+Wraps `docker compose` for role-scoped KDA-CE devnets. Each role owns one
+devnet stack; the compose file paths are fixed in the server (relative to the
+workspace root) so tool input can never choose an arbitrary file:
 
-| Agent     | Port  | Compose file                         |
-| --------- | ----- | ------------------------------------ |
+| Role      | Port  | Compose file (under workspace root)            |
+| --------- | ----- | ---------------------------------------------- |
 | Developer | 8081  | `pact-examples/docker-compose.forge.yml`       |
 | Tester    | 8082  | `pact-examples/docker-compose.tester.yml`      |
 | Security  | 8083  | `pact-examples/docker-compose.security.yml`    |
@@ -56,7 +58,7 @@ start unless this is set.
 
 | Variable                                | Purpose                                                          | Required      |
 | --------------------------------------- | ---------------------------------------------------------------- | ------------- |
-| `PACT_COMMUNITY_WORKSPACE_ROOT`             | Absolute path to the community workspace                        | yes           |
+| `PACT_COMMUNITY_WORKSPACE_ROOT`             | Absolute path to the workspace containing the compose files     | yes           |
 | `PACT_COMMUNITY_DEVNET_MODE`                | Must be `devnet`                                                 | yes           |
 | `PACT_COMMUNITY_DEVNET_DOCKER_BIN`          | Override docker binary (absolute path)                           | no (auto on PATH) |
 | `PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE`     | Set to `true` to allow `up`/`down`/`reset`                       | no (read-only by default) |
@@ -70,6 +72,6 @@ pnpm --filter @pact-community/mcp-devnet test           # 91 tests
 pnpm --filter @pact-community/mcp-devnet test:coverage  # funcs ≥90, lines ≥85, branches ≥80
 ```
 
-## Owner
+## License
 
-Developer — Pact Community implementation agent.
+[Apache-2.0](../../LICENSE)

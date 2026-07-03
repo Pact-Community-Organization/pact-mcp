@@ -1,6 +1,5 @@
 /**
  * @fileoverview Shared /local preflight helpers.
- * @author Developer
  *
  * The v0.2 read-only tools (`read_table`, `keys`, `principal_namespace`) and
  * the write tools (`deploy_module`, `continue_pact`) all funnel through
@@ -30,7 +29,7 @@ interface RawLocalResponse {
 }
 
 /**
- * [Developer] Build the `/local` URL with the standard MVP query params.
+ * Build the `/local` URL with the standard MVP query params.
  * `signatureVerification=false` is the correct default for unsigned
  * read-only probes; signed `/send` callers must pass `true` explicitly.
  */
@@ -49,7 +48,7 @@ export function buildLocalPath(
 }
 
 /**
- * [Developer] POST a prepared transaction (signed or unsigned) to `/local`,
+ * POST a prepared transaction (signed or unsigned) to `/local`,
  * unwrap the Pact value tree, and surface failures through the standard
  * {@link sanitizeToolOutput} chain. Does NOT throw on Pact-level failures;
  * the caller inspects `response.status`.
@@ -87,7 +86,7 @@ export async function runLocalPreflight(
 }
 
 /**
- * [Developer] Walk a Pact-value tree and run every string through the
+ * Walk a Pact-value tree and run every string through the
  * injection-marker sanitizer. Chainweb node error strings can echo
  * user-submitted tx data — attacker-controllable.
  */
@@ -109,7 +108,7 @@ export function sanitizeErrorShape(v: PactValue): PactValue {
 }
 
 /**
- * [Developer] Extract a short, sanitized human string from a preflight
+ * Extract a short, sanitized human string from a preflight
  * failure's `result` field for error messages.
  */
 export function extractErrorMessage(result: PactValue): string {

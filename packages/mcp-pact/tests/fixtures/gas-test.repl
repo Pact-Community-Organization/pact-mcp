@@ -1,5 +1,5 @@
 ;; Gas measurement test for mcp-pact testing
-;; [Developer] REPL test that measures gas consumption
+;; REPL test that measures gas consumption
 
 (env-gaslimit 1000000)
 

@@ -1,6 +1,5 @@
 /**
  * @fileoverview devnet.status tool — read-only container state query.
- * @author Developer
  */
 
 import { z } from 'zod';
@@ -47,7 +46,7 @@ export interface StatusToolConfig {
 }
 
 /**
- * [Developer] Factory returning the status handler.
+ * Factory returning the status handler.
  */
 export function createStatusTool(config: StatusToolConfig) {
   const timeoutMs = config.timeoutMs ?? 30_000;

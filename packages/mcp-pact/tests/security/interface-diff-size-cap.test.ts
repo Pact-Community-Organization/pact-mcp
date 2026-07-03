@@ -14,7 +14,7 @@ const diff = createInterfaceDiffTool({ workspaceRoot: fixtures });
 describe('interface_diff size cap', () => {
   test('rejects files exceeding 2MB', async () => {
     const big = path.join(fixtures, 'big.pact');
-    // [Developer] 2 MB + 1 byte
+    // 2 MB + 1 byte
     const buf = Buffer.alloc(2 * 1024 * 1024 + 1, 0x20);
     fs.writeFileSync(big, buf);
     try {

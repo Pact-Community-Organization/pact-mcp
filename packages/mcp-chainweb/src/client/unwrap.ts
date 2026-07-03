@@ -1,6 +1,5 @@
 /**
  * @fileoverview Recursive Pact JSON-boundary type unwrapping.
- * @author Developer
  *
  * Chainweb Pact API returns PactValue-encoded JSON. Without explicit
  * unwrapping, these objects leak into consumer logic as
@@ -61,7 +60,7 @@ function isPlainObject(x: unknown): x is Record<string, unknown> {
 }
 
 /**
- * [Developer] Recursively unwrap a Pact JSON value tree.
+ * Recursively unwrap a Pact JSON value tree.
  *
  * Never throws. Always returns a fully plain JS value (no sentinel wrappers
  * remain at any depth).

@@ -1,6 +1,5 @@
 /**
  * @fileoverview devnet.logs tool — tail container logs (read-only).
- * @author Developer
  */
 
 import { z } from 'zod';

@@ -1,6 +1,5 @@
 /**
  * @fileoverview Tests for MCP audit logging
- * @author Developer
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
@@ -9,7 +8,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { createAuditLogger } from '../src/audit-log.js';
 
-// [Developer] Mock filesystem and home directory
+// Mock filesystem and home directory
 vi.mock('node:fs');
 vi.mock('node:os');
 
@@ -19,18 +18,18 @@ const mockOs = vi.mocked(os);
 beforeEach(() => {
   vi.clearAllMocks();
   
-  // [Developer] Mock home directory
+  // Mock home directory
   mockOs.homedir.mockReturnValue('/mock/home');
   
-  // [Developer] Mock filesystem operations
+  // Mock filesystem operations
   mockFs.existsSync.mockReturnValue(false);
   mockFs.mkdirSync.mockImplementation(() => {});
   mockFs.writeFileSync.mockImplementation(() => {});
   
-  // [Developer] Mock console.error for write failures
+  // Mock console.error for write failures
   vi.spyOn(console, 'error').mockImplementation(() => {});
   
-  // [Developer] Mock Date for deterministic timestamps
+  // Mock Date for deterministic timestamps
   vi.useFakeTimers();
   vi.setSystemTime(new Date('2026-04-21T10:30:45.123Z'));
 });
@@ -128,7 +127,7 @@ describe('audit-log', () => {
 
       const logger = createAuditLogger('test-server');
       
-      // [Developer] Should not throw, just log to stderr
+      // Should not throw, just log to stderr
       expect(() => {
         logger.log({
           tool: 'test-tool',
@@ -148,7 +147,7 @@ describe('audit-log', () => {
     it('should use different log files for different dates', () => {
       const logger = createAuditLogger('test-server');
       
-      // [Developer] Log on 2026-04-21
+      // Log on 2026-04-21
       logger.log({
         tool: 'test-tool',
         inputHash: 'sha256:day1',
@@ -156,7 +155,7 @@ describe('audit-log', () => {
         durationMs: 100
       });
 
-      // [Developer] Advance to next day
+      // Advance to next day
       vi.setSystemTime(new Date('2026-04-22T10:30:45.123Z'));
       
       logger.log({
@@ -166,7 +165,7 @@ describe('audit-log', () => {
         durationMs: 200
       });
 
-      // [Developer] Should have written to different files
+      // Should have written to different files
       expect(mockFs.writeFileSync).toHaveBeenCalledWith(
         '/mock/home/.pact-community/mcp-audit.log.2026-04-21',
         expect.stringContaining('sha256:day1'),

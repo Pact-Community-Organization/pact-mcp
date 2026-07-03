@@ -1,6 +1,5 @@
 /**
  * @fileoverview pact://traps resource handler
- * @author Developer
  * @description JSON catalog of the 5 critical Pact 5 traps.
  */
 

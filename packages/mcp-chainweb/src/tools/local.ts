@@ -1,6 +1,5 @@
 /**
  * @fileoverview chainweb.local - local preflight execution of arbitrary Pact.
- * @author Developer
  *
  * Side-effect-free: executes against the node's local read-only pact service.
  * The server returns whatever Pact result the node computed, with all Pact
@@ -179,7 +178,7 @@ export function createLocalTool(config: LocalToolConfig) {
 }
 
 /**
- * [Developer] Walk a Pact-value tree and run every string through the
+ * Walk a Pact-value tree and run every string through the
  * injection-marker sanitizer. Chainweb node error strings can echo
  * user-submitted tx data — attacker-controllable.
  */
