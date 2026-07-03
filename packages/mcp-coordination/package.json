@@ -3,7 +3,7 @@
   "version": "0.1.1",
   "description": "MCP server for Pact Community multi-agent coordination \u2014 task queue, mailbox, status, memory.",
   "type": "module",
-  "private": false,
+  "private": true,
   "engines": {
     "node": ">=20.11.0"
   },
@@ -17,8 +17,7 @@
     "README.md",
     "SECURITY.md",
     "CHANGELOG.md",
-    "tools.lock.json",
-    "server.json"
+    "tools.lock.json"
   ],
   "scripts": {
     "build": "tsc --build",
@@ -47,10 +46,6 @@
     "url": "git+https://github.com/Pact-Community-Organization/pact-mcp.git",
     "directory": "packages/mcp-coordination"
   },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org"
-  },
   "keywords": [
     "mcp",
     "model-context-protocol",
@@ -62,6 +57,5 @@
   ],
   "bugs": {
     "url": "https://github.com/Pact-Community-Organization/pact-mcp/issues"
-  },
-  "mcpName": "io.github.Pact-Community-Organization/coordination"
+  }
 }

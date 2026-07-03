@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Curated the published surface for community launch: `mcp-pact` and
+  `mcp-chainweb` (plus the `mcp-shared` library) are the supported public
+  packages, bumped to 0.2.2 with MCP-registry listing metadata (title,
+  website). `mcp-devnet` and `mcp-coordination` are now internal, unpublished
+  workspace tools — withdrawn from npm and the MCP registry, still built and
+  tested in CI.
+
 ### Fixed
 - Lock steal race in `mcp-coordination` that could delete a live lock mid-write
   (empty/malformed lock payloads are no longer treated as epoch-stale)

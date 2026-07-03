@@ -144,8 +144,8 @@ This package provides the foundation for all Pact Community MCP servers:
 
 - **@pact-community/mcp-pact** - Pact smart contract tooling (REPL, scan, gas, diff, fmt)
 - **@pact-community/mcp-chainweb** - Chainweb API and transaction tools
-- **@pact-community/mcp-devnet** - Devnet docker lifecycle management
-- **@pact-community/mcp-coordination** - File-backed multi-agent coordination
+- **mcp-devnet** - Devnet docker lifecycle management *(internal, unpublished)*
+- **mcp-coordination** - File-backed multi-agent coordination *(internal, unpublished)*
 
 ## Security
 

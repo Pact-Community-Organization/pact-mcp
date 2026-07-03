@@ -1,6 +1,6 @@
 {
   "name": "@pact-community/mcp-chainweb",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "MCP server for Kadena chainweb HTTP API - devnet-first with read-only public profiles (info, chain_time, local, send, poll, read_table, keys, principal_namespace, deploy_module, continue_pact, spv_proof)",
   "type": "module",
   "private": false,

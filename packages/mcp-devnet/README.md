@@ -2,6 +2,11 @@
 
 Devnet Docker lifecycle MCP server.
 
+> **Internal tooling — not published.** This server assumes our workspace's
+> compose files (`pact-examples/docker-compose.*.yml`) and port layout, which
+> do not exist outside our own environment. It is built and tested in CI but
+> intentionally not distributed on npm or the MCP registry.
+
 Wraps `docker compose` for role-scoped KDA-CE devnets. Each role owns one
 devnet stack; the compose file paths are fixed in the server (relative to the
 workspace root) so tool input can never choose an arbitrary file:
@@ -41,7 +46,7 @@ start unless this is set.
 
 ## MCP Client Configuration
 
-The server runs via `npx` — no install step required. Read-only tools work out
+Build from this repository, then point your client at the local output. Read-only tools work out
 of the box; lifecycle mutations stay disabled unless you opt in with the
 `PACT_COMMUNITY_DEVNET_ALLOW_*` flags below.
 
@@ -49,8 +54,8 @@ of the box; lifecycle mutations stay disabled unless you opt in with the
 {
   "mcpServers": {
     "devnet": {
-      "command": "npx",
-      "args": ["-y", "@pact-community/mcp-devnet"],
+      "command": "node",
+      "args": ["/path/to/pact-mcp/packages/mcp-devnet/dist/bin.js"],
       "env": {
         "PACT_COMMUNITY_WORKSPACE_ROOT": "/path/to/your/project",
         "PACT_COMMUNITY_DEVNET_MODE": "devnet",

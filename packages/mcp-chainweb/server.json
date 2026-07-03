@@ -6,13 +6,13 @@
     "url": "https://github.com/Pact-Community-Organization/pact-mcp",
     "source": "github"
   },
-  "version": "0.2.1",
+  "version": "0.2.2",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@pact-community/mcp-chainweb",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "transport": {
         "type": "stdio"
       },
@@ -49,5 +49,7 @@
         }
       ]
     }
-  ]
+  ],
+  "title": "Chainweb API",
+  "websiteUrl": "https://github.com/Pact-Community-Organization/pact-mcp"
 }

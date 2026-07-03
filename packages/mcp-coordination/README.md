@@ -43,12 +43,16 @@ keep mailbox and status paths predictable):
 Both roots must be **absolute** paths, and the coordination root's parent
 must exist:
 
+> **Internal tooling — not published.** This server encodes our workspace's
+> fixed agent roster and is not distributed on npm or the MCP registry. Build
+> it from this repository and point your client at the local output:
+
 ```json
 {
   "mcpServers": {
     "coordination": {
-      "command": "npx",
-      "args": ["-y", "@pact-community/mcp-coordination"],
+      "command": "node",
+      "args": ["/path/to/pact-mcp/packages/mcp-coordination/dist/bin.js"],
       "env": {
         "PACT_COMMUNITY_WORKSPACE_ROOT": "/path/to/your/project",
         "PACT_COMMUNITY_COORDINATION_ROOT": "/path/to/your/project/coordination"

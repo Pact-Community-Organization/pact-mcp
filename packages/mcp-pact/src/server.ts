@@ -55,7 +55,7 @@ import {
 } from './resources/traps-catalog.js';
 
 export const SERVER_NAME = 'pact-community-pact';
-export const SERVER_VERSION = '0.2.1';
+export const SERVER_VERSION = '0.2.2';
 
 /** Environment variables the server accepts from its parent process. */
 export const ALLOWED_ENV = [

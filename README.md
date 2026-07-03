@@ -9,9 +9,9 @@
 Kadena-style Chainweb networks (KDA-CE).**
 
 Give your AI agent safe, auditable access to the full Pact development loop:
-run REPL tests, scan modules for critical language traps, estimate gas, query
-and submit to Chainweb nodes, and manage local devnets — all behind a strict,
-tested security baseline.
+run REPL tests, scan modules for critical language traps, estimate gas, and
+query and submit to Chainweb nodes — all behind a strict, tested security
+baseline.
 
 ## Servers
 
@@ -19,15 +19,25 @@ tested security baseline.
 |---------|-----|-------|---------|
 | [`@pact-community/mcp-pact`](packages/mcp-pact/) | [![npm](https://img.shields.io/npm/v/@pact-community/mcp-pact.svg)](https://www.npmjs.com/package/@pact-community/mcp-pact) | 6 | Pact CLI tooling: REPL test runs, static trap scanning, gas estimation, interface diff, format check |
 | [`@pact-community/mcp-chainweb`](packages/mcp-chainweb/) | [![npm](https://img.shields.io/npm/v/@pact-community/mcp-chainweb.svg)](https://www.npmjs.com/package/@pact-community/mcp-chainweb) | 11 | Chainweb HTTP API: `/local` simulation, pre-signed `/send`, poll, table reads, SPV proofs, module deploys — devnet-first with read-only public profiles |
-| [`@pact-community/mcp-devnet`](packages/mcp-devnet/) | [![npm](https://img.shields.io/npm/v/@pact-community/mcp-devnet.svg)](https://www.npmjs.com/package/@pact-community/mcp-devnet) | 6 | Devnet lifecycle: gated `docker compose` up/down/reset plus read-only status, health, and logs |
-| [`@pact-community/mcp-coordination`](packages/mcp-coordination/) | [![npm](https://img.shields.io/npm/v/@pact-community/mcp-coordination.svg)](https://www.npmjs.com/package/@pact-community/mcp-coordination) | 10 | File-backed multi-agent coordination: task queue, mailboxes, status, memory log — no network, no subprocesses |
-| [`@pact-community/mcp-shared`](packages/mcp-shared/) | [![npm](https://img.shields.io/npm/v/@pact-community/mcp-shared.svg)](https://www.npmjs.com/package/@pact-community/mcp-shared) | — | Shared security baseline library used by every server (not itself an MCP server) |
+| [`@pact-community/mcp-shared`](packages/mcp-shared/) | [![npm](https://img.shields.io/npm/v/@pact-community/mcp-shared.svg)](https://www.npmjs.com/package/@pact-community/mcp-shared) | — | Shared security baseline library used by both servers (not itself an MCP server) |
+
+Both servers are also listed in the official
+[MCP registry](https://registry.modelcontextprotocol.io) under
+`io.github.Pact-Community-Organization/pact` and
+`io.github.Pact-Community-Organization/chainweb`.
+
+This repository additionally contains two **internal, unpublished** workspace
+tools — [`mcp-devnet`](packages/mcp-devnet/) (docker devnet lifecycle bound to
+our workspace layout) and [`mcp-coordination`](packages/mcp-coordination/)
+(file-backed agent coordination with a fixed roster). They are built and
+tested in CI but intentionally not distributed: they assume infrastructure
+that only exists in our own workspace.
 
 ## Quick Start
 
 ### From npm (recommended)
 
-All servers are published to the public npm registry and run via `npx` — no
+Both servers are published to the public npm registry and run via `npx` — no
 clone or build required. Register them with your MCP client. For Claude Code:
 
 ```bash
@@ -65,6 +75,29 @@ Or in JSON client configuration (Claude Desktop, Cursor, VS Code, …):
 
 Each package README documents its full tool list and environment variables.
 
+### Your first 10 minutes
+
+1. **Install the Pact CLI** (needed by `mcp-pact` for REPL runs and gas
+   estimation): download a release from
+   [kadena-io/pact-5](https://github.com/kadena-io/pact-5/releases), put
+   `pact` on your `PATH`, and check it with `pact --version`.
+2. **Add the servers** to your MCP client using the config above, with
+   `PACT_COMMUNITY_WORKSPACE_ROOT` pointing at your contract project.
+3. **Try it** — ask your agent things like:
+   - *"Scan `contracts/token.pact` for critical Pact 5 traps"* → `pact.module_scan`
+     flags non-binary `+`, DB reads inside `enforce`, built-in shadowing, and more.
+   - *"Run `tests/token.repl` and summarize the failures"* → `pact.repl_run`
+     executes the file with the real Pact interpreter and parses the results.
+   - *"Diff the public interface of `token.pact` against `token-v2.pact`"* →
+     `pact.interface_diff` reports added/removed/changed functions and whether
+     the change is breaking.
+   - With a local devnet running: *"What's the current block height on chain 0?"*
+     → `chainweb.info` / `chainweb.chain_time` against `http://localhost:8081`.
+
+No devnet? Everything in `mcp-pact` works with just the CLI. For `mcp-chainweb`,
+any Chainweb-compatible node works — point `PACT_COMMUNITY_CHAINWEB_BASE_URL` at
+it, or use the read-only `testnet06`/`mainnet` profiles to query public networks.
+
 ### From source (for contributors)
 
 ```bash
@@ -100,8 +133,8 @@ never accept private keys: signatures must be produced externally (Ledger,
 |---|---|---|---|---|
 | `@pact-community/mcp-pact` | ✅ | ✅ | planned | planned |
 | `@pact-community/mcp-chainweb` | — | ✅ | ✅ read-only | ✅ read-only |
-| `@pact-community/mcp-devnet` | — | ✅ | — | — |
-| `@pact-community/mcp-coordination` | ✅ (offline) | ✅ (offline) | ✅ (offline) | ✅ (offline) |
+| `mcp-devnet` *(internal, unpublished)* | — | ✅ | — | — |
+| `mcp-coordination` *(internal, unpublished)* | ✅ (offline) | ✅ (offline) | ✅ (offline) | ✅ (offline) |
 
 Network posture: `mcp-chainweb` defaults to the `devnet` profile. The opt-in
 `testnet06` and `mainnet` profiles are read-only — write tools return

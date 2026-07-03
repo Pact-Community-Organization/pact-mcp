@@ -2,7 +2,9 @@
   "mcpServers": {
     "pact": {
       "command": "node",
-      "args": ["./packages/mcp-pact/dist/bin.js"],
+      "args": [
+        "./packages/mcp-pact/dist/bin.js"
+      ],
       "env": {
         "PACT_COMMUNITY_WORKSPACE_ROOT": ".",
         "PACT_COMMUNITY_PACT_BIN": "pact"
@@ -10,23 +12,15 @@
     },
     "chainweb": {
       "command": "node",
-      "args": ["./packages/mcp-chainweb/dist/bin.js"],
+      "args": [
+        "./packages/mcp-chainweb/dist/bin.js"
+      ],
       "env": {
         "PACT_COMMUNITY_WORKSPACE_ROOT": ".",
         "PACT_COMMUNITY_CHAINWEB_MODE": "devnet",
         "PACT_COMMUNITY_CHAINWEB_PROFILE": "devnet",
         "PACT_COMMUNITY_CHAINWEB_BASE_URL": "http://localhost:8081",
         "PACT_COMMUNITY_CHAINWEB_NETWORK_ID": "development"
-      }
-    },
-    "devnet": {
-      "command": "node",
-      "args": ["./packages/mcp-devnet/dist/bin.js"],
-      "env": {
-        "PACT_COMMUNITY_WORKSPACE_ROOT": ".",
-        "PACT_COMMUNITY_DEVNET_MODE": "devnet",
-        "PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE": "false",
-        "PACT_COMMUNITY_DEVNET_ALLOW_VOLUME_WIPE": "false"
       }
     }
   }
