@@ -1,6 +1,5 @@
 /**
  * @fileoverview Zod schemas for coord task tools.
- * @author Developer
  */
 
 import { z } from 'zod';

@@ -1,6 +1,5 @@
 /**
  * @fileoverview coord.mailbox_ack — set readAt on selected messages.
- * @author Developer
  */
 
 import { promises as fsp } from 'node:fs';

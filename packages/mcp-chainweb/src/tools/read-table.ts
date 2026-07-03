@@ -1,6 +1,5 @@
 /**
  * @fileoverview chainweb.read_table - read a single Pact table row via /local.
- * @author Developer
  *
  * Thin wrapper over the `/local` preflight machinery that executes
  *   `(read <module>.<table> "<key>")`
@@ -26,7 +25,7 @@ import {
 const CHAIN_ID_REGEX = /^(1?[0-9])$/;
 const MODULE_REGEX = /^[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,127}$/;
 const TABLE_REGEX = /^[a-zA-Z_][a-zA-Z0-9_-]{0,63}$/;
-// [Developer] Keys must not contain `"` or `\` — prevents Pact code
+// Keys must not contain `"` or `\` — prevents Pact code
 // injection via the composed `(read module.table "key")` expression.
 // Principals, hex, k:/w: accounts, dots, dashes, numerics are all allowed.
 const KEY_UNSAFE_CHARS = /["\\]/;
@@ -81,7 +80,7 @@ export interface ReadTableToolConfig {
 const ROW_JSON_CAP = 1_048_576;
 
 /**
- * [Developer] Heuristic "row not found" detection. Pact emits messages
+ * Heuristic "row not found" detection. Pact emits messages
  * matching /row not found/i when `read` fails due to a missing key. We do
  * NOT rely on an exact string — we defensively match common substrings.
  */
@@ -98,7 +97,7 @@ export function createReadTableTool(config: ReadTableToolConfig) {
   ): Promise<{ content: ReadTableResult[] }> {
     const input = ReadTableInputSchema.parse(args);
 
-    // [Developer] Key is validated at the zod layer to contain no `"` or
+    // Key is validated at the zod layer to contain no `"` or
     // `\`, so direct interpolation into Pact source is safe.
     const code = `(read ${input.module}.${input.table} "${input.key}")`;
     const tx = Pact.builder
@@ -135,7 +134,7 @@ export function createReadTableTool(config: ReadTableToolConfig) {
       );
     }
 
-    // [Developer] Size guard.
+    // Size guard.
     const asString = JSON.stringify(pre.result ?? null);
     if (asString.length > ROW_JSON_CAP) {
       return {

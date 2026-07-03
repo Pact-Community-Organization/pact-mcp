@@ -1,11 +1,10 @@
 /**
  * @fileoverview MCP error types and factories
- * @author Developer
  * @description Structured error handling for MCP security controls
  */
 
 /**
- * [Developer] Base MCP tool error with structured metadata
+ * Base MCP tool error with structured metadata
  */
 export class McpToolError extends Error {
   /** Error code for programmatic handling */
@@ -33,14 +32,14 @@ export class McpToolError extends Error {
     this.sanitized = false; // Default to unsanitized
     this.toolName = toolName;
 
-    // [Developer] Maintain proper stack trace
+    // Maintain proper stack trace
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, McpToolError);
     }
   }
 
   /**
-   * [Developer] Create sanitized copy of error (removes sensitive details)
+   * Create sanitized copy of error (removes sensitive details)
    */
   sanitize(): McpToolError {
     const sanitized = new McpToolError(
@@ -50,17 +49,17 @@ export class McpToolError extends Error {
       this.toolName
     );
     
-    // [Developer] Mark as sanitized
+    // Mark as sanitized
     (sanitized as any).sanitized = true;
     
     return sanitized;
   }
 
   /**
-   * [Developer] Get sanitized error message
+   * Get sanitized error message
    */
   private getSanitizedMessage(): string {
-    // [Developer] Remove potential path information
+    // Remove potential path information
     let message = this.message
       .replace(/\/[^\s]+/g, '[PATH]') // Unix paths
       .replace(/[A-Za-z]:\\[^\s]+/g, '[PATH]') // Windows paths
@@ -71,7 +70,7 @@ export class McpToolError extends Error {
   }
 
   /**
-   * [Developer] Custom JSON serialization to handle Error properties
+   * Custom JSON serialization to handle Error properties
    */
   toJSON() {
     const obj: any = {
@@ -86,7 +85,7 @@ export class McpToolError extends Error {
       obj.toolName = this.toolName;
     }
     
-    // [Developer] Handle circular references by omitting them
+    // Handle circular references by omitting them
     return JSON.parse(JSON.stringify(obj, (key, value) => {
       // Skip circular references
       if (typeof value === 'object' && value !== null) {
@@ -97,7 +96,7 @@ export class McpToolError extends Error {
   }
 }
 
-// [Developer] Error code constants for common scenarios (frozen for immutability)
+// Error code constants for common scenarios (frozen for immutability)
 export const ErrorCodes = Object.freeze({
   // Security violations
   ROOT_EXECUTION: 'ROOT_EXECUTION',
@@ -151,7 +150,7 @@ export const ErrorCodes = Object.freeze({
   SPAWN_TIMEOUT: 'SPAWN_TIMEOUT'
 } as const);
 
-// [Developer] Factory functions for common errors
+// Factory functions for common errors
 
 export function createSecurityError(code: string, message: string): McpToolError {
   return new McpToolError(code, message, false);

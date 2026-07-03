@@ -1,23 +1,22 @@
 /**
  * @fileoverview Shared Zod schemas for Pact Community MCP servers
- * @author Developer
  * @description Common validation schemas for KDA-CE blockchain data
  */
 
 import { z } from 'zod';
 
 /**
- * [Developer] Kadena chain ID (0-19 for KDA-CE)
+ * Kadena chain ID (0-19 for KDA-CE)
  */
 export const ChainId = z.number().int().min(0).max(19);
 
 /**
- * [Developer] Network identifiers for KDA-CE
+ * Network identifiers for KDA-CE
  */
 export const NetworkId = z.enum(['development', 'testnet06', 'mainnet01']);
 
 /**
- * [Developer] Pact account name validation
+ * Pact account name validation
  * 
  * Based on Pact account naming rules:
  * - 3-256 characters
@@ -30,7 +29,7 @@ export const AccountName = z
   .regex(/^[a-zA-Z0-9._:-]+$/, 'Account name can only contain alphanumeric characters, dots, hyphens, underscores, and colons');
 
 /**
- * [Developer] Pact decimal string format
+ * Pact decimal string format
  * 
  * Matches Pact decimal representation: optional sign, digits, optional decimal point and more digits
  */
@@ -39,7 +38,7 @@ export const PactDecimal = z
   .regex(/^-?\d+(\.\d+)?$/, 'Must be a valid decimal string');
 
 /**
- * [Developer] Kadena public key (64-character hex)
+ * Kadena public key (64-character hex)
  */
 export const PublicKey = z
   .string()
@@ -47,7 +46,7 @@ export const PublicKey = z
   .regex(/^[a-fA-F0-9]+$/, 'Must be 64-character hexadecimal string');
 
 /**
- * [Developer] Pact Community agent identifiers
+ * Pact Community agent identifiers
  */
 export const AgentId = z.enum([
   'Orchestrator',
@@ -63,7 +62,7 @@ export const AgentId = z.enum([
 ]);
 
 /**
- * [Developer] Transaction hash (64-character hex)
+ * Transaction hash (64-character hex)
  */
 export const TxHash = z
   .string()
@@ -71,7 +70,7 @@ export const TxHash = z
   .regex(/^[a-fA-F0-9]+$/, 'Must be 64-character hexadecimal transaction hash');
 
 /**
- * [Developer] Block hash (64-character hex)  
+ * Block hash (64-character hex)  
  */
 export const BlockHash = z
   .string()
@@ -79,7 +78,7 @@ export const BlockHash = z
   .regex(/^[a-fA-F0-9]+$/, 'Must be 64-character hexadecimal block hash');
 
 /**
- * [Developer] Pact capability name
+ * Pact capability name
  */
 export const CapabilityName = z
   .string()
@@ -88,7 +87,7 @@ export const CapabilityName = z
   .regex(/^[a-zA-Z][a-zA-Z0-9._-]*$/, 'Capability name must start with letter and contain only alphanumeric, dots, hyphens, underscores');
 
 /**
- * [Developer] Module name (namespace.module format)
+ * Module name (namespace.module format)
  */
 export const ModuleName = z
   .string()
@@ -97,7 +96,7 @@ export const ModuleName = z
   .regex(/^[a-zA-Z][a-zA-Z0-9_-]*\.[a-zA-Z][a-zA-Z0-9_-]*$/, 'Module name must be in format: namespace.module (namespace must start with letter)');
 
 /**
- * [Developer] Keyset name validation
+ * Keyset name validation
  */
 export const KeysetName = z
   .string()
@@ -106,7 +105,7 @@ export const KeysetName = z
   .regex(/^[a-zA-Z0-9._-]+$/, 'Keyset name can only contain alphanumeric characters, dots, hyphens, and underscores');
 
 /**
- * [Developer] Gas limit (must not exceed KDA-CE limit)
+ * Gas limit (must not exceed KDA-CE limit)
  */
 export const GasLimit = z
   .number()
@@ -115,7 +114,7 @@ export const GasLimit = z
   .max(150_000, 'Gas limit cannot exceed 150,000 on KDA-CE');
 
 /**
- * [Developer] Gas price (typical range for KDA-CE)
+ * Gas price (typical range for KDA-CE)
  */
 export const GasPrice = z
   .number()
@@ -124,7 +123,7 @@ export const GasPrice = z
   .max(1000);
 
 /**
- * [Developer] TTL in seconds (reasonable bounds)
+ * TTL in seconds (reasonable bounds)
  */
 export const TTL = z
   .number()
@@ -133,14 +132,14 @@ export const TTL = z
   .max(86400, 'TTL cannot exceed 24 hours'); // 24 hours max
 
 /**
- * [Developer] Creation time (Unix timestamp in seconds)
+ * Creation time (Unix timestamp in seconds)
  */
 export const CreationTime = z
   .number()
   .int()
   .positive();
 
-// [Developer] Type exports for TypeScript usage
+// Type exports for TypeScript usage
 export type ChainIdType = z.infer<typeof ChainId>;
 export type NetworkIdType = z.infer<typeof NetworkId>;
 export type AccountNameType = z.infer<typeof AccountName>;

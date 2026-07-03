@@ -1,148 +1,151 @@
-# Pact Community MCP Servers
+# pact-mcp — MCP Servers for Pact & Chainweb
 
-**Model Context Protocol servers for Pact Community blockchain tooling.**
+[![CI](https://github.com/Pact-Community-Organization/pact-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Pact-Community-Organization/pact-mcp/actions/workflows/ci.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Node >= 20.11](https://img.shields.io/badge/node-%3E%3D20.11-brightgreen.svg)](package.json)
 
-This monorepo provides secure, audited MCP servers for Kadena Community Edition (KDA-CE) blockchain interactions, following ADR-MCP-001 security baseline.
+**Model Context Protocol servers for Pact 5 smart-contract development on
+Kadena-style Chainweb networks (KDA-CE).**
 
-## Architecture Overview
+Give your AI agent safe, auditable access to the full Pact development loop:
+run REPL tests, scan modules for critical language traps, estimate gas, query
+and submit to Chainweb nodes, and manage local devnets — all behind a strict,
+tested security baseline.
 
-- **Security-first design**: All servers implement audit logging, input sanitization, and capability restrictions
-- **Kadena-native**: Built specifically for Pact 5 smart contracts on KDA-CE 20-chain architecture
-- **Multi-agent integration**: Designed for Pact Community 11-agent community workspace
+## Servers
 
-## Browser MCP
-
-Two external MCP servers provide visual testing capabilities:
-
-| Server | Purpose | Agent Usage |
-|--------|---------|-------------|
-| **Playwright** | Browser automation, screenshots, accessibility testing | WebDev (UI verification), Tester (visual testing), Security (accessibility audit) |
-| **Chrome DevTools** | Live DOM/CSS inspection, network analysis, console logs | All agents for diagnosing visual test failures |
-
-### Security
-
-- **Allowed origins**: Restricted to local dev servers (`localhost:3000-4321`) and devnet (`localhost:8081-8083`)
-- **Isolated sessions**: Clean browser profile per session, no persistent data 
-- **Output containment**: Screenshots and traces saved to `/docs/artifacts/playwright-mcp/`
-
-### Example Usage
-
-```
-# Take accessibility snapshot
-"Navigate to http://localhost:3000 and capture an accessibility tree snapshot"
-
-# Visual regression test
-"Screenshot the login form at http://localhost:3000/login and highlight interactive elements"
-
-# DevTools inspection
-"Connect to Chrome and inspect the network requests when submitting the form"
-```
-
-## Packages
-
-| Package | Purpose | Status |
-|---------|---------|--------|
-| [`@pact-community/mcp-shared`](packages/mcp-shared/) | Common security baseline and utilities | ✅ |
-| [`@pact-community/mcp-pact`](packages/mcp-pact/) | Pact smart contract interactions | 🚧 Phase 1.2 |
-| [`@pact-community/mcp-chainweb`](packages/mcp-chainweb/) | Chainweb API and transaction monitoring | 🚧 Phase 1.2 |
-| [`@pact-community/mcp-devnet`](packages/mcp-devnet/) | Devnet lifecycle and environment operations | ✅ |
-| [`@pact-community/mcp-coordination`](packages/mcp-coordination/) | Task, mailbox, and status coordination tooling | ✅ |
+| Package | Tools | Purpose |
+|---------|-------|---------|
+| [`@pact-community/mcp-pact`](packages/mcp-pact/) | 6 | Pact CLI tooling: REPL test runs, static trap scanning, gas estimation, interface diff, format check |
+| [`@pact-community/mcp-chainweb`](packages/mcp-chainweb/) | 11 | Chainweb HTTP API: `/local` simulation, pre-signed `/send`, poll, table reads, SPV proofs, module deploys — devnet-first with read-only public profiles |
+| [`@pact-community/mcp-devnet`](packages/mcp-devnet/) | 6 | Devnet lifecycle: gated `docker compose` up/down/reset plus read-only status, health, and logs |
+| [`@pact-community/mcp-coordination`](packages/mcp-coordination/) | 10 | File-backed multi-agent coordination: task queue, mailboxes, status, memory log — no network, no subprocesses |
+| [`@pact-community/mcp-shared`](packages/mcp-shared/) | — | Shared security baseline library used by every server (not itself an MCP server) |
 
 ## Quick Start
 
+### From source (clone + build)
+
 ```bash
-# Install dependencies
+git clone https://github.com/Pact-Community-Organization/pact-mcp.git
+cd pact-mcp
 pnpm install
-
-# Build all packages
 pnpm build
-
-# Run tests
-pnpm test
-
-# Security audit
-pnpm audit
 ```
 
-## Security
+Then register the servers with your MCP client. For Claude Code:
 
-- All servers implement **ADR-MCP-001** security baseline
-- Audit logs at `~/.pact-community/mcp-audit.log.YYYY-MM-DD`
-- Input sanitization prevents prompt injection
-- Network/filesystem access controlled via allowlists
-- Tool schema drift detection via `tools.lock.json`
+```bash
+claude mcp add pact -e PACT_COMMUNITY_WORKSPACE_ROOT=/path/to/your/project \
+  -- node /path/to/pact-mcp/packages/mcp-pact/dist/bin.js
+```
 
-See [SECURITY.md](SECURITY.md) for threat model and baseline checklist.
+Or in JSON client configuration (Claude Desktop, Cursor, VS Code, …):
 
-## Development
+```json
+{
+  "mcpServers": {
+    "pact": {
+      "command": "node",
+      "args": ["/path/to/pact-mcp/packages/mcp-pact/dist/bin.js"],
+      "env": {
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "/path/to/your/project",
+        "PACT_COMMUNITY_PACT_BIN": "pact"
+      }
+    },
+    "chainweb": {
+      "command": "node",
+      "args": ["/path/to/pact-mcp/packages/mcp-chainweb/dist/bin.js"],
+      "env": {
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "/path/to/your/project",
+        "PACT_COMMUNITY_CHAINWEB_MODE": "devnet",
+        "PACT_COMMUNITY_CHAINWEB_PROFILE": "devnet",
+        "PACT_COMMUNITY_CHAINWEB_BASE_URL": "http://localhost:8081",
+        "PACT_COMMUNITY_CHAINWEB_NETWORK_ID": "development"
+      }
+    }
+  }
+}
+```
 
-- **Node.js**: >=20.11.0
-- **Package manager**: pnpm >=9
-- **TypeScript**: Strict mode with composite references
-- **Testing**: Vitest with ≥90% function coverage requirement
+A ready-made project configuration for the pact, chainweb, and devnet servers
+ships in [`.mcp.json`](.mcp.json) (used automatically by Claude Code when you
+open this repository). The coordination server requires absolute paths, so it
+is configured per project — see its
+[README](packages/mcp-coordination/README.md). Each package README documents
+its full tool list and environment variables.
+
+### From npm
+
+Packages are prepared for publication to the public npm registry
+(`npx @pact-community/mcp-pact`). Until the first publish lands, use the
+from-source setup above.
+
+## Security Model
+
+Every server implements the same tested baseline (see [SECURITY.md](SECURITY.md)):
+
+- **Root refusal** — exits immediately when run as uid 0
+- **Audit logging** — every tool call logged with SHA-256 input hashes (never raw inputs) to `~/.pact-community/`
+- **Prompt-injection stripping** — tool outputs are sanitized before they reach the model
+- **Tool schema locking** — servers refuse to start if a tool schema drifts from the shipped `tools.lock.json`
+- **Network allowlists** — only approved origins are reachable; public Chainweb profiles are read-only
+- **Filesystem boundaries** — path traversal and symlink escapes are rejected
+- **Safe spawning** — no shells, argument validation, binary allowlists
+
+`chainweb.send`, `chainweb.deploy_module`, and `chainweb.continue_pact`
+never accept private keys: signatures must be produced externally (Ledger,
+`@kadena/client`, …) and passed in pre-signed.
 
 ## Support Matrix
 
-Status labels:
-
-- `implemented`: supported and covered by default test lane
-- `experimental`: available but still stabilizing
-- `planned`: design intent exists but not shipped
-- `not supported`: intentionally unavailable
-
-### Per package
-
 | Package | Local Pact CLI | Local Devnet | Testnet | Mainnet |
 |---|---|---|---|---|
-| `@pact-community/mcp-shared` | implemented | implemented | implemented | implemented |
-| `@pact-community/mcp-pact` | implemented | implemented | planned | planned |
-| `@pact-community/mcp-chainweb` | not supported | implemented | implemented (read-only) | implemented (read-only) |
-| `@pact-community/mcp-devnet` | not supported | implemented | not supported | not supported |
-| `@pact-community/mcp-coordination` | implemented | implemented | implemented | implemented |
+| `@pact-community/mcp-pact` | ✅ | ✅ | planned | planned |
+| `@pact-community/mcp-chainweb` | — | ✅ | ✅ read-only | ✅ read-only |
+| `@pact-community/mcp-devnet` | — | ✅ | — | — |
+| `@pact-community/mcp-coordination` | ✅ (offline) | ✅ (offline) | ✅ (offline) | ✅ (offline) |
 
-### Network posture
-
-- `mcp-chainweb` defaults to the `devnet` profile.
-- `mcp-chainweb` supports opt-in public profiles: `testnet06` and `mainnet`.
-- Public profiles are read-only: `chainweb.send`, `chainweb.deploy_module`, and `chainweb.continue_pact` return `PROFILE_WRITE_BLOCKED`.
+Network posture: `mcp-chainweb` defaults to the `devnet` profile. The opt-in
+`testnet06` and `mainnet` profiles are read-only — write tools return
+`PROFILE_WRITE_BLOCKED`.
 
 ## Validation Proof Levels
 
-| Proof level | Lane | What it proves | What it does not prove |
-|---|---|---|---|
-| L1 | Unit tests (`pnpm test`) | Tool registration, schema validation, local logic, error handling | Live node connectivity, real network timing |
-| L2 | Binary smoke tests (`pnpm test`) | Built MCP binaries start and return healthful response shapes over stdio | Full devnet behavior under real chain state |
-| L3 | Devnet E2E lane (`PACT_COMMUNITY_ENABLE_DEVNET_E2E=true pnpm test:e2e:devnet`) | End-to-end read flow against live devnet (`info`, `local`, `keys`) with account-agnostic local/keys probes | Production network behavior, signing custody, finality guarantees |
-| L3+ optional | Devnet send/poll (`PACT_COMMUNITY_ENABLE_DEVNET_E2E_SEND_POLL=true` with signed fixture) | Pre-signed send + poll path over devnet | Key management safety, transaction intent correctness |
+| Proof level | Lane | What it proves |
+|---|---|---|
+| L1 | Unit tests (`pnpm test`) | Tool registration, schema validation, local logic, error handling |
+| L2 | Binary smoke tests (`pnpm test`) | Built MCP binaries start and answer over stdio |
+| L3 | Devnet E2E (`PACT_COMMUNITY_ENABLE_DEVNET_E2E=true pnpm test:e2e:devnet`) | End-to-end read flow against a live devnet |
+| L3+ | Devnet send/poll (`PACT_COMMUNITY_ENABLE_DEVNET_E2E_SEND_POLL=true` + signed fixture) | Pre-signed send + poll path over devnet |
 
-Run L3 only when an actual devnet is available:
+Run L3 only when a devnet is actually reachable:
 
 ```bash
 pnpm build
 PACT_COMMUNITY_ENABLE_DEVNET_E2E=true pnpm test:e2e:devnet
 ```
 
-Optional sender override for local diagnostics (not required for default L3):
+## Development
 
 ```bash
-PACT_COMMUNITY_ENABLE_DEVNET_E2E=true \
-PACT_COMMUNITY_DEVNET_E2E_SENDER=k:your-funded-account \
-pnpm test:e2e:devnet
+pnpm install          # install workspace dependencies
+pnpm build            # build all packages (TypeScript composite)
+pnpm test             # run all test suites serially
+pnpm typecheck        # tsc --noEmit across packages
+pnpm audit            # dependency vulnerability audit
+pnpm lock:regen       # regenerate tools.lock.json after schema changes
 ```
 
-Enable optional send+poll proof with a pre-signed fixture:
+- **Node.js** >= 20.11, **pnpm** >= 9
+- Coverage gates: 90% functions / 85% lines / 80% branches, enforced in CI
+- See [CONTRIBUTING.md](CONTRIBUTING.md) for workflow and commit conventions
 
-```bash
-PACT_COMMUNITY_ENABLE_DEVNET_E2E=true \
-PACT_COMMUNITY_ENABLE_DEVNET_E2E_SEND_POLL=true \
-PACT_COMMUNITY_DEVNET_SIGNED_TX_JSON=/absolute/path/to/signed-tx.json \
-pnpm test:e2e:devnet
-```
+## VS Code Distribution
 
-## VS Code Extension Distribution
-
-See `docs/VS-CODE-DISTRIBUTION.md` for extension packaging options, Marketplace prerequisites, and secure update strategy.
+See [docs/VS-CODE-DISTRIBUTION.md](docs/VS-CODE-DISTRIBUTION.md) for extension
+packaging options and a secure update strategy.
 
 ## License
 
-MIT
+[Apache-2.0](LICENSE)

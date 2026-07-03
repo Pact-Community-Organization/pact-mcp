@@ -1,13 +1,12 @@
 /**
  * @fileoverview Network access allowlist for MCP servers
- * @author Developer
- * @description Implements ADR-MCP-001 network security controls
+ * @description Implements the pact-mcp security baseline network security controls
  */
 
 import { McpToolError } from './errors.js';
 
 /**
- * [Developer] Options for createAllowlistedFetch.
+ * Options for createAllowlistedFetch.
  *
  * `additionalAllowedOrigins` is an opt-in extension for in-process test
  * harnesses that need to point the fetch wrapper at an ephemeral-port mock
@@ -21,7 +20,7 @@ export interface AllowlistedFetchOptions {
 }
 
 /**
- * [Developer] Create allowlisted fetch wrapper
+ * Create allowlisted fetch wrapper
  * 
  * Validates URL.origin against allowlist before making requests.
  * Defends against subdomain attacks (e.g., localhost.evil.com).
@@ -43,7 +42,7 @@ export function createAllowlistedFetch(
   ): Promise<Response> {
     let url: URL;
 
-    // [Developer] Parse URL from various input types
+    // Parse URL from various input types
     if (input instanceof URL) {
       url = input;
     } else if (typeof input === 'string') {
@@ -58,10 +57,10 @@ export function createAllowlistedFetch(
       );
     }
 
-    // [Developer] Extract origin for exact matching
+    // Extract origin for exact matching
     const origin = url.origin;
 
-    // [Developer] Check against allowlist (exact match only)
+    // Check against allowlist (exact match only)
     if (!mergedOrigins.includes(origin)) {
       throw new McpToolError(
         'NETWORK_ALLOWLIST_VIOLATION',
@@ -70,7 +69,7 @@ export function createAllowlistedFetch(
       );
     }
 
-    // [Developer] Origin approved - proceed with request
+    // Origin approved - proceed with request
     try {
       return await fetch(input, init);
     } catch (error) {
@@ -84,7 +83,7 @@ export function createAllowlistedFetch(
 }
 
 /**
- * [Developer] Validate origin against allowlist
+ * Validate origin against allowlist
  * 
  * Helper function for manual origin checking without making a request.
  * 

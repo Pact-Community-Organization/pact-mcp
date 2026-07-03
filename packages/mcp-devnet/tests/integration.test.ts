@@ -2,7 +2,6 @@
  * @fileoverview End-to-end integration test — spawns the built bin.js as a
  *               stdio MCP server and exercises it via the official SDK
  *               StdioClientTransport.
- * @author Developer
  */
 
 import fs from 'node:fs';

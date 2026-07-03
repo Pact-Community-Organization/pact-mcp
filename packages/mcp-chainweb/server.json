@@ -1,0 +1,53 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "io.github.pact-community-organization/chainweb",
+  "description": "Chainweb HTTP API tools: /local simulation, pre-signed /send, poll, table reads, SPV proofs, and module deploys. Devnet-first with read-only testnet/mainnet profiles.",
+  "repository": {
+    "url": "https://github.com/Pact-Community-Organization/pact-mcp",
+    "source": "github"
+  },
+  "version": "0.2.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@pact-community/mcp-chainweb",
+      "version": "0.2.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "PACT_COMMUNITY_WORKSPACE_ROOT",
+          "description": "Workspace root directory; all file access is confined inside it.",
+          "isRequired": true,
+          "format": "string"
+        },
+        {
+          "name": "PACT_COMMUNITY_CHAINWEB_MODE",
+          "description": "Network mode; must be set and match PACT_COMMUNITY_CHAINWEB_PROFILE (devnet, testnet06, or mainnet).",
+          "isRequired": true,
+          "format": "string"
+        },
+        {
+          "name": "PACT_COMMUNITY_CHAINWEB_PROFILE",
+          "description": "Network profile: devnet (default, read/write), testnet06, or mainnet (both read-only).",
+          "isRequired": false,
+          "format": "string"
+        },
+        {
+          "name": "PACT_COMMUNITY_CHAINWEB_BASE_URL",
+          "description": "Chainweb node base URL (default per profile).",
+          "isRequired": false,
+          "format": "string"
+        },
+        {
+          "name": "PACT_COMMUNITY_CHAINWEB_NETWORK_ID",
+          "description": "Network id, e.g. development, testnet06, mainnet01 (default per profile).",
+          "isRequired": false,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}

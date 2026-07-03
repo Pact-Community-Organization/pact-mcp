@@ -1,8 +1,7 @@
 /**
  * @fileoverview MCP Coordination server — high-level McpServer wiring.
- * @author Developer
  *
- * Applies the ADR-MCP-001 security baseline inline (same pattern as mcp-pact
+ * Applies the pact-mcp security baseline inline (same pattern as mcp-pact
  * and mcp-chainweb) and registers exactly 10 tools.
  *
  * NO network I/O, NO subprocess spawn. All persistence lives under a
@@ -17,6 +16,7 @@ import {
   createAuditLogger,
   validateEnv,
   verifyToolsLock,
+  resolveLockfilePath,
   McpToolError,
   ErrorCodes,
   type AuditLogger
@@ -134,7 +134,7 @@ export function resolveConfig(): ResolvedConfig {
   }
 
   const lockfilePath =
-    envResult.env['PACT_COMMUNITY_TOOLS_LOCKFILE'] ?? './tools.lock.json';
+    resolveLockfilePath(import.meta.url, envResult.env['PACT_COMMUNITY_TOOLS_LOCKFILE']);
 
   verifyToolsLock(SERVER_NAME, getToolSchemaObjects(), lockfilePath);
 

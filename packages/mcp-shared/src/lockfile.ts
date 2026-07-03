@@ -1,12 +1,38 @@
 /**
  * @fileoverview Tool schema drift detection via tools.lock.json
- * @author Developer
- * @description Implements ADR-MCP-001 tool schema verification
+ * @description Implements the pact-mcp security baseline tool schema verification
  */
 
 import fs from 'node:fs';
 import crypto from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 import { McpToolError } from './errors.js';
+
+/**
+ * Resolve the tools.lock.json path for a server module.
+ *
+ * Order: explicit env override → lockfile packaged one directory above the
+ * calling module (i.e. the package root, both for `src/` and `dist/`) →
+ * `./tools.lock.json` relative to the process working directory. The
+ * packaged lookup is what lets a published binary start from any CWD.
+ */
+export function resolveLockfilePath(
+  callerModuleUrl: string,
+  envOverride?: string
+): string {
+  if (envOverride) {
+    return envOverride;
+  }
+  try {
+    const packaged = fileURLToPath(new URL('../tools.lock.json', callerModuleUrl));
+    if (fs.existsSync(packaged)) {
+      return packaged;
+    }
+  } catch {
+    /* fall through to CWD default */
+  }
+  return './tools.lock.json';
+}
 
 /**
  * Tool schema lock entry
@@ -25,7 +51,7 @@ interface ToolsLock {
 }
 
 /**
- * [Developer] Verify tool schemas against tools.lock.json
+ * Verify tool schemas against tools.lock.json
  * 
  * Prevents tool schema drift by:
  * 1. Reading tools.lock.json
@@ -45,7 +71,7 @@ export function verifyToolsLock(
 ): void {
   let lockfile: ToolsLock;
 
-  // [Developer] Read and parse lockfile
+  // Read and parse lockfile
   try {
     const lockData = fs.readFileSync(lockfilePath, 'utf-8');
     lockfile = JSON.parse(lockData);
@@ -57,7 +83,7 @@ export function verifyToolsLock(
     );
   }
 
-  // [Developer] Validate lockfile structure
+  // Validate lockfile structure
   if (!lockfile.servers || typeof lockfile.servers !== 'object') {
     throw new McpToolError(
       'LOCKFILE_INVALID_FORMAT',
@@ -75,7 +101,7 @@ export function verifyToolsLock(
     );
   }
 
-  // [Developer] Verify each registered tool
+  // Verify each registered tool
   for (const [toolName, toolConfig] of Object.entries(registeredTools)) {
     const lockEntry = serverLocks[toolName];
     if (!lockEntry) {
@@ -86,7 +112,7 @@ export function verifyToolsLock(
       );
     }
 
-    // [Developer] Canonicalize current schema and compute hash
+    // Canonicalize current schema and compute hash
     const canonicalSchema = canonicalizeSchema(toolConfig.inputSchema);
     const currentHash = hashSchema(canonicalSchema);
 
@@ -99,7 +125,7 @@ export function verifyToolsLock(
     }
   }
 
-  // [Developer] Check for extra tools in lockfile
+  // Check for extra tools in lockfile
   const lockedTools = Object.keys(serverLocks);
   const registeredToolNames = Object.keys(registeredTools);
   
@@ -115,7 +141,7 @@ export function verifyToolsLock(
 }
 
 /**
- * [Developer] Canonicalize tool schema for deterministic hashing
+ * Canonicalize tool schema for deterministic hashing
  * 
  * Sorts object keys recursively and removes whitespace to ensure
  * identical schemas produce identical hashes regardless of key order.
@@ -133,7 +159,7 @@ function canonicalizeSchema(schema: any): string {
     return '[' + schema.map(canonicalizeSchema).join(',') + ']';
   }
 
-  // [Developer] Sort object keys for deterministic ordering
+  // Sort object keys for deterministic ordering
   const sortedKeys = Object.keys(schema).sort();
   const pairs = sortedKeys.map(key => {
     const value = canonicalizeSchema(schema[key]);
@@ -144,7 +170,7 @@ function canonicalizeSchema(schema: any): string {
 }
 
 /**
- * [Developer] Compute SHA-256 hash of canonicalized schema
+ * Compute SHA-256 hash of canonicalized schema
  */
 function hashSchema(canonicalSchema: string): string {
   return 'sha256:' + crypto
@@ -154,7 +180,7 @@ function hashSchema(canonicalSchema: string): string {
 }
 
 /**
- * [Developer] Generate tools.lock.json entry for a server
+ * Generate tools.lock.json entry for a server
  * 
  * @param serverName Name of the server
  * @param tools Tool registry with inputSchema objects

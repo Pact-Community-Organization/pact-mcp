@@ -1,6 +1,5 @@
 /**
  * @fileoverview Tests for filesystem security guards
- * @author Developer
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -14,7 +13,7 @@ import {
 } from '../src/fs-guard.js';
 import { McpToolError } from '../src/errors.js';
 
-// [Developer] Mock filesystem modules
+// Mock filesystem modules
 vi.mock('node:fs');
 vi.mock('node:os');
 
@@ -24,7 +23,7 @@ const mockOs = vi.mocked(os);
 beforeEach(() => {
   vi.clearAllMocks();
   
-  // [Developer] Default mocks for successful path resolution
+  // Default mocks for successful path resolution
   mockFs.realpathSync.mockImplementation((path) => {
     if (typeof path === 'string') {
       return path; // Return path as-is for simple tests
@@ -41,7 +40,7 @@ describe('fs-guard', () => {
     const workspaceRoot = '/workspace';
 
     beforeEach(() => {
-      // [Developer] Mock realpathSync to return canonical paths
+      // Mock realpathSync to return canonical paths
       mockFs.realpathSync.mockImplementation((inputPath) => {
         if (inputPath === workspaceRoot) {
           return workspaceRoot;
@@ -180,7 +179,7 @@ describe('fs-guard', () => {
       mockOs.tmpdir.mockReturnValue('/tmp');
       vi.spyOn(process, 'pid', 'get').mockReturnValue(12345);
       
-      // [Developer] Mock crypto.randomBytes
+      // Mock crypto.randomBytes
       vi.stubGlobal('crypto', {
         randomBytes: vi.fn().mockReturnValue(Buffer.from('abcdef1234567890', 'hex'))
       });
@@ -247,7 +246,7 @@ describe('fs-guard', () => {
     });
 
     it('should return false for invalid paths', () => {
-      // [Developer] Mock path operations to throw
+      // Mock path operations to throw
       vi.spyOn(path, 'normalize').mockImplementation(() => {
         throw new Error('Invalid path');
       });

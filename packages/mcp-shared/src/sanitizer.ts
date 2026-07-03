@@ -1,7 +1,6 @@
 /**
  * @fileoverview Tool output sanitizer to prevent prompt injection
- * @author Developer
- * @description Strips injection markers from LLM tool outputs per ADR-MCP-001
+ * @description Strips injection markers from LLM tool outputs per the security baseline
  */
 
 /**
@@ -15,7 +14,7 @@ export interface SanitizationResult {
 }
 
 /**
- * [Developer] Sanitize tool output to prevent prompt injection attacks
+ * Sanitize tool output to prevent prompt injection attacks
  * 
  * Removes common LLM injection patterns:
  * - <IMPORTANT>...</IMPORTANT>
@@ -35,19 +34,19 @@ export function sanitizeToolOutput(text: string): SanitizationResult {
   const original = text;
   let sanitized = text;
 
-  // [Developer] Remove IMPORTANT tags (case insensitive)
+  // Remove IMPORTANT tags (case insensitive)
   sanitized = sanitized.replace(/<IMPORTANT[^>]*>[\s\S]*?<\/IMPORTANT>/gi, '');
   
-  // [Developer] Remove system tags (case insensitive)  
+  // Remove system tags (case insensitive)  
   sanitized = sanitized.replace(/<system[^>]*>[\s\S]*?<\/system>/gi, '');
   
-  // [Developer] Remove instruction tags
+  // Remove instruction tags
   sanitized = sanitized.replace(/\[INST\][\s\S]*?\[\/INST\]/g, '');
   
-  // [Developer] Remove system code fences
+  // Remove system code fences
   sanitized = sanitized.replace(/```\s*system[\s\S]*?```/gi, '');
   
-  // [Developer] Remove other common injection patterns
+  // Remove other common injection patterns
   const injectionPatterns = [
     /<anthropic[^>]*>[\s\S]*?<\/anthropic>/gi,
     /<claude[^>]*>[\s\S]*?<\/claude>/gi,
@@ -64,7 +63,7 @@ export function sanitizeToolOutput(text: string): SanitizationResult {
     sanitized = sanitized.replace(pattern, '');
   }
 
-  // [Developer] Trim excess whitespace from removals
+  // Trim excess whitespace from removals
   sanitized = sanitized.replace(/\n{3,}/g, '\n\n').trim();
 
   return {

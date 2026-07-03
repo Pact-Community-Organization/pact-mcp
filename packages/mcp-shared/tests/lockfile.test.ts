@@ -1,19 +1,18 @@
 /**
  * @fileoverview Tests for tool schema lockfile verification
- * @author Developer
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
-import { verifyToolsLock } from '../src/lockfile.js';
+import { verifyToolsLock, resolveLockfilePath } from '../src/lockfile.js';
 import { McpToolError } from '../src/errors.js';
 
-// [Developer] Mock filesystem
+// Mock filesystem
 vi.mock('node:fs');
 const mockFs = vi.mocked(fs);
 
-// [Developer] Mock crypto
+// Mock crypto
 vi.mock('node:crypto');
 const mockCrypto = vi.mocked(crypto);
 
@@ -47,14 +46,14 @@ describe('lockfile', () => {
         }
       };
 
-      // [Developer] Mock crypto.createHash to return expected hash
+      // Mock crypto.createHash to return expected hash
       const mockHash = {
         update: vi.fn().mockReturnThis(),
         digest: vi.fn().mockReturnValue('expected-hash') // Without 'sha256:' prefix
       };
       mockCrypto.createHash.mockReturnValue(mockHash as any);
 
-      // [Developer] Should not throw for matching schema
+      // Should not throw for matching schema
       expect(() => {
         verifyToolsLock('test-server', tools);
       }).not.toThrow();
@@ -193,11 +192,11 @@ describe('lockfile', () => {
 
       mockFs.readFileSync.mockReturnValue(JSON.stringify(lockfile1));
 
-      // [Developer] Both schemas should validate against same hash
+      // Both schemas should validate against same hash
       // This test verifies canonicalization works but we need to mock the hash function
       const tools = { 'test-tool': { inputSchema: schema2 } };
 
-      // [Developer] For this test, we'll assume canonicalization works
+      // For this test, we'll assume canonicalization works
       // Full test would require mocking crypto properly
     });
 
@@ -208,10 +207,10 @@ describe('lockfile', () => {
         missing: undefined
       };
 
-      // [Developer] Should not throw during canonicalization
+      // Should not throw during canonicalization
       // Full implementation would test the canonicalized output
       expect(() => {
-        // [Developer] This would be tested with actual canonicalization function
+        // This would be tested with actual canonicalization function
         JSON.stringify(schemaWithNulls);
       }).not.toThrow();
     });
@@ -225,10 +224,34 @@ describe('lockfile', () => {
         }
       };
 
-      // [Developer] Should handle array serialization
+      // Should handle array serialization
       expect(() => {
         JSON.stringify(schemaWithArrays);
       }).not.toThrow();
     });
+  });
+});
+describe('resolveLockfilePath', () => {
+  it('prefers an explicit env override', () => {
+    const p = resolveLockfilePath(import.meta.url, '/custom/tools.lock.json');
+    expect(p).toBe('/custom/tools.lock.json');
+    expect(mockFs.existsSync).not.toHaveBeenCalled();
+  });
+
+  it('returns the packaged lockfile next to the calling module when present', () => {
+    mockFs.existsSync.mockReturnValue(true);
+    const p = resolveLockfilePath(import.meta.url);
+    expect(p.endsWith('tools.lock.json')).toBe(true);
+    expect(p).not.toBe('./tools.lock.json');
+    expect(p.includes('mcp-shared')).toBe(true);
+  });
+
+  it('falls back to the CWD default when nothing is packaged', () => {
+    mockFs.existsSync.mockReturnValue(false);
+    expect(resolveLockfilePath(import.meta.url)).toBe('./tools.lock.json');
+  });
+
+  it('falls back to the CWD default on an invalid caller URL', () => {
+    expect(resolveLockfilePath('not-a-url')).toBe('./tools.lock.json');
   });
 });

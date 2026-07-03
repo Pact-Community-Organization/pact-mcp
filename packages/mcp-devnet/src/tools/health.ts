@@ -1,7 +1,6 @@
 /**
  * @fileoverview devnet.health tool — HTTP health probe against the devnet
  *               Pact API endpoint (deeper than container state).
- * @author Developer
  */
 
 import { z } from 'zod';
@@ -54,7 +53,7 @@ export interface HealthToolConfig {
 }
 
 /**
- * [Developer] Factory for the health tool. Never throws on network failure —
+ * Factory for the health tool. Never throws on network failure —
  * returns a structured result with `reachable: false`.
  */
 export function createHealthTool(config: HealthToolConfig) {

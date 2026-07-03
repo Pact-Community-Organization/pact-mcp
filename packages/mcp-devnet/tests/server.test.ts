@@ -1,7 +1,6 @@
 /**
  * @fileoverview Server unit tests — buildMcpServer, resolveDockerBinary,
  *               and schema drift hash inputs.
- * @author Developer
  */
 
 import fs from 'node:fs';

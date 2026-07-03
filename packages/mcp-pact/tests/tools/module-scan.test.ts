@@ -1,6 +1,5 @@
 /**
  * @fileoverview Unit tests for pact.module_scan tool
- * @author Developer
  */
 
 import { describe, test, expect } from 'vitest';

@@ -1,6 +1,5 @@
 /**
  * @fileoverview Tests for tool output sanitizer
- * @author Developer
  */
 
 import { describe, it, expect } from 'vitest';
@@ -87,7 +86,7 @@ describe('sanitizer', () => {
 
       const result = sanitizeToolOutput(input);
 
-      // [Developer] All injection patterns should be removed
+      // All injection patterns should be removed
       expect(result.text).not.toContain('<IMPORTANT>');
       expect(result.text).not.toContain('<system>');
       expect(result.text).not.toContain('[INST]');
@@ -163,7 +162,7 @@ describe('sanitizer', () => {
       const input = 'Line 1\n<IMPORTANT>removed</IMPORTANT>\n\n\n\nLine 2';
       const result = sanitizeToolOutput(input);
 
-      // [Developer] Should reduce multiple newlines to double newlines (4 newlines → 2 newlines)
+      // Should reduce multiple newlines to double newlines (4 newlines → 2 newlines)
       expect(result.text).toBe('Line 1\n\nLine 2');
       expect(result.modified).toBe(true);
     });

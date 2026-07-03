@@ -1,6 +1,5 @@
 /**
  * @fileoverview Zod schema for per-scope memory append log.
- * @author Developer
  */
 
 import { z } from 'zod';

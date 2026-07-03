@@ -1,7 +1,6 @@
 /**
  * @fileoverview Test fixtures — fake `docker` binaries used to drive
  *               `runDocker` in unit tests without any real Docker.
- * @author Developer
  *
  * Each fixture is a small Node script that reads `argv`, writes deterministic
  * stdout/stderr, and exits with a configurable code. Tests point
@@ -32,7 +31,7 @@ export interface FakeDockerSpec {
 }
 
 /**
- * [Developer] Create a fake docker binary that emits the configured output.
+ * Create a fake docker binary that emits the configured output.
  * Returns the absolute path to a chmod +x Node script.
  */
 export function createFakeDocker(spec: FakeDockerSpec = {}): string {
@@ -80,7 +79,7 @@ export function cleanupFakeDocker(scriptPath: string): void {
 }
 
 /**
- * [Developer] Seed a temporary workspace with a valid compose file for the
+ * Seed a temporary workspace with a valid compose file for the
  * Developer agent. Returns the workspace root.
  */
 export function createTempWorkspace(

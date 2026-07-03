@@ -1,7 +1,7 @@
 # @pact-community/mcp-chainweb
 
-MCP server exposing eleven Chainweb HTTP tools for the
-Pact Community workflow (devnet-first with read-only public profiles).
+MCP server exposing eleven Chainweb HTTP tools for Pact development
+(devnet-first with read-only public profiles).
 
 **Status:** 0.2.0 — devnet default, `testnet06`/`mainnet` read-only
 
@@ -53,7 +53,7 @@ blocked with `PROFILE_WRITE_BLOCKED` even if signatures are supplied.
 | `PACT_COMMUNITY_CHAINWEB_PROFILE` | `devnet` | | Explicit network profile: `devnet`, `testnet06`, `mainnet` |
 | `PACT_COMMUNITY_CHAINWEB_BASE_URL` | profile default | | Origin must be in the selected profile allowlist |
 | `PACT_COMMUNITY_CHAINWEB_NETWORK_ID` | profile default | | Strictly validated against node `/info` |
-| `PACT_COMMUNITY_TOOLS_LOCKFILE` | `./tools.lock.json` | | Used to detect tool-schema drift |
+| `PACT_COMMUNITY_TOOLS_LOCKFILE` | packaged `tools.lock.json` | | Override the tool-schema drift lockfile |
 
 Profile allowlists (hard-coded, not configurable):
 - `devnet`: `http://localhost:8081`, `http://localhost:8082`, `http://localhost:8083`
@@ -67,19 +67,22 @@ pnpm --filter @pact-community/mcp-chainweb build
 node packages/mcp-chainweb/dist/bin.js  # stdio transport
 ```
 
-Via the workspace `.mcp.json` entry:
+MCP client configuration:
 
-```jsonc
-"pact-community-chainweb": {
-  "command": "node",
-  "args": ["./packages/mcp-chainweb/dist/bin.js"],
-  "env": {
-    "NODE_ENV": "production",
-    "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>",
-    "PACT_COMMUNITY_CHAINWEB_MODE": "devnet",
-    "PACT_COMMUNITY_CHAINWEB_PROFILE": "devnet",
-    "PACT_COMMUNITY_CHAINWEB_BASE_URL": "http://localhost:8081",
-    "PACT_COMMUNITY_CHAINWEB_NETWORK_ID": "development"
+```json
+{
+  "mcpServers": {
+    "chainweb": {
+      "command": "node",
+      "args": ["/path/to/pact-mcp/packages/mcp-chainweb/dist/bin.js"],
+      "env": {
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "/path/to/your/project",
+        "PACT_COMMUNITY_CHAINWEB_MODE": "devnet",
+        "PACT_COMMUNITY_CHAINWEB_PROFILE": "devnet",
+        "PACT_COMMUNITY_CHAINWEB_BASE_URL": "http://localhost:8081",
+        "PACT_COMMUNITY_CHAINWEB_NETWORK_ID": "development"
+      }
+    }
   }
 }
 ```

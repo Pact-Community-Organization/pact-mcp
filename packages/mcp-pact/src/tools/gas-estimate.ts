@@ -1,6 +1,5 @@
 /**
  * @fileoverview pact.gas_estimate tool implementation
- * @author Developer
  * @description Convenience wrapper over pact.repl_run that parses gas-probe
  *              output from a .repl file. The .repl file is the source of
  *              truth — this tool does NOT inject probes; it only parses them.
@@ -156,7 +155,7 @@ function capSize(text: string): { text: string; truncated: boolean } {
 }
 
 /**
- * [Developer] Parse gas measurements from REPL stdout.
+ * Parse gas measurements from REPL stdout.
  *
  * Matches:
  *  1. `^Gas:\s*(\d+)\s*$`                   → unlabeled measurement

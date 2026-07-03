@@ -2,7 +2,6 @@
  * @fileoverview Additional coverage tests for server.ts — resolveConfig,
  *               resolveTestOrigins, resolveTestAgentBaseUrls, wrap() audit,
  *               and the full tool call path.
- * @author Developer
  */
 
 import fs from 'node:fs';

@@ -40,18 +40,39 @@ MCP server for Pact 5 smart contract tooling. Provides REPL testing, module scan
 
 ## Installation
 
+From this repository (works today):
+
 ```bash
-pnpm install @pact-community/mcp-pact
+pnpm install && pnpm build
 ```
 
-## Usage
+From npm, once the first publish lands:
 
 ```bash
-# As standalone server
-pact-community-pact
+npm install -g @pact-community/mcp-pact
+```
 
-# Via MCP client
-npx @modelcontextprotocol/inspector pact-community-pact
+## MCP Client Configuration
+
+```json
+{
+  "mcpServers": {
+    "pact": {
+      "command": "node",
+      "args": ["/path/to/pact-mcp/packages/mcp-pact/dist/bin.js"],
+      "env": {
+        "PACT_COMMUNITY_WORKSPACE_ROOT": "/path/to/your/project",
+        "PACT_COMMUNITY_PACT_BIN": "pact"
+      }
+    }
+  }
+}
+```
+
+To debug interactively:
+
+```bash
+npx @modelcontextprotocol/inspector node packages/mcp-pact/dist/bin.js
 ```
 
 ## Examples
@@ -240,4 +261,4 @@ See [SECURITY.md](./SECURITY.md) for threat model and security controls.
 
 ## License
 
-MIT - see [LICENSE](../../LICENSE)
+[Apache-2.0](../../LICENSE)

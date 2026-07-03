@@ -2,7 +2,7 @@
 
 ## Overview
 
-This package implements **ADR-MCP-001** security baseline controls that all Pact Community MCP servers must include.
+This package implements the shared pact-mcp security baseline controls (see the repository [SECURITY.md](../../SECURITY.md)).
 
 ## Threat Model
 
@@ -24,7 +24,7 @@ This package implements **ADR-MCP-001** security baseline controls that all Pact
 
 ## Security Controls
 
-### ✅ Mandatory Baseline (ADR-MCP-001)
+### ✅ Mandatory Baseline (the pact-mcp security baseline)
 
 | Control | Implementation | Risk Mitigation |
 |---------|---------------|-----------------|

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "io.github.pact-community-organization/pact",
+  "description": "Pact 5 smart-contract tooling: REPL test runs, static trap scanning, gas estimation, interface diff, and format checks via the local pact CLI.",
+  "repository": {
+    "url": "https://github.com/Pact-Community-Organization/pact-mcp",
+    "source": "github"
+  },
+  "version": "0.2.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@pact-community/mcp-pact",
+      "version": "0.2.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "PACT_COMMUNITY_WORKSPACE_ROOT",
+          "description": "Workspace root directory; all file access is confined inside it.",
+          "isRequired": true,
+          "format": "string"
+        },
+        {
+          "name": "PACT_COMMUNITY_PACT_BIN",
+          "description": "Path to the pact binary (default: pact on PATH).",
+          "isRequired": false,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}

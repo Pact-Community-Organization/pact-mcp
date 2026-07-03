@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { mkdtempSync, rmSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync, existsSync, utimesSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { acquireLock, withLock } from '../../src/fs/lock.js';
@@ -53,11 +53,15 @@ describe('acquireLock', () => {
     await release();
   });
 
-  it('ignores a stale lock file with malformed JSON (stale = 0)', async () => {
+  it('steals a malformed lock file only once its mtime is stale', async () => {
     const target = path.join(tmp, 'd');
     const lockPath = `${target}.lock`;
-    // Malformed → treated as acquiredAtMs=0 which is way older than 30s → stale.
+    // A malformed payload must NOT be treated as acquiredAtMs=0 (that would
+    // let contenders steal a live lock mid-write). Staleness falls back to
+    // the file mtime, so backdate it past LOCK_STALE_MS.
     writeFileSync(lockPath, 'not json');
+    const past = (Date.now() - 60_000) / 1000;
+    utimesSync(lockPath, past, past);
     const release = await acquireLock(target);
     await release();
   });

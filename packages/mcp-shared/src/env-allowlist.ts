@@ -1,7 +1,6 @@
 /**
  * @fileoverview Environment variable allowlist validation
- * @author Developer
- * @description Implements ADR-MCP-001 environment security controls
+ * @description Implements the pact-mcp security baseline environment security controls
  */
 
 import { createAuditLogger } from './audit-log.js';
@@ -29,7 +28,7 @@ export interface ValidatedEnv {
 }
 
 /**
- * [Developer] Validate environment variables against allowlist
+ * Validate environment variables against allowlist
  * 
  * Security controls:
  * - Strict mode: rejects unknown env vars
@@ -47,10 +46,10 @@ export function validateEnv(options: EnvValidationOptions): ValidatedEnv {
     unknown: []
   };
 
-  // [Developer] Create audit logger for env validation events
+  // Create audit logger for env validation events
   const auditLogger = createAuditLogger('env-validator');
 
-  // [Developer] Always allow core Node.js environment variables
+  // Always allow core Node.js environment variables
   const coreEnvVars = [
     'NODE_ENV',
     'PATH',
@@ -67,19 +66,19 @@ export function validateEnv(options: EnvValidationOptions): ValidatedEnv {
 
   const fullAllowlist = [...allowed, ...coreEnvVars];
 
-  // [Developer] Process each environment variable
+  // Process each environment variable
   for (const [key, value] of Object.entries(process.env)) {
     if (value === undefined) continue;
 
     if (fullAllowlist.includes(key)) {
-      // [Developer] Allowed variable - include in sanitized env
+      // Allowed variable - include in sanitized env
       result.env[key] = value;
     } else {
-      // [Developer] Unknown variable - handle based on strictness
+      // Unknown variable - handle based on strictness
       if (strict) {
         result.rejected.push(key);
         
-        // [Developer] Log rejection to audit
+        // Log rejection to audit
         auditLogger.log({
           tool: 'env-validation',
           inputHash: `rejected:${key}`,
@@ -90,7 +89,7 @@ export function validateEnv(options: EnvValidationOptions): ValidatedEnv {
         result.unknown.push(key);
         result.env[key] = value; // Include in permissive mode
         
-        // [Developer] Log unknown var to audit
+        // Log unknown var to audit
         auditLogger.log({
           tool: 'env-validation',
           inputHash: `unknown:${key}`,
@@ -101,7 +100,7 @@ export function validateEnv(options: EnvValidationOptions): ValidatedEnv {
     }
   }
 
-  // [Developer] In strict mode, exit on rejected variables
+  // In strict mode, exit on rejected variables
   if (strict && result.rejected.length > 0) {
     console.error(
       `[MCP-SECURITY] Rejected environment variables in strict mode: ${result.rejected.join(', ')}`

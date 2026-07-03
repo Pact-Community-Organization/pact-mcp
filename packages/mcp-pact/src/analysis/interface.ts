@@ -1,6 +1,5 @@
 /**
  * @fileoverview Lightweight public-API extractor for .pact modules
- * @author Developer
  * @description Extracts top-level symbols (module, implements, defun, defcap,
  *              defpact, defschema, deftable) from a .pact source string using
  *              balanced-paren scanning. Not a full parser; handles the 95%
@@ -41,7 +40,7 @@ const KINDS_INSIDE_MODULE = new Set<SymbolKind>([
 ]);
 
 /**
- * [Developer] Extract the public API surface of a .pact module.
+ * Extract the public API surface of a .pact module.
  *
  * Approach:
  *  - Strip line comments (`;...` to end-of-line) and string literals so
@@ -58,7 +57,7 @@ export function extractInterface(source: string): InterfaceExtraction {
   const symbols: PactSymbol[] = [];
   let moduleName: string | null = null;
 
-  // [Developer] Build a parallel "scrubbed" string: comments and string
+  // Build a parallel "scrubbed" string: comments and string
   // literals replaced with spaces so paren depth tracking isn't fooled.
   const scrubbed = scrub(source);
 
@@ -69,7 +68,7 @@ export function extractInterface(source: string): InterfaceExtraction {
   for (let i = 0; i < len; i++) {
     const ch = scrubbed[i];
     if (ch === '(') {
-      // [Developer] Peek the next non-whitespace token.
+      // Peek the next non-whitespace token.
       const headStart = i + 1;
       let j = headStart;
       while (j < len && /\s/.test(scrubbed[j]!)) j++;
@@ -79,13 +78,13 @@ export function extractInterface(source: string): InterfaceExtraction {
 
       const lineNumber = lineOf(source, i);
 
-      // [Developer] Read the next token = name (if any).
+      // Read the next token = name (if any).
       let k = j;
       while (k < len && /\s/.test(scrubbed[k]!)) k++;
       const nameStart = k;
       while (k < len && !/[\s()]/.test(scrubbed[k]!)) k++;
       const rawName = source.slice(nameStart, k);
-      // [Developer] Strip Pact return-type annotation `name:type` so that
+      // Strip Pact return-type annotation `name:type` so that
       // `(defun foo:string ...)` indexes as `foo`, not `foo:string`.
       const colonIdx = rawName.indexOf(':');
       const name = colonIdx >= 0 ? rawName.slice(0, colonIdx) : rawName;
@@ -123,7 +122,7 @@ export function extractInterface(source: string): InterfaceExtraction {
     } else if (ch === ')') {
       depth--;
       if (moduleDepth !== null && depth < moduleDepth) {
-        // [Developer] left the module body
+        // left the module body
         moduleDepth = null;
       }
     }
@@ -139,7 +138,7 @@ export function extractInterface(source: string): InterfaceExtraction {
 }
 
 /**
- * [Developer] Extract a readable signature span from the open paren.
+ * Extract a readable signature span from the open paren.
  * Walks balanced parens (using the scrubbed source so comments/strings don't
  * confuse depth tracking) and returns the full form with newlines collapsed
  * to single spaces. Capped at 240 characters.
@@ -173,7 +172,7 @@ function lineOf(source: string, index: number): number {
 }
 
 /**
- * [Developer] Replace comments and string literals with spaces of the same
+ * Replace comments and string literals with spaces of the same
  * length so offsets still line up with the original source. Paren characters
  * inside comments/strings are neutralized.
  */
@@ -184,7 +183,7 @@ function scrub(source: string): string {
   while (i < n) {
     const ch = source[i];
     if (ch === ';') {
-      // [Developer] line comment → replace until newline
+      // line comment → replace until newline
       while (i < n && source[i] !== '\n') {
         out[i] = ' ';
         i++;

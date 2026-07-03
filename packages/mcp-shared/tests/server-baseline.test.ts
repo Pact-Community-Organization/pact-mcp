@@ -1,23 +1,22 @@
 /**
  * @fileoverview Tests for MCP server baseline security
- * @author Developer
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { startServer } from '../src/server-baseline.js';
 
-// [Developer] Mock process.getuid for testing
+// Mock process.getuid for testing
 const mockGetUid = vi.fn();
 
 beforeEach(() => {
   vi.clearAllMocks();
-  // [Developer] Mock console.error to capture root refusal message
+  // Mock console.error to capture root refusal message
   vi.spyOn(console, 'error').mockImplementation(() => {});
   vi.spyOn(process, 'exit').mockImplementation((code) => {
     throw new Error(`Process.exit called with code ${code}`);
   });
   
-  // [Developer] Mock getuid function
+  // Mock getuid function
   process.getuid = mockGetUid;
 });
 
@@ -83,7 +82,7 @@ describe('server-baseline', () => {
       });
 
       expect(server).toBeDefined();
-      // [Developer] Server properties are not directly accessible, 
+      // Server properties are not directly accessible, 
       // but we verify it doesn't throw during creation
     });
 

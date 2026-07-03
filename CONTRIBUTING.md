@@ -1,136 +1,93 @@
-# Contributing to Pact Community MCP Servers
+# Contributing to pact-mcp
 
 ## Development Setup
 
 ### Prerequisites
 
-- **Node.js** >=20.11.0
-- **pnpm** >=9
-- **Git** with conventional commit knowledge
+- **Node.js** >= 20.11.0
+- **pnpm** >= 9
 
 ### Installation
 
 ```bash
-# Clone and navigate
-git clone <repo>
-cd mcp
+git clone https://github.com/Pact-Community-Organization/pact-mcp.git
+cd pact-mcp
 
-# Install dependencies
 pnpm install
-
-# Build packages
 pnpm build
-
-# Run tests
 pnpm test
 ```
 
 ## Development Workflow
 
-### 1. Branch Naming
+### Branch Naming
 
 ```
 feature/mcp-{server-name}-{feature}
 bugfix/mcp-{issue-number}-{description}
 ```
 
-### 2. Commit Convention
+### Commit Convention
 
-All commits must follow conventional commits with agent tag:
+All commits follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```
-[Developer] feat(mcp-shared): add audit log rotation
+feat(mcp-shared): add audit log rotation
 
-[Developer] fix(mcp-pact): handle missing keyset in transaction
+fix(mcp-pact): handle missing keyset in transaction
 
-[Developer] security(mcp-chainweb): prevent network allowlist bypass
+security(mcp-chainweb): prevent network allowlist bypass
 ```
 
-### 3. Security Requirements
+### Security Requirements
 
-Every MCP server MUST implement **ADR-MCP-001** security baseline:
+Every MCP server implements the shared security baseline (see
+[SECURITY.md](SECURITY.md)):
 
-- ✅ Root refusal (`process.getuid() !== 0`)
-- ✅ Audit logging with SHA-256 input hashing
-- ✅ Input sanitization for prompt injection prevention
-- ✅ Environment variable allowlisting
-- ✅ Tool schema drift detection
-- ✅ Network and filesystem access controls
+- Root refusal (`process.getuid() !== 0`)
+- Audit logging with SHA-256 input hashing
+- Input sanitization for prompt-injection prevention
+- Environment variable allowlisting
+- Tool schema drift detection
+- Network and filesystem access controls
 
-### 4. Testing Standards
+### Testing Standards
 
-- **Coverage**: ≥90% functions, ≥85% lines, ≥80% branches
-- **Unit tests**: Every public function tested
-- **Security tests**: Attack vectors and boundary conditions
-- **Integration tests**: End-to-end server workflows
-
-### 5. Code Standards
-
-- **TypeScript strict mode** with no `any` types
-- **ESM modules** only (`type: "module"`)
-- **Pinned dependencies** (no `^` or `~` in runtime deps)
-- **Comprehensive JSDoc** on public APIs
-
-## Testing
+- **Coverage**: >= 90% functions, >= 85% lines, >= 80% branches (enforced in CI)
+- **Unit tests**: every public function
+- **Security tests**: attack vectors and boundary conditions
+- **Integration tests**: end-to-end server workflows over stdio
 
 ```bash
-# Run all tests
-pnpm test
-
-# Coverage report
-pnpm test -- --coverage
-
-# Watch mode
-pnpm test -- --watch
-
-# Specific package
-pnpm -F mcp-shared test
+pnpm test                                 # all packages, serial
+pnpm -F @pact-community/mcp-shared test   # one package
+pnpm -r test:coverage                     # with coverage gates
 ```
 
-## Security
+### Code Standards
 
-### Audit Logging
+- **TypeScript strict mode**, ESM only (`type: "module"`)
+- **Pinned runtime dependencies** (no `^` or `~`)
+- **JSDoc** on public APIs
 
-All tool executions are logged to `~/.pact-community/mcp-audit.log.YYYY-MM-DD`:
+### Tool Schema Locking
 
-```json
-{
-  "timestamp": "2026-04-21T10:30:45.123Z",
-  "server": "mcp-pact",
-  "tool": "deploy-module",
-  "inputHash": "sha256:abc123...",
-  "exitStatus": 0,
-  "durationMs": 1250
-}
-```
-
-### Tool Schema Verification
-
-Update `tools.lock.json` when adding/modifying tools:
+When you add or change a tool schema, regenerate the lockfiles and commit the
+result (CI fails on drift):
 
 ```bash
-# Generate new hashes (implementation TBD)
-pnpm run lock-schemas
+pnpm build
+pnpm lock:regen
 ```
-
-## Agent Coordination
-
-This monorepo supports Pact Community 11-agent architecture:
-
-- **Developer** - Implementation and testing
-- **Security** - Vulnerability assessment and audit
-- **DevOps** - CI/CD and deployment automation
-- **Architect** - Design decisions and ADR maintenance
-
-All code should be tagged with the responsible agent: `[Developer]`, `[Security]`, etc.
 
 ## Pull Request Process
 
-1. **Security review required** for all MCP server changes
-2. **Coverage threshold** must pass (≥90% functions)
-3. **Tool schema** must be updated in `tools.lock.json`
-4. **Audit log testing** must verify no sensitive data leakage
+1. CI must be green: build, typecheck, tests + coverage, audit, lockfile drift.
+2. Security-sensitive changes (new tools, spawn/network/fs code paths) should
+   include tests demonstrating the attack they block.
+3. Update the affected package `CHANGELOG.md` under `[Unreleased]`.
 
-## Questions?
+## Reporting Security Issues
 
-See the Pact Community workspace documentation or reach out to the Security agent for security-related questions.
+Never open a public issue for a vulnerability — see
+[SECURITY.md](SECURITY.md) for private reporting.

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "io.github.pact-community-organization/coordination",
+  "description": "File-backed multi-agent coordination: task queue, mailboxes, per-agent status, and append-only memory log. No network access, no subprocesses.",
+  "repository": {
+    "url": "https://github.com/Pact-Community-Organization/pact-mcp",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@pact-community/mcp-coordination",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "PACT_COMMUNITY_WORKSPACE_ROOT",
+          "description": "Absolute workspace root directory.",
+          "isRequired": true,
+          "format": "string"
+        },
+        {
+          "name": "PACT_COMMUNITY_COORDINATION_ROOT",
+          "description": "Absolute coordination data root (default: $PACT_COMMUNITY_WORKSPACE_ROOT/coordination; must exist).",
+          "isRequired": false,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}

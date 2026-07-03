@@ -1,6 +1,5 @@
 /**
  * @fileoverview coord.task_get — fetch a single task.
- * @author Developer
  */
 
 import {

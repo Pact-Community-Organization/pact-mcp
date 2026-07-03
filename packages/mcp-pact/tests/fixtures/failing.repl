@@ -1,5 +1,5 @@
 ;; Failing REPL test for mcp-pact testing  
-;; [Developer] Test with expect-failure cases
+;; Test with expect-failure cases
 
 (begin-tx "failing-test")
 

@@ -1,6 +1,5 @@
 /**
  * @fileoverview Whitelisted-field sanitization wrapper for tool responses.
- * @author Developer
  *
  * Raw content is preserved on disk; this module sanitizes on the response
  * boundary so downstream LLMs never see unfiltered user text.

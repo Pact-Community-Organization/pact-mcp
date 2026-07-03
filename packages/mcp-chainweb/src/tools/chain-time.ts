@@ -1,6 +1,5 @@
 /**
  * @fileoverview chainweb.chain_time - read the latest block header's time.
- * @author Developer
  *
  * The chainweb-node REST API has no single "latest header" endpoint. The
  * documented pattern is:
@@ -78,7 +77,7 @@ export function createChainTimeTool(config: ChainTimeToolConfig) {
         false
       );
     }
-    // [Developer] creationTime is microseconds — /1_000_000 → seconds.
+    // creationTime is microseconds — /1_000_000 → seconds.
     const creationTimeSec = Math.floor(header.creationTime / 1_000_000);
     const blockHeight =
       typeof header.height === 'number'

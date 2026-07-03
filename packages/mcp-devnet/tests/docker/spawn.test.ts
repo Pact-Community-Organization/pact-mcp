@@ -1,6 +1,5 @@
 /**
  * @fileoverview Unit tests — src/docker/spawn.ts
- * @author Developer
  */
 
 import fs from 'node:fs';

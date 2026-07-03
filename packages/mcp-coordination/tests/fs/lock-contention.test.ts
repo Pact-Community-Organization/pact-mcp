@@ -18,7 +18,7 @@ describe('lock contention stress test', () => {
   });
 
   it('20 parallel withLock calls all succeed with counter increment', async () => {
-    // [Developer] This test exercises the jittered exponential backoff under heavy contention.
+    // This test exercises the jittered exponential backoff under heavy contention.
     // 20 parallel calls increment a shared counter — all must succeed without LOCK_HELD errors.
     tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), 'lock-test-'));
     const counterFile = path.join(tmpDir, 'counter.json');

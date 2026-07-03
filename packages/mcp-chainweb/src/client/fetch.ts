@@ -1,6 +1,5 @@
 /**
  * @fileoverview Chainweb HTTP client - allowlisted fetch + header-encoding
- * @author Developer
  *
  * Thin layer over `createAllowlistedFetch` from mcp-shared. Every chainweb
  * HTTP endpoint MUST be accessed through this module so that:
@@ -47,7 +46,7 @@ export interface ChainwebClient {
 }
 
 /**
- * [Developer] Construct a chainweb HTTP client with an allowlisted fetch.
+ * Construct a chainweb HTTP client with an allowlisted fetch.
  *
  * The base URL origin MUST be present in `allowedOrigins` (or in
  * `additionalAllowedOrigins` when provided by test harness). We re-validate

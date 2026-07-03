@@ -1,6 +1,5 @@
 /**
  * @fileoverview Shared test helpers.
- * @author Developer
  */
 
 import { mkdtempSync, realpathSync, rmSync } from 'node:fs';

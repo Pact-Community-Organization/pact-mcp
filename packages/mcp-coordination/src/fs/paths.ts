@@ -1,6 +1,5 @@
 /**
  * @fileoverview Strict path validation + coord-root structure helpers.
- * @author Developer
  */
 
 import { promises as fsp, realpathSync, statSync } from 'node:fs';

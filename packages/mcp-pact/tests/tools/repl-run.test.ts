@@ -1,6 +1,5 @@
 /**
  * @fileoverview Unit tests for pact.repl_run tool
- * @author Developer
  */
 
 import { describe, test, expect, beforeEach, vi } from 'vitest';

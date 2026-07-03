@@ -1,14 +1,13 @@
 /**
  * @fileoverview Safe process spawning for MCP servers  
- * @author Developer
- * @description Implements ADR-MCP-001 process execution security controls
+ * @description Implements the pact-mcp security baseline process execution security controls
  */
 
 import { spawn, type SpawnOptions, type ChildProcess } from 'node:child_process';
 import { McpToolError } from './errors.js';
 
 /**
- * [Developer] MCP spawn error for process execution failures
+ * MCP spawn error for process execution failures
  */
 export class McpSpawnError extends McpToolError {
   constructor(message: string, retryable: boolean = false) {
@@ -39,7 +38,7 @@ export interface SafeSpawnOptions {
 }
 
 /**
- * [Developer] Spawn process with security restrictions
+ * Spawn process with security restrictions
  * 
  * Security controls:
  * - Forces shell: false to prevent command injection
@@ -58,12 +57,12 @@ export function spawnSafe(
   argv: string[] = [],
   options: SafeSpawnOptions = {}
 ): ChildProcess {
-  // [Developer] Validate command is string
+  // Validate command is string
   if (typeof command !== 'string') {
     throw new McpSpawnError('Command must be a string');
   }
 
-  // [Developer] Validate argv is string array
+  // Validate argv is string array
   if (!Array.isArray(argv)) {
     throw new McpSpawnError('Arguments must be an array');
   }
@@ -74,7 +73,7 @@ export function spawnSafe(
     }
   }
 
-  // [Developer] Check for shell metacharacters (defense in depth)
+  // Check for shell metacharacters (defense in depth)
   const shellMetaChars = /[;&|`$()<>{}[\]!?*~#]/;
   if (shellMetaChars.test(command)) {
     throw new McpSpawnError(`Command contains shell metacharacters: ${command}`);
@@ -86,14 +85,14 @@ export function spawnSafe(
     }
   }
 
-  // [Developer] Build secure spawn options
+  // Build secure spawn options
   const secureOptions: SpawnOptions = {
     ...options,
     shell: false, // NEVER allow shell interpretation
     detached: false // Keep process attached for proper cleanup
   };
 
-  // [Developer] Additional validation for security-sensitive options
+  // Additional validation for security-sensitive options
   if (secureOptions.uid === 0) {
     throw new McpSpawnError('Cannot spawn process as root (uid 0)');
   }
@@ -109,13 +108,13 @@ export function spawnSafe(
 }
 
 /**
- * [Developer] Check if spawn error might be retryable
+ * Check if spawn error might be retryable
  */
 function isRetryableSpawnError(error: unknown): boolean {
   if (typeof error === 'object' && error !== null) {
     const nodeError = error as NodeJS.ErrnoException;
     
-    // [Developer] These errors might be temporary
+    // These errors might be temporary
     const retryableCodes = ['EAGAIN', 'EMFILE', 'ENFILE', 'ENOMEM'];
     return retryableCodes.includes(nodeError.code || '');
   }
@@ -124,7 +123,7 @@ function isRetryableSpawnError(error: unknown): boolean {
 }
 
 /**
- * [Developer] Spawn process and capture output
+ * Spawn process and capture output
  * 
  * Convenience wrapper that captures stdout/stderr and waits for completion.
  * 
@@ -171,7 +170,7 @@ export async function spawnWithOutput(
       reject(new McpSpawnError(`Process error: ${error}`));
     });
 
-    // [Developer] Handle timeout if specified
+    // Handle timeout if specified
     if (options.timeout) {
       setTimeout(() => {
         if (!child.killed) {

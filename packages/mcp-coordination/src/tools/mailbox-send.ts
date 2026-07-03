@@ -1,6 +1,5 @@
 /**
  * @fileoverview coord.mailbox_send — append a message to an inbox.
- * @author Developer
  */
 
 import {

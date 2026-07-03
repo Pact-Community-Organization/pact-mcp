@@ -1,6 +1,5 @@
 /**
  * @fileoverview Tests for shared Zod schemas
- * @author Developer
  */
 
 import { describe, it, expect } from 'vitest';

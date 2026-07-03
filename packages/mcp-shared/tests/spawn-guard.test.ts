@@ -1,17 +1,16 @@
 /**
  * @fileoverview Tests for safe process spawning
- * @author Developer
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { spawn } from 'node:child_process';
 import { spawnSafe, spawnWithOutput, McpSpawnError } from '../src/spawn-guard.js';
 
-// [Developer] Mock child_process.spawn
+// Mock child_process.spawn
 vi.mock('node:child_process');
 const mockSpawn = vi.mocked(spawn);
 
-// [Developer] Mock ChildProcess for testing
+// Mock ChildProcess for testing
 const createMockChildProcess = () => ({
   on: vi.fn(),
   kill: vi.fn(),
@@ -210,16 +209,16 @@ describe('spawn-guard', () => {
     it('should capture stdout and stderr', async () => {
       const promise = spawnWithOutput('echo', ['test']);
 
-      // [Developer] Simulate stdout data
+      // Simulate stdout data
       const stdoutCallback = mockChild.stdout.on.mock.calls.find((call: any) => call[0] === 'data')[1];
       stdoutCallback(Buffer.from('output line 1\n'));
       stdoutCallback(Buffer.from('output line 2\n'));
 
-      // [Developer] Simulate stderr data
+      // Simulate stderr data
       const stderrCallback = mockChild.stderr.on.mock.calls.find((call: any) => call[0] === 'data')[1];
       stderrCallback(Buffer.from('error line 1\n'));
 
-      // [Developer] Simulate process close
+      // Simulate process close
       const closeCallback = mockChild.on.mock.calls.find((call: any) => call[0] === 'close')[1];
       closeCallback(0);
 
@@ -235,7 +234,7 @@ describe('spawn-guard', () => {
     it('should handle process errors', async () => {
       const promise = spawnWithOutput('echo', ['test']);
 
-      // [Developer] Simulate process error
+      // Simulate process error
       const errorCallback = mockChild.on.mock.calls.find((call: any) => call[0] === 'error')[1];
       errorCallback(new Error('Process failed'));
 
@@ -247,7 +246,7 @@ describe('spawn-guard', () => {
 
       const promise = spawnWithOutput('sleep', ['10'], { timeout: 1000 });
 
-      // [Developer] Fast-forward time past timeout
+      // Fast-forward time past timeout
       vi.advanceTimersByTime(1001);
 
       await expect(promise).rejects.toThrow(McpSpawnError);
@@ -260,7 +259,7 @@ describe('spawn-guard', () => {
 
       const promise = spawnWithOutput('echo', ['fast'], { timeout: 5000 });
 
-      // [Developer] Process completes before timeout
+      // Process completes before timeout
       const closeCallback = mockChild.on.mock.calls.find((call: any) => call[0] === 'close')[1];
       closeCallback(0);
 

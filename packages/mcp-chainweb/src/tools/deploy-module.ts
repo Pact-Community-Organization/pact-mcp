@@ -1,6 +1,5 @@
 /**
  * @fileoverview chainweb.deploy_module - build, preflight, and submit a Pact module deploy.
- * @author Developer
  *
  * Highest-risk tool in the v0.2 set. Guarded by construction:
  *
@@ -165,7 +164,7 @@ export function createDeployModuleTool(config: DeployModuleToolConfig) {
       }
     }
 
-    // [Developer] UNSCOPED signer — critical. Do NOT add a capability
+    // UNSCOPED signer — critical. Do NOT add a capability
     // callback here. See user-memory devnet-deploy-patterns.md.
     let builder = Pact.builder
       .execution(code)

@@ -1,6 +1,5 @@
 /**
  * @fileoverview Zod schema for the per-agent status record.
- * @author Developer
  */
 
 import { z } from 'zod';

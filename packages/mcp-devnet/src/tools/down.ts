@@ -1,6 +1,5 @@
 /**
  * @fileoverview devnet.down tool — GATED + DANGER. Stop + remove containers.
- * @author Developer
  */
 
 import { z } from 'zod';

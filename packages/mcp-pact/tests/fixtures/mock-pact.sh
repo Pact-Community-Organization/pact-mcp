@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# [Developer] Mock pact binary for integration + security tests.
+# Mock pact binary for integration + security tests.
 # Deterministic output keyed off the basename of the first argument.
 set -e
 

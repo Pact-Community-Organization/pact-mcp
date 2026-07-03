@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-#### Security Baseline (ADR-MCP-001)
+#### Security Baseline (security baseline)
 - **Root refusal**: Automatic exit with code 13 if `process.getuid() === 0`
 - **Audit logging**: All tool executions logged to `~/.pact-community/mcp-audit.log.YYYY-MM-DD`
 - **Input sanitization**: Removes prompt injection markers (`<IMPORTANT>`, `<system>`, `[INST]`, etc.)
@@ -44,7 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Attack vector validation**: Tests for path traversal, injection, privilege escalation
 
 ### Security
-- **ADR-MCP-001 compliance**: Full implementation of Pact Community MCP security baseline
+- **Security baseline compliance**: Full implementation of Pact Community MCP security baseline
 - **Defense in depth**: Multiple layers of validation and sanitization
 - **Audit trail**: Complete forensic logging without sensitive data exposure
 - **Fail-secure design**: Errors default to denying access rather than permitting

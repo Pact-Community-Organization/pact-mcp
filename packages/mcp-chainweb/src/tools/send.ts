@@ -1,6 +1,5 @@
 /**
  * @fileoverview chainweb.send - POST a pre-signed transaction after preflight.
- * @author Developer
  *
  * Security invariant: the server NEVER accepts private keys. The caller must
  * provide a `{cmd, hash, sigs}` tuple produced by their signing toolchain.
@@ -62,7 +61,7 @@ export function createSendTool(config: SendToolConfig) {
     const chainId = input.chainId;
     const base = `/chainweb/0.0/${netId}/chain/${chainId}/pact/api/v1`;
 
-    // [Developer] Preflight FIRST. Signed tx → signatureVerification=true.
+    // Preflight FIRST. Signed tx → signatureVerification=true.
     const localPath = `${base}/local?preflight=true&signatureVerification=true`;
     const preflight = await config.client.postJson<RawLocalResponse>(
       localPath,
