@@ -1,6 +1,5 @@
 /**
  * @fileoverview coord.task_create — create a new task.
- * @author Developer
  */
 
 import path from 'node:path';

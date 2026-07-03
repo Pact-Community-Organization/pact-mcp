@@ -1,7 +1,6 @@
 /**
  * @fileoverview Append-only audit logger for MCP tool executions
- * @author Developer
- * @description Implements ADR-MCP-001 audit logging requirements
+ * @description Implements the pact-mcp security baseline audit logging requirements
  */
 
 import fs from 'node:fs';
@@ -27,7 +26,7 @@ export interface AuditLogger {
 }
 
 /**
- * [Developer] Create audit logger for MCP server
+ * Create audit logger for MCP server
  * 
  * Logs to ~/.pact-community/mcp-audit.log.YYYY-MM-DD with:
  * - ISO timestamp
@@ -43,7 +42,7 @@ export interface AuditLogger {
 export function createAuditLogger(serverName: string): AuditLogger {
   const auditDir = path.join(os.homedir(), '.pact-community');
   
-  // [Developer] Ensure audit directory exists
+  // Ensure audit directory exists
   if (!fs.existsSync(auditDir)) {
     fs.mkdirSync(auditDir, { recursive: true, mode: 0o700 });
   }
@@ -64,14 +63,14 @@ export function createAuditLogger(serverName: string): AuditLogger {
 
       const logLine = JSON.stringify(logEntry) + '\n';
 
-      // [Developer] Append-only with O_APPEND|O_CREAT flags for safety
+      // Append-only with O_APPEND|O_CREAT flags for safety
       try {
         fs.writeFileSync(logPath, logLine, { 
           flag: 'a',
           mode: 0o600 // Owner read/write only
         });
       } catch (error) {
-        // [Developer] Log to stderr but don't crash the server
+        // Log to stderr but don't crash the server
         console.error(`[MCP-AUDIT] Failed to write audit log: ${error}`);
       }
     },

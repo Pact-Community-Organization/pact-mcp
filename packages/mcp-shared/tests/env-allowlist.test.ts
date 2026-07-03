@@ -1,12 +1,11 @@
 /**
  * @fileoverview Tests for environment variable allowlist validation
- * @author Developer
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { validateEnv } from '../src/env-allowlist.js';
 
-// [Developer] Mock process.env for testing
+// Mock process.env for testing
 const originalEnv = process.env;
 
 beforeEach(() => {
@@ -71,7 +70,7 @@ describe('env-allowlist', () => {
         strict: false
       });
 
-      // [Developer] In permissive mode, unknown vars are included
+      // In permissive mode, unknown vars are included
       expect(result.env.UNKNOWN_VAR1).toBe('value1');
       expect(result.env.UNKNOWN_VAR2).toBe('value2');
       expect(result.unknown).toEqual(['UNKNOWN_VAR1', 'UNKNOWN_VAR2']);
@@ -161,7 +160,7 @@ describe('env-allowlist', () => {
         strict: false
       });
 
-      // [Developer] Core variables should still be included
+      // Core variables should still be included
       expect(result.env.NODE_ENV).toBe('test');
       expect(result.env.PATH).toBe('/usr/bin');
     });

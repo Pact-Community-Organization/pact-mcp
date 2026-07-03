@@ -1,6 +1,5 @@
 /**
  * @fileoverview pact.interface_diff tool implementation
- * @author Developer
  * @description Compare two .pact files and report public-API changes
  *              (added/removed/changed/unchanged). Uses a conservative
  *              balanced-paren extractor from src/analysis/interface.ts.

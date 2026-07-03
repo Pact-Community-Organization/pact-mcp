@@ -1,6 +1,5 @@
 /**
  * @fileoverview Unit tests — src/tools/up.ts, down.ts, reset.ts (GATED).
- * @author Developer
  */
 
 import fs from 'node:fs';

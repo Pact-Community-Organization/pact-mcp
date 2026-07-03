@@ -1,7 +1,6 @@
 /**
  * @fileoverview MCP Pact server - high-level McpServer wiring
- * @author Developer
- * @description Applies ADR-MCP-001 security baseline then registers six
+ * @description Applies pact-mcp security baseline then registers six
  *              tools (pact.repl_run, pact.module_scan, pact.repl_run_many,
  *              pact.gas_estimate, pact.interface_diff, pact.fmt_check) and
  *              one resource (pact://traps) on the SDK 1.18 McpServer API.
@@ -16,6 +15,7 @@ import {
   createAuditLogger,
   validateEnv,
   verifyToolsLock,
+  resolveLockfilePath,
   McpToolError
 } from '@pact-community/mcp-shared';
 
@@ -98,7 +98,7 @@ export interface ResolvedConfig {
 }
 
 /**
- * [Developer] Perform the ADR-MCP-001 security baseline checks and return a
+ * Perform the pact-mcp security baseline checks and return a
  * resolved config. Throws on misconfiguration.
  */
 export function resolveConfig(): ResolvedConfig {
@@ -137,8 +137,7 @@ export function resolveConfig(): ResolvedConfig {
 
   const pactBin = envResult.env['PACT_COMMUNITY_PACT_BIN'] ?? 'pact';
   const lockfilePath =
-    envResult.env['PACT_COMMUNITY_TOOLS_LOCKFILE'] ??
-    defaultLockfilePath();
+    resolveLockfilePath(import.meta.url, envResult.env['PACT_COMMUNITY_TOOLS_LOCKFILE']);
 
   // 4. Tool schema drift check via tools.lock.json.
   verifyToolsLock(SERVER_NAME, getToolSchemaObjects(), lockfilePath);
@@ -155,7 +154,7 @@ export function resolveConfig(): ResolvedConfig {
 }
 
 /**
- * [Developer] Build (but do not connect) an McpServer with tools + resource
+ * Build (but do not connect) an McpServer with tools + resource
  * registered. Exposed so integration tests and bin.ts share a single codepath.
  */
 export function buildMcpServer(config: ResolvedConfig): McpServer {
@@ -453,7 +452,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
 }
 
 /**
- * [Developer] Produce the tool input-schema objects for lockfile verification.
+ * Produce the tool input-schema objects for lockfile verification.
  * Must match what is passed to `registerTool` so hashes agree.
  */
 export function getToolSchemaObjects(): Record<
@@ -471,14 +470,6 @@ export function getToolSchemaObjects(): Record<
 }
 
 // ---------------------------------------------------------------------------
-
-function defaultLockfilePath(): string {
-  // The workspace lockfile lives at <repo>/mcp/tools.lock.json. When bin.js is
-  // run via `node mcp/packages/mcp-pact/dist/bin.js`, cwd may vary; callers can
-  // override with PACT_COMMUNITY_TOOLS_LOCKFILE. The baseline default is cwd-relative
-  // which matches the shared library's behaviour.
-  return './tools.lock.json';
-}
 
 function hashArgs(args: unknown): string {
   try {

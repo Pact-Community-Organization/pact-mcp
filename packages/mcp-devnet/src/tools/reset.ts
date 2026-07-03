@@ -1,6 +1,5 @@
 /**
  * @fileoverview devnet.reset tool — GATED + DANGER. down -v + up --force-recreate.
- * @author Developer
  */
 
 import { z } from 'zod';

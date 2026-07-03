@@ -1,152 +1,33 @@
 {
-  "mcpVersion": "2024-11-05",
-  "name": "pact-community-mcp-workspace",
-  "version": "1.0.0",
-  "description": "Pact Community MCP servers for Kadena blockchain tooling",
-  "servers": {
-    "pact-community-shared": {
-      "command": "node",
-      "args": ["./packages/mcp-shared/dist/index.js"],
-      "env": {
-        "NODE_ENV": "production",
-        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>"
-      },
-      "_disabled": true,
-      "_note": "Utility package only; no MCP server entrypoint."
-    },
-    "pact-community-pact": {
+  "mcpServers": {
+    "pact": {
       "command": "node",
       "args": ["./packages/mcp-pact/dist/bin.js"],
       "env": {
-        "NODE_ENV": "production",
-        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>",
+        "PACT_COMMUNITY_WORKSPACE_ROOT": ".",
         "PACT_COMMUNITY_PACT_BIN": "pact"
-      },
-      "_note": "Pact smart contract tooling server."
+      }
     },
-    "pact-community-chainweb": {
+    "chainweb": {
       "command": "node",
       "args": ["./packages/mcp-chainweb/dist/bin.js"],
       "env": {
-        "NODE_ENV": "production",
-        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>",
+        "PACT_COMMUNITY_WORKSPACE_ROOT": ".",
         "PACT_COMMUNITY_CHAINWEB_MODE": "devnet",
         "PACT_COMMUNITY_CHAINWEB_PROFILE": "devnet",
         "PACT_COMMUNITY_CHAINWEB_BASE_URL": "http://localhost:8081",
         "PACT_COMMUNITY_CHAINWEB_NETWORK_ID": "development"
-      },
-      "_note": "Default devnet profile with full read/write tool availability."
+      }
     },
-    "pact-community-chainweb-testnet06-readonly": {
-      "command": "node",
-      "args": ["./packages/mcp-chainweb/dist/bin.js"],
-      "env": {
-        "NODE_ENV": "production",
-        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>",
-        "PACT_COMMUNITY_CHAINWEB_MODE": "testnet06",
-        "PACT_COMMUNITY_CHAINWEB_PROFILE": "testnet06",
-        "PACT_COMMUNITY_CHAINWEB_BASE_URL": "https://api.testnet.chainweb.com",
-        "PACT_COMMUNITY_CHAINWEB_NETWORK_ID": "testnet06"
-      },
-      "_disabled": true,
-      "_note": "Opt-in read-only profile. Write tools return PROFILE_WRITE_BLOCKED."
-    },
-    "pact-community-chainweb-mainnet-readonly": {
-      "command": "node",
-      "args": ["./packages/mcp-chainweb/dist/bin.js"],
-      "env": {
-        "NODE_ENV": "production",
-        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>",
-        "PACT_COMMUNITY_CHAINWEB_MODE": "mainnet",
-        "PACT_COMMUNITY_CHAINWEB_PROFILE": "mainnet",
-        "PACT_COMMUNITY_CHAINWEB_BASE_URL": "https://api.chainweb-community.org",
-        "PACT_COMMUNITY_CHAINWEB_NETWORK_ID": "mainnet01"
-      },
-      "_disabled": true,
-      "_note": "Opt-in read-only profile. Write tools return PROFILE_WRITE_BLOCKED."
-    },
-    "pact-community-coordination": {
-      "command": "node",
-      "args": ["./packages/mcp-coordination/dist/bin.js"],
-      "env": {
-        "NODE_ENV": "production",
-        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>",
-        "PACT_COMMUNITY_COORDINATION_ROOT": "<workspace-root>/coordination"
-      },
-      "_note": "Inter-agent coordination tools."
-    },
-    "pact-community-devnet": {
+    "devnet": {
       "command": "node",
       "args": ["./packages/mcp-devnet/dist/bin.js"],
       "env": {
-        "NODE_ENV": "production",
-        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>",
+        "PACT_COMMUNITY_WORKSPACE_ROOT": ".",
         "PACT_COMMUNITY_DEVNET_MODE": "devnet",
         "PACT_COMMUNITY_DEVNET_ALLOW_LIFECYCLE": "false",
         "PACT_COMMUNITY_DEVNET_ALLOW_VOLUME_WIPE": "false"
-      },
-      "_note": "Lifecycle mutations are disabled by default and require explicit opt-in flags."
-    },
-    "playwright": {
-      "command": "npx",
-      "args": [
-        "@playwright/mcp@latest",
-        "--isolated",
-        "--allowed-origins",
-        "http://localhost:3000;http://localhost:3001;http://localhost:4321;http://localhost:8081;http://localhost:8082;http://localhost:8083",
-        "--viewport-size",
-        "1280x720",
-        "--caps",
-        "vision,testing",
-        "--output-dir",
-        "<workspace-root>/docs/artifacts/playwright-mcp"
-      ],
-      "_note": "Browser automation for visual and accessibility testing."
-    },
-    "chrome-devtools": {
-      "command": "npx",
-      "args": [
-        "chrome-devtools-mcp@latest",
-        "--isolated",
-        "--headless",
-        "--viewport",
-        "1280x720"
-      ],
-      "_note": "Chrome DevTools MCP for DOM/network diagnostics."
-    },
-    "pact-community-deploy": {
-      "command": "node",
-      "args": ["./packages/mcp-deploy/dist/index.js"],
-      "env": {
-        "NODE_ENV": "production",
-        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>",
-        "DOCKER_COMPOSE_FILE": "<workspace-root>/dao/docker-compose.forge.yml"
-      },
-      "_disabled": true,
-      "_note": "Planned server. Disabled by default."
-    },
-    "pact-community-scan": {
-      "command": "node",
-      "args": ["./packages/mcp-scan/dist/index.js"],
-      "env": {
-        "NODE_ENV": "production",
-        "PACT_COMMUNITY_WORKSPACE_ROOT": "<workspace-root>"
-      },
-      "_disabled": true,
-      "_note": "Planned server. Disabled by default."
-    }
-  },
-  "globalSettings": {
-    "logLevel": "info",
-    "timeout": 30000,
-    "security": {
-      "auditLog": "~/.pact-community/mcp-audit.log",
-      "allowedNetworks": [
-        "http://localhost:8081",
-        "https://api.testnet.chainweb.com",
-        "https://api.chainweb-community.org"
-      ],
-      "workspaceRoot": "<workspace-root>"
+      }
     }
   }
 }

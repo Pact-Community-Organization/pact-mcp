@@ -1,7 +1,6 @@
 /**
  * @fileoverview Security tests — sensitive invariants that MUST hold. These
  *               are the tests Security will actually read during the audit.
- * @author Developer
  */
 
 import fs from 'node:fs';

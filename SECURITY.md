@@ -19,7 +19,7 @@ Pact Community MCP servers handle sensitive blockchain operations and must defen
 - **Network access**: Unauthorized HTTP requests to internal/external services
 - **Root execution**: MCP server running with elevated privileges
 
-## Security Baseline (ADR-MCP-001)
+## Security Baseline
 
 Every MCP server MUST implement:
 

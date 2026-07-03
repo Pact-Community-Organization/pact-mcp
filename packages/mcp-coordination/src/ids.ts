@@ -1,6 +1,5 @@
 /**
  * @fileoverview 26-char Crockford base32 ULIDs with prefix tags.
- * @author Developer
  *
  * Monotonic within the same millisecond at the single-process level.
  */

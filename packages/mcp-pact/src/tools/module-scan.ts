@@ -1,6 +1,5 @@
 /**
  * @fileoverview pact.module_scan tool implementation
- * @author Developer
  * @description Static analysis for the 5 critical Pact 5 traps.
  */
 

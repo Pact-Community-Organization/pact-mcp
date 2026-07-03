@@ -1,7 +1,6 @@
 /**
  * @fileoverview Compose file validation + `docker compose ps --format json`
  *               output parsing.
- * @author Developer
  */
 
 import fs from 'node:fs';
@@ -32,7 +31,7 @@ export interface ComposeResolution {
 }
 
 /**
- * [Developer] Resolve + validate a compose file path for the given agent.
+ * Resolve + validate a compose file path for the given agent.
  *
  * - Path is hardcoded from the agent map — callers NEVER control the file.
  * - Resolved path must live inside the workspace root (via fs-guard).
@@ -68,7 +67,7 @@ export function resolveComposeFile(
 }
 
 /**
- * [Developer] Lightweight compose-file content check.
+ * Lightweight compose-file content check.
  *
  * Reads at most COMPOSE_PREFLIGHT_BYTES and:
  *  1. Requires a top-level `services:` key (rejects random YAML files).
@@ -175,7 +174,7 @@ interface RawPsEntry {
 }
 
 /**
- * [Developer] Parse `docker compose ps --format json` output.
+ * Parse `docker compose ps --format json` output.
  *
  * Docker emits either NDJSON (one object per line) or a single JSON array
  * depending on the compose version. Handle both. Unknown fields are ignored.

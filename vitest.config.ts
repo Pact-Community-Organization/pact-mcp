@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitest/config';
 
-// [Developer] Vitest workspace configuration for MCP monorepo
-// ADR-MCP-001: Coverage thresholds enforce security baseline quality
+// Vitest workspace configuration for the MCP monorepo
+// Coverage thresholds enforce security baseline quality
 export default defineConfig({
   test: {
     globals: true,

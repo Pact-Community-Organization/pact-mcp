@@ -1,6 +1,5 @@
 /**
  * @fileoverview chainweb.keys - list keys of a Pact table via /local.
- * @author Developer
  */
 
 import { z } from 'zod';
@@ -67,7 +66,7 @@ export function createKeysTool(config: KeysToolConfig) {
   ): Promise<{ content: KeysResult[] }> {
     const input = KeysInputSchema.parse(args);
 
-    // [Developer] `(take limit (keys m.t))` truncates at the interpreter
+    // `(take limit (keys m.t))` truncates at the interpreter
     // level so big tables don't overflow the response.
     const code = `(take ${input.limit} (keys ${input.module}.${input.table}))`;
     const tx = Pact.builder

@@ -3,16 +3,16 @@
   description: "PR awaiting initial review assignment"
 - name: needs-tester
   color: "e4e669"
-  description: "PR requires Tester agent review"
+  description: "PR requires test review"
 - name: needs-security
   color: "d93f0b"
-  description: "PR requires Security agent review"
+  description: "PR requires security review"
 - name: tester-approved
   color: "0e8a16"
-  description: "Tester agent has approved this PR"
+  description: "Testing sign-off recorded"
 - name: security-approved
   color: "006b75"
-  description: "Security agent has approved this PR"
+  description: "Security sign-off recorded"
 - name: do-not-merge
   color: "b60205"
   description: "Block auto-merge — human escalation required"

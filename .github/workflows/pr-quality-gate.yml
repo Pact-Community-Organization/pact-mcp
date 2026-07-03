@@ -39,7 +39,7 @@ jobs:
             const title = pr.title || '';
             const errors = [];
 
-            // [GitHubArchitect] Dependabot actor exemption (Change 2, 2026-05-29):
+            // Dependabot actor exemption (Change 2, 2026-05-29):
             // Body/metadata rules (Rules 2-5) are incompatible with auto-generated Dependabot PRs.
             // Rule 1 (title format) is still enforced — dependabot.yml prefix is now "chore"
             // so titles like "chore(deps): Bump zod from 3.x to 4.x" will pass.

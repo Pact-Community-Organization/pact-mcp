@@ -1,6 +1,5 @@
 /**
  * @fileoverview chainweb.continue_pact - continue a cross-chain defpact step.
- * @author Developer
  *
  * Builds a continuation command (`cmd.payload.cont = { pactId, step,
  * rollback, proof, data }`), routes it to the target chain, runs `/local`
@@ -150,7 +149,7 @@ export function createContinuePactTool(config: ContinuePactToolConfig) {
       { name: 'coin.GAS', args: [] as unknown[] }
     ];
 
-    // [Developer] Continuation builder. Proof is optional for same-chain
+    // Continuation builder. Proof is optional for same-chain
     // continuations; required for cross-chain. We pass `null` when absent
     // (Pact's `read-continuation-proof` accepts null for same-chain).
     let builder = Pact.builder.continuation({
@@ -160,7 +159,7 @@ export function createContinuePactTool(config: ContinuePactToolConfig) {
       ...(input.proof !== undefined ? { proof: input.proof } : {})
     });
 
-    // [Developer] SCOPED signer — continuations benefit from
+    // SCOPED signer — continuations benefit from
     // capability scoping (memory: scoped signers are correct for
     // defpact continuations; unscoped is only for module deploys).
     builder = builder.addSigner(input.signerKey, (withCap) =>

@@ -1,6 +1,5 @@
 /**
  * @fileoverview Hardcoded agent → (compose file, devnet port) map.
- * @author Developer
  *
  * Callers pick an agent name; the server picks the compose file and port.
  * NEVER let tool input control file paths directly.
@@ -22,7 +21,7 @@ export interface AgentMapping {
 }
 
 /**
- * [Developer] Per-agent immutable mapping.
+ * Per-agent immutable mapping.
  *
  * Note: Developer's compose file is named `docker-compose.forge.yml` (legacy
  * from when the agent was called "Forge"). The workspace conventions file

@@ -1,6 +1,5 @@
 /**
  * @fileoverview pact.repl_run tool implementation
- * @author Developer
  * @description Run a single .repl file via the pact binary and parse results.
  *              Local-only. No network I/O. No shell interpretation.
  */
@@ -14,12 +13,12 @@ import {
   McpToolError
 } from '@pact-community/mcp-shared';
 
-// [Developer] Stdout cap prevents memory blow-ups from pathological pact output.
+// Stdout cap prevents memory blow-ups from pathological pact output.
 const STDOUT_SIZE_CAP = 200 * 1024;
 const STDOUT_TRUNCATION_MARKER = '\n…[truncated at 200KB]';
 
 /**
- * [Developer] Zod inputSchema for pact.repl_run.
+ * Zod inputSchema for pact.repl_run.
  *
  * Exported as a ZodRawShape so it can be handed to `McpServer.registerTool`
  * AND hashed canonically for tools.lock.json.
@@ -34,7 +33,7 @@ export const ReplRunInputShape = {
 export const ReplRunInputSchema = z.object(ReplRunInputShape);
 
 /**
- * [Developer] Structured output returned to callers.
+ * Structured output returned to callers.
  */
 export interface ReplRunResult {
   file: string;
@@ -66,7 +65,7 @@ export interface ReplRunToolConfig {
 }
 
 /**
- * [Developer] Factory for the repl-run tool handler.
+ * Factory for the repl-run tool handler.
  *
  * Contract:
  *  - validates input with zod

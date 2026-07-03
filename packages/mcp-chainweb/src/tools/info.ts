@@ -1,6 +1,5 @@
 /**
  * @fileoverview chainweb.info - read node metadata + chain list.
- * @author Developer
  *
  * Security invariant: refuses loudly if `networkId !== "development"` — this
  * server is devnet-only for the v1 MVP.
@@ -46,7 +45,7 @@ interface RawCut {
 }
 
 /**
- * [Developer] Factory for the info tool. Returns a handler compatible with
+ * Factory for the info tool. Returns a handler compatible with
  * McpServer.registerTool's callback signature (receives `args: unknown`).
  */
 export function createInfoTool(config: InfoToolConfig) {

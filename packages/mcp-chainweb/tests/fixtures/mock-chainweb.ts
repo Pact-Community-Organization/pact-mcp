@@ -1,6 +1,5 @@
 /**
  * @fileoverview In-process mock chainweb HTTP server for tests.
- * @author Developer
  *
  * Uses node:http bound to 127.0.0.1 on an ephemeral port. Callers get back
  * the `origin` (e.g. `http://127.0.0.1:43517`) which they pass to the
@@ -184,7 +183,7 @@ function send(
 ): void {
   res.statusCode = status;
   res.setHeader('Content-Type', contentType);
-  // [Developer] For application/json responses, always JSON.stringify so
+  // For application/json responses, always JSON.stringify so
   // the body is valid JSON (including `"quoted-strings"`). Callers that
   // want to simulate plain-text bodies pass a non-JSON contentType.
   if (contentType === 'application/json') {
@@ -241,7 +240,7 @@ function handle(
   const localMatch =
     /^\/chainweb\/0\.0\/[^/]+\/chain\/\d+\/pact\/api\/v1\/local/.exec(url);
   if (method === 'POST' && localMatch) {
-    // [Developer] Distinguish exec vs cont payload so tests can configure
+    // Distinguish exec vs cont payload so tests can configure
     // distinct responses for deploy_module vs continue_pact scenarios.
     const isCont = isContinuationPayload(body);
     const selected = isCont && state.localCont !== undefined

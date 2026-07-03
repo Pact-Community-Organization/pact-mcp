@@ -1,7 +1,6 @@
 /**
  * @fileoverview MCP Server security baseline implementation
- * @author Developer
- * @description ADR-MCP-001 security controls applied in correct order
+ * @description the pact-mcp security baseline security controls applied in correct order
  */
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
@@ -33,7 +32,7 @@ export interface ServerBaselineOptions {
 }
 
 /**
- * [Developer] Start MCP server with ADR-MCP-001 security baseline
+ * Start MCP server with pact-mcp security baseline
  * 
  * Applies security controls in order:
  * 1. Root refusal check
@@ -46,27 +45,27 @@ export interface ServerBaselineOptions {
  * @returns Configured Server instance ready for stdio transport
  */
 export function startServer(opts: ServerBaselineOptions): Server {
-  // [Developer] 1. Root refusal - exit immediately if running as root
+  // 1. Root refusal - exit immediately if running as root
   if (process.getuid && process.getuid() === 0) {
     console.error('[MCP-SECURITY] Refusing to run as root (uid 0). Run as non-privileged user.');
     process.exit(13);
   }
 
-  // [Developer] 2. Initialize audit logging
+  // 2. Initialize audit logging
   const auditLogger = createAuditLogger(opts.name);
 
-  // [Developer] 3. Validate environment variables
+  // 3. Validate environment variables
   const env = validateEnv({
     allowed: opts.envAllowlist || [],
     strict: opts.envStrict ?? true
   });
 
-  // [Developer] 4. Verify tool schema lockfile (if tools provided)
+  // 4. Verify tool schema lockfile (if tools provided)
   if (opts.tools && Object.keys(opts.tools).length > 0) {
     verifyToolsLock(opts.name, opts.tools, opts.lockfilePath);
   }
 
-  // [Developer] 5. Create server with baseline configuration
+  // 5. Create server with baseline configuration
   const server = new Server({
     name: opts.name,
     version: opts.version
@@ -76,7 +75,7 @@ export function startServer(opts: ServerBaselineOptions): Server {
     }
   });
 
-  // [Developer] Note: Tool execution wrapping will be implemented when
+  // Note: Tool execution wrapping will be implemented when
   // MCP SDK provides tool handling API. For Phase 1.1, server baseline
   // focuses on initialization security controls.
   
@@ -90,7 +89,7 @@ export function startServer(opts: ServerBaselineOptions): Server {
   //     try {
   //       const result = await originalCallTool(request);
   //       
-  //       // [Developer] Sanitize tool output to prevent prompt injection
+  //       // Sanitize tool output to prevent prompt injection
   //       if (result.content) {
   //         result.content = result.content.map((item: any) => {
   //           if (item.type === 'text') {
@@ -101,7 +100,7 @@ export function startServer(opts: ServerBaselineOptions): Server {
   //         });
   //       }
   //
-  //       // [Developer] Log successful execution
+  //       // Log successful execution
   //       auditLogger.log({
   //         tool: request.name,
   //         inputHash,
@@ -111,7 +110,7 @@ export function startServer(opts: ServerBaselineOptions): Server {
   //
   //       return result;
   //     } catch (error) {
-  //       // [Developer] Log failed execution
+  //       // Log failed execution
   //       const exitStatus = error instanceof McpToolError ? error.code : 1;
   //       auditLogger.log({
   //         tool: request.name,
@@ -129,7 +128,7 @@ export function startServer(opts: ServerBaselineOptions): Server {
 }
 
 /**
- * [Developer] Hash input for audit log (never store raw inputs)
+ * Hash input for audit log (never store raw inputs)
  */
 async function hashInput(input: string): Promise<string> {
   const encoder = new TextEncoder();

@@ -13,7 +13,7 @@
 
   (defun bad-try-write:string (key:string value:string)
     @doc "Demonstrates DML in try block trap"
-    ;; [Developer] This is a TRAP - DML not allowed in try (read-only)
+    ;; This is a TRAP - DML not allowed in try (read-only)
     (try 
       (write test-table key {"value": value})
       "Failed to write"))

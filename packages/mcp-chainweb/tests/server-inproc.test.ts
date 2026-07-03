@@ -148,6 +148,136 @@ describe('server in-process wrap()', () => {
     mock.patch('info', undefined);
   });
 
+  const SIGNER_KEY =
+    '368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca';
+
+  function parsePayload(res: unknown): Record<string, unknown> {
+    return JSON.parse(
+      ((res as { content: Array<{ text: string }> }).content)[0]!.text
+    ) as Record<string, unknown>;
+  }
+
+  test('read_table returns the unwrapped row', async () => {
+    mock.patch('local', {
+      reqKey: 'rk',
+      result: {
+        status: 'success',
+        data: { balance: { decimal: '1234.5' }, address: 'alice' }
+      },
+      gas: 50
+    });
+    const res = await mcpClient.callTool({
+      name: 'chainweb.read_table',
+      arguments: {
+        chainId: '0',
+        module: 'n_abc.dao-token',
+        table: 'accounts',
+        key: 'alice'
+      }
+    });
+    expect(res.isError).toBeFalsy();
+    expect(parsePayload(res)['keyFound']).toBe(true);
+    mock.patch('local', undefined);
+  });
+
+  test('keys lists table keys', async () => {
+    mock.patch('local', {
+      reqKey: 'rk',
+      result: { status: 'success', data: ['alice', 'bob', 'carol'] },
+      gas: 20
+    });
+    const res = await mcpClient.callTool({
+      name: 'chainweb.keys',
+      arguments: { chainId: '0', module: 'n_abc.dao-token', table: 'accounts' }
+    });
+    expect(res.isError).toBeFalsy();
+    expect((parsePayload(res)['keys'] as string[]).length).toBe(3);
+    mock.patch('local', undefined);
+  });
+
+  test('principal_namespace computes the n_ name', async () => {
+    mock.patch('local', {
+      reqKey: 'rk',
+      result: {
+        status: 'success',
+        data: 'n_0123456789abcdef0123456789abcdef01234567'
+      },
+      gas: 100
+    });
+    const res = await mcpClient.callTool({
+      name: 'chainweb.principal_namespace',
+      arguments: {
+        chainId: '0',
+        keyset: { keys: [SIGNER_KEY], pred: 'keys-all' }
+      }
+    });
+    expect(res.isError).toBeFalsy();
+    expect(parsePayload(res)['namespace']).toBe(
+      'n_0123456789abcdef0123456789abcdef01234567'
+    );
+    mock.patch('local', undefined);
+  });
+
+  test('deploy_module preflight-only returns an unsigned tx', async () => {
+    mock.patch('local', {
+      reqKey: 'rk',
+      result: { status: 'success', data: 'Loaded module demo' },
+      gas: 12_000
+    });
+    const res = await mcpClient.callTool({
+      name: 'chainweb.deploy_module',
+      arguments: {
+        chainId: '0',
+        module: {
+          code: '(module demo GOVERNANCE\n  (defcap GOVERNANCE () true)\n  (defun hello () "world"))'
+        },
+        signerKey: SIGNER_KEY
+      }
+    });
+    expect(res.isError).toBeFalsy();
+    const payload = parsePayload(res);
+    expect(payload['deployed']).toBe(false);
+    expect(payload['unsignedTx']).toBeDefined();
+    mock.patch('local', undefined);
+  });
+
+  test('continue_pact preflight-only returns an unsigned tx', async () => {
+    mock.patch('local', {
+      reqKey: 'rk',
+      result: { status: 'success', data: 'continued' },
+      gas: 8_000
+    });
+    const res = await mcpClient.callTool({
+      name: 'chainweb.continue_pact',
+      arguments: {
+        pactId: 'pact-id-abc',
+        step: 1,
+        rollback: false,
+        targetChainId: '1',
+        proof: 'eyJwcm9vZiI6ImJhc2U2NCJ9',
+        signerKey: SIGNER_KEY
+      }
+    });
+    expect(res.isError).toBeFalsy();
+    const payload = parsePayload(res);
+    expect(payload['submitted']).toBe(false);
+    expect(payload['unsignedTx']).toBeDefined();
+    mock.patch('local', undefined);
+  });
+
+  test('spv_proof returns a ready proof', async () => {
+    const res = await mcpClient.callTool({
+      name: 'chainweb.spv_proof',
+      arguments: {
+        sourceChainId: '0',
+        targetChainId: '1',
+        requestKey: 'req-key-abc'
+      }
+    });
+    expect(res.isError).toBeFalsy();
+    expect(parsePayload(res)['ready']).toBe(true);
+  });
+
   test('write tools are blocked on public profiles with PROFILE_WRITE_BLOCKED', async () => {
     const httpClient = createChainwebClient({
       baseUrl: mock.baseUrl,

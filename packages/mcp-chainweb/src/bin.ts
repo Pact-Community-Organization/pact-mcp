@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /**
  * @fileoverview MCP Chainweb server binary (stdio transport).
- * @author Developer
  */
 
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';

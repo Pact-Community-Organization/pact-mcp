@@ -13,7 +13,7 @@
 
   (defun bad-enforce-read:string (account:string threshold:decimal)
     @doc "Demonstrates DB read in enforce boolean expression trap"
-    ;; [Developer] This is a TRAP - DB read in enforce boolean (read-only on chainweb)
+    ;; This is a TRAP - DB read in enforce boolean (read-only on chainweb)
     (enforce (>= (at 'amount (read balances account)) threshold) 
              "Insufficient balance")
     "Check passed")

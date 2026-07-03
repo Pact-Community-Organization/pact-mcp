@@ -1,6 +1,5 @@
 /**
  * @fileoverview Unit tests for pact.interface_diff tool + parser
- * @author Developer
  */
 
 import { describe, test, expect } from 'vitest';

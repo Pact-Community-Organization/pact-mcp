@@ -1,6 +1,5 @@
 /**
  * @fileoverview Unit tests for pact.repl_run_many tool
- * @author Developer
  */
 
 import { describe, test, expect, beforeEach, vi } from 'vitest';
@@ -127,7 +126,7 @@ describe('pact.repl_run_many', () => {
   });
 
   test('total budget exceeded sets timedOut flag with partial results', async () => {
-    // [Developer] totalBudgetMs=10ms — second file should not be attempted.
+    // totalBudgetMs=10ms — second file should not be attempted.
     const run = make({ totalBudgetMs: 10 });
     mockSpawn.mockImplementationOnce(
       () =>

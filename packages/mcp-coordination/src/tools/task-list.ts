@@ -1,6 +1,5 @@
 /**
  * @fileoverview coord.task_list — list task summaries under filters.
- * @author Developer
  */
 
 import { promises as fsp } from 'node:fs';
