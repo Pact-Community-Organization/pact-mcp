@@ -170,3 +170,20 @@ describe('server', () => {
     });
   });
 });
+
+describe('server.json registry manifest', () => {
+  // server.json ships inside the published tarball and is what the MCP registry
+  // reads. It carries the version in two places and nothing regenerates it, so
+  // it silently kept pointing at the previous release until this test existed.
+  test('declares the same version as package.json, in both places', () => {
+    const pkg = JSON.parse(
+      fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8')
+    ) as { version: string };
+    const manifest = JSON.parse(
+      fs.readFileSync(new URL('../server.json', import.meta.url), 'utf8')
+    ) as { version: string; packages: { version: string }[] };
+
+    expect(manifest.version).toBe(pkg.version);
+    expect(manifest.packages[0]!.version).toBe(pkg.version);
+  });
+});
