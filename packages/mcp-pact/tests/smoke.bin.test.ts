@@ -68,10 +68,10 @@ describe('smoke: pact binary', () => {
 
   test('registers pact tools and returns structured repl_run response', async () => {
     const { tools } = await client.listTools();
-    expect(tools.map((t) => t.name)).toContain('pact.repl_run');
+    expect(tools.map((t) => t.name)).toContain('pact_repl_run');
 
     const result = await client.callTool({
-      name: 'pact.repl_run',
+      name: 'pact_repl_run',
       arguments: { file: 'simple.repl' }
     });
     expect(result.isError).toBeFalsy();

@@ -1,5 +1,5 @@
 /**
- * @fileoverview chainweb.continue_pact - continue a cross-chain defpact step.
+ * @fileoverview chainweb_continue_pact - continue a cross-chain defpact step.
  *
  * Builds a continuation command (`cmd.payload.cont = { pactId, step,
  * rollback, proof, data }`), routes it to the target chain, runs `/local`
@@ -50,7 +50,7 @@ export const ContinuePactInputShape = {
     .string()
     .optional()
     .describe(
-      'Base64 SPV proof. Required when the continuation spans chains. Fetch via `chainweb.spv_proof`.'
+      'Base64 SPV proof. Required when the continuation spans chains. Fetch via `chainweb_spv_proof`.'
     ),
   envData: z
     .record(z.string(), z.unknown())

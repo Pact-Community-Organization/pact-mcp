@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests for chainweb.send tool (preflight-then-send).
+ * @fileoverview Tests for chainweb_send tool (preflight-then-send).
  */
 
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
@@ -16,7 +16,7 @@ const SIGNED_TX = {
   sigs: [{ sig: 'a'.repeat(128) }]
 };
 
-describe('chainweb.send', () => {
+describe('chainweb_send', () => {
   let mock: MockHandle;
 
   beforeAll(async () => {

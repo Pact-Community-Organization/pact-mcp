@@ -8,7 +8,7 @@ let h: Harness;
 beforeEach(async () => { h = await createHarness(); });
 afterEach(() => h.cleanup());
 
-describe('coord.task_complete', () => {
+describe('coord_task_complete', () => {
   it('marks done and records artifact paths', async () => {
     const c = decodeHandlerResult(
       await h.handlers.taskCreate({

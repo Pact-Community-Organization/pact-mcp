@@ -35,7 +35,7 @@ export interface ComposeResolution {
  *
  * - Path is hardcoded from the agent map — callers NEVER control the file.
  * - Resolved path must live inside the workspace root (via fs-guard).
- * - Missing files return `state: 'missing'` so `devnet.status` can return a
+ * - Missing files return `state: 'missing'` so `devnet_status` can return a
  *   structured result — caller decides whether this is fatal.
  */
 export function resolveComposeFile(

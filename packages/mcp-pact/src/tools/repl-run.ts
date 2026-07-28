@@ -1,5 +1,5 @@
 /**
- * @fileoverview pact.repl_run tool implementation
+ * @fileoverview pact_repl_run tool implementation
  * @description Run a single .repl file via the pact binary and parse results.
  *              Local-only. No network I/O. No shell interpretation.
  */
@@ -18,7 +18,7 @@ const STDOUT_SIZE_CAP = 200 * 1024;
 const STDOUT_TRUNCATION_MARKER = '\n…[truncated at 200KB]';
 
 /**
- * Zod inputSchema for pact.repl_run.
+ * Zod inputSchema for pact_repl_run.
  *
  * Exported as a ZodRawShape so it can be handed to `McpServer.registerTool`
  * AND hashed canonically for tools.lock.json.

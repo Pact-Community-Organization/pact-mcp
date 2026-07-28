@@ -5,7 +5,7 @@ let h: Harness;
 beforeEach(async () => { h = await createHarness(); });
 afterEach(() => h.cleanup());
 
-describe('coord.memory_append', () => {
+describe('coord_memory_append', () => {
   it('appends and returns 1-based line numbers per scope', async () => {
     const r1 = decodeHandlerResult(
       await h.handlers.memoryAppend({

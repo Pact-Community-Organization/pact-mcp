@@ -19,17 +19,17 @@ Chainweb HTTP node. The agent cannot be trusted; the node is devnet
    - `mainnet`: `https://api.chainweb-community.org`
    Checked at startup and re-checked on every `fetch()` call (defence in
    depth — DNS rebind resistance).
-3. **Network ID strict match.** `chainweb.info` refuses to return data
+3. **Network ID strict match.** `chainweb_info` refuses to return data
    if the node's `networkId` differs from the expected value (default
    `development`). Error message is sanitized.
-4. **Preflight guard on send.** `chainweb.send` runs a full
+4. **Preflight guard on send.** `chainweb_send` runs a full
    `/local?preflight=true` first. If preflight does not return
    `status: 'success'`, `/send` is never invoked.
-5. **Never accepts private keys.** `chainweb.send` requires a pre-signed
+5. **Never accepts private keys.** `chainweb_send` requires a pre-signed
    `{cmd, hash, sigs}` transaction. The server has no signing
    capability.
-6. **Public-profile write blocking.** `chainweb.send`,
-   `chainweb.deploy_module`, and `chainweb.continue_pact` throw
+6. **Public-profile write blocking.** `chainweb_send`,
+   `chainweb_deploy_module`, and `chainweb_continue_pact` throw
    `PROFILE_WRITE_BLOCKED` on `testnet06` and `mainnet`.
 7. **Boundary unwrapping.** Pact `{int:N}` / `{decimal:"N.M"}` / `{time}`
    types are recursively unwrapped. Failure shapes are recursively
@@ -55,7 +55,7 @@ the variable is silently discarded.
 
 - Public profile writes. `testnet06` and `mainnet` are intentionally read-only.
 - Key management. Use the Ledger signer or `@kadena/client` to sign.
-- Multi-step cross-chain flows. Use `chainweb.send` + `chainweb.poll`
+- Multi-step cross-chain flows. Use `chainweb_send` + `chainweb_poll`
   composed by the caller.
 
 ## Reporting

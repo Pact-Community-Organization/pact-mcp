@@ -1,5 +1,5 @@
 /**
- * @fileoverview Unit tests for pact.repl_run tool
+ * @fileoverview Unit tests for pact_repl_run tool
  */
 
 import { describe, test, expect, beforeEach, vi } from 'vitest';
@@ -23,7 +23,7 @@ const fixtures = path.resolve(import.meta.dirname, '../fixtures');
 const config = { workspaceRoot: fixtures, pactBin: 'pact' };
 const replRun = createReplRunTool(config);
 
-describe('pact.repl_run', () => {
+describe('pact_repl_run', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

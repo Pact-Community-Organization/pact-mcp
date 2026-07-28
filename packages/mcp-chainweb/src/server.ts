@@ -3,18 +3,18 @@
  *
  * Devnet-first. Registers 11 tools (v0.2.0):
  *   MVP (v0.1):
- *     - chainweb.info
- *     - chainweb.chain_time
- *     - chainweb.local
- *     - chainweb.send
- *     - chainweb.poll
+ *     - chainweb_info
+ *     - chainweb_chain_time
+ *     - chainweb_local
+ *     - chainweb_send
+ *     - chainweb_poll
  *   v0.2 additions:
- *     - chainweb.read_table
- *     - chainweb.keys
- *     - chainweb.principal_namespace
- *     - chainweb.deploy_module
- *     - chainweb.continue_pact
- *     - chainweb.spv_proof
+ *     - chainweb_read_table
+ *     - chainweb_keys
+ *     - chainweb_principal_namespace
+ *     - chainweb_deploy_module
+ *     - chainweb_continue_pact
+ *     - chainweb_spv_proof
  *
  * Applies the pact-mcp security baseline inline (same pattern as
  * mcp-pact), then constructs an allowlisted HTTP client pointed at the
@@ -93,7 +93,7 @@ import {
 } from './tools/spv-proof.js';
 
 export const SERVER_NAME = 'pact-community-chainweb';
-export const SERVER_VERSION = '0.2.3';
+export const SERVER_VERSION = '0.3.0';
 
 /** Environment variables the server accepts from its parent process. */
 export const ALLOWED_ENV = [
@@ -338,7 +338,7 @@ export function buildMcpServerWithClient(
   const spvProof = createSpvProofTool({ client });
 
   mcp.registerTool(
-    'chainweb.info',
+    'chainweb_info',
     {
       title: 'Chainweb node info',
       description:
@@ -351,14 +351,14 @@ export function buildMcpServerWithClient(
         openWorldHint: false
       }
     },
-    async (args) => wrap(auditLog, 'chainweb.info', args, async () => {
+    async (args) => wrap(auditLog, 'chainweb_info', args, async () => {
       const { content } = await info(args);
       return content[0] as InfoResult;
     })
   );
 
   mcp.registerTool(
-    'chainweb.chain_time',
+    'chainweb_chain_time',
     {
       title: 'Chainweb latest block time',
       description:
@@ -371,14 +371,14 @@ export function buildMcpServerWithClient(
         openWorldHint: false
       }
     },
-    async (args) => wrap(auditLog, 'chainweb.chain_time', args, async () => {
+    async (args) => wrap(auditLog, 'chainweb_chain_time', args, async () => {
       const { content } = await chainTime(args);
       return content[0] as ChainTimeResult;
     })
   );
 
   mcp.registerTool(
-    'chainweb.local',
+    'chainweb_local',
     {
       title: 'Chainweb local preflight',
       description:
@@ -391,14 +391,14 @@ export function buildMcpServerWithClient(
         openWorldHint: false
       }
     },
-    async (args) => wrap(auditLog, 'chainweb.local', args, async () => {
+    async (args) => wrap(auditLog, 'chainweb_local', args, async () => {
       const { content } = await local(args);
       return content[0] as LocalResult;
     })
   );
 
   mcp.registerTool(
-    'chainweb.send',
+    'chainweb_send',
     {
       title: 'Chainweb send signed transaction',
       description:
@@ -411,15 +411,15 @@ export function buildMcpServerWithClient(
         openWorldHint: false
       }
     },
-    async (args) => wrap(auditLog, 'chainweb.send', args, async () => {
-      ensureWritesAllowed(runtimeProfile, writesEnabled, 'chainweb.send');
+    async (args) => wrap(auditLog, 'chainweb_send', args, async () => {
+      ensureWritesAllowed(runtimeProfile, writesEnabled, 'chainweb_send');
       const { content } = await send(args);
       return content[0] as SendResult;
     })
   );
 
   mcp.registerTool(
-    'chainweb.poll',
+    'chainweb_poll',
     {
       title: 'Chainweb poll transaction results',
       description:
@@ -432,14 +432,14 @@ export function buildMcpServerWithClient(
         openWorldHint: false
       }
     },
-    async (args) => wrap(auditLog, 'chainweb.poll', args, async () => {
+    async (args) => wrap(auditLog, 'chainweb_poll', args, async () => {
       const { content } = await poll(args);
       return content[0] as PollResult;
     })
   );
 
   mcp.registerTool(
-    'chainweb.read_table',
+    'chainweb_read_table',
     {
       title: 'Chainweb read single table row',
       description:
@@ -452,14 +452,14 @@ export function buildMcpServerWithClient(
         openWorldHint: false
       }
     },
-    async (args) => wrap(auditLog, 'chainweb.read_table', args, async () => {
+    async (args) => wrap(auditLog, 'chainweb_read_table', args, async () => {
       const { content } = await readTable(args);
       return content[0] as ReadTableResult;
     })
   );
 
   mcp.registerTool(
-    'chainweb.keys',
+    'chainweb_keys',
     {
       title: 'Chainweb list keys of a Pact table',
       description:
@@ -472,14 +472,14 @@ export function buildMcpServerWithClient(
         openWorldHint: false
       }
     },
-    async (args) => wrap(auditLog, 'chainweb.keys', args, async () => {
+    async (args) => wrap(auditLog, 'chainweb_keys', args, async () => {
       const { content } = await keys(args);
       return content[0] as KeysResult;
     })
   );
 
   mcp.registerTool(
-    'chainweb.principal_namespace',
+    'chainweb_principal_namespace',
     {
       title: 'Chainweb compute principal namespace from keyset',
       description:
@@ -493,14 +493,14 @@ export function buildMcpServerWithClient(
       }
     },
     async (args) =>
-      wrap(auditLog, 'chainweb.principal_namespace', args, async () => {
+      wrap(auditLog, 'chainweb_principal_namespace', args, async () => {
         const { content } = await principalNs(args);
         return content[0] as PrincipalNamespaceResult;
       })
   );
 
   mcp.registerTool(
-    'chainweb.deploy_module',
+    'chainweb_deploy_module',
     {
       title: 'Chainweb deploy Pact module (preflight + optional submit)',
       description:
@@ -514,11 +514,11 @@ export function buildMcpServerWithClient(
       }
     },
     async (args) =>
-      wrap(auditLog, 'chainweb.deploy_module', args, async () => {
+      wrap(auditLog, 'chainweb_deploy_module', args, async () => {
         ensureWritesAllowed(
           runtimeProfile,
           writesEnabled,
-          'chainweb.deploy_module'
+          'chainweb_deploy_module'
         );
         const { content } = await deployModule(args);
         return content[0] as DeployModuleResult;
@@ -526,11 +526,11 @@ export function buildMcpServerWithClient(
   );
 
   mcp.registerTool(
-    'chainweb.continue_pact',
+    'chainweb_continue_pact',
     {
       title: 'Chainweb continue cross-chain defpact step',
       description:
-        'Build a continuation cmd (scoped signer) for a defpact step, preflight via /local on the target chain, and submit iff sigs are supplied. Caller must supply any SPV proof (see chainweb.spv_proof) and manage transitive-deps.',
+        'Build a continuation cmd (scoped signer) for a defpact step, preflight via /local on the target chain, and submit iff sigs are supplied. Caller must supply any SPV proof (see chainweb_spv_proof) and manage transitive-deps.',
       inputSchema: ContinuePactInputShape,
       annotations: {
         readOnlyHint: false,
@@ -540,11 +540,11 @@ export function buildMcpServerWithClient(
       }
     },
     async (args) =>
-      wrap(auditLog, 'chainweb.continue_pact', args, async () => {
+      wrap(auditLog, 'chainweb_continue_pact', args, async () => {
         ensureWritesAllowed(
           runtimeProfile,
           writesEnabled,
-          'chainweb.continue_pact'
+          'chainweb_continue_pact'
         );
         const { content } = await continuePact(args);
         return content[0] as ContinuePactResult;
@@ -552,11 +552,11 @@ export function buildMcpServerWithClient(
   );
 
   mcp.registerTool(
-    'chainweb.spv_proof',
+    'chainweb_spv_proof',
     {
       title: 'Chainweb fetch SPV proof for cross-chain tx',
       description:
-        'Fetch the base64 SPV proof for a cross-chain request key from /chain/<source>/pact/spv. Not-ready responses surface as ready=false (not an error). Pass proof through to chainweb.continue_pact.',
+        'Fetch the base64 SPV proof for a cross-chain request key from /chain/<source>/pact/spv. Not-ready responses surface as ready=false (not an error). Pass proof through to chainweb_continue_pact.',
       inputSchema: SpvProofInputShape,
       annotations: {
         readOnlyHint: true,
@@ -566,7 +566,7 @@ export function buildMcpServerWithClient(
       }
     },
     async (args) =>
-      wrap(auditLog, 'chainweb.spv_proof', args, async () => {
+      wrap(auditLog, 'chainweb_spv_proof', args, async () => {
         const { content } = await spvProof(args);
         return content[0] as SpvProofResult;
       })
@@ -580,19 +580,19 @@ export function getToolSchemaObjects(): Record<
   { inputSchema: object }
 > {
   return {
-    'chainweb.info': { inputSchema: InfoInputShape },
-    'chainweb.chain_time': { inputSchema: ChainTimeInputShape },
-    'chainweb.local': { inputSchema: LocalInputShape },
-    'chainweb.send': { inputSchema: SendInputShape },
-    'chainweb.poll': { inputSchema: PollInputShape },
-    'chainweb.read_table': { inputSchema: ReadTableInputShape },
-    'chainweb.keys': { inputSchema: KeysInputShape },
-    'chainweb.principal_namespace': {
+    'chainweb_info': { inputSchema: InfoInputShape },
+    'chainweb_chain_time': { inputSchema: ChainTimeInputShape },
+    'chainweb_local': { inputSchema: LocalInputShape },
+    'chainweb_send': { inputSchema: SendInputShape },
+    'chainweb_poll': { inputSchema: PollInputShape },
+    'chainweb_read_table': { inputSchema: ReadTableInputShape },
+    'chainweb_keys': { inputSchema: KeysInputShape },
+    'chainweb_principal_namespace': {
       inputSchema: PrincipalNamespaceInputShape
     },
-    'chainweb.deploy_module': { inputSchema: DeployModuleInputShape },
-    'chainweb.continue_pact': { inputSchema: ContinuePactInputShape },
-    'chainweb.spv_proof': { inputSchema: SpvProofInputShape }
+    'chainweb_deploy_module': { inputSchema: DeployModuleInputShape },
+    'chainweb_continue_pact': { inputSchema: ContinuePactInputShape },
+    'chainweb_spv_proof': { inputSchema: SpvProofInputShape }
   };
 }
 

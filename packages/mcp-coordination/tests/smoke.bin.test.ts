@@ -66,12 +66,12 @@ describe('smoke: coordination binary', () => {
     if (workspaceRoot) fs.rmSync(workspaceRoot, { recursive: true, force: true });
   });
 
-  test('registers coord.task_list and returns structured task list', async () => {
+  test('registers coord_task_list and returns structured task list', async () => {
     const { tools } = await client.listTools();
-    expect(tools.map((t) => t.name)).toContain('coord.task_list');
+    expect(tools.map((t) => t.name)).toContain('coord_task_list');
 
     const result = await client.callTool({
-      name: 'coord.task_list',
+      name: 'coord_task_list',
       arguments: { assignee: 'Developer' }
     });
 

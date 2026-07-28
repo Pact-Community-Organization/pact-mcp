@@ -5,7 +5,7 @@ let h: Harness;
 beforeEach(async () => { h = await createHarness(); });
 afterEach(() => h.cleanup());
 
-describe('coord.task_update', () => {
+describe('coord_task_update', () => {
   it('mutates status and appends history', async () => {
     const c = decodeHandlerResult(
       await h.handlers.taskCreate({

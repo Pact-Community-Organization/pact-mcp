@@ -5,7 +5,7 @@ let h: Harness;
 beforeEach(async () => { h = await createHarness(); });
 afterEach(() => h.cleanup());
 
-describe('coord.mailbox_ack', () => {
+describe('coord_mailbox_ack', () => {
   it('marks specific messages read without touching others', async () => {
     const ids: string[] = [];
     for (let i = 0; i < 3; i++) {

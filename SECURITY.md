@@ -38,7 +38,7 @@ Every MCP server MUST implement:
 
 - `@pact-community/mcp-chainweb` defaults to `devnet`.
 - Opt-in public profiles `testnet06` and `mainnet` are read-only.
-- Mutating tools (`chainweb.send`, `chainweb.deploy_module`, `chainweb.continue_pact`) must fail with `PROFILE_WRITE_BLOCKED` on public profiles.
+- Mutating tools (`chainweb_send`, `chainweb_deploy_module`, `chainweb_continue_pact`) must fail with `PROFILE_WRITE_BLOCKED` on public profiles.
 
 ### 📊 Audit Format
 

@@ -29,7 +29,7 @@ async function makeMock(
   return s;
 }
 
-describe('devnet.health tool', () => {
+describe('devnet_health tool', () => {
   it('reports reachable:true when /info and /cut both respond', async () => {
     const wallNow = Math.floor(Date.now() / 1000);
     const mock = await makeMock({

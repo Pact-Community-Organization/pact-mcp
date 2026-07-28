@@ -2,12 +2,12 @@
  * @fileoverview MCP Devnet server — high-level McpServer wiring.
  *
  * Registers 6 tools:
- *   devnet.status  (read-only)
- *   devnet.health  (read-only)
- *   devnet.logs    (read-only)
- *   devnet.up      (GATED — lifecycle flag required at call time)
- *   devnet.down    (GATED — lifecycle flag; volume wipe requires extra flag)
- *   devnet.reset   (GATED — both lifecycle + volume wipe flags required)
+ *   devnet_status  (read-only)
+ *   devnet_health  (read-only)
+ *   devnet_logs    (read-only)
+ *   devnet_up      (GATED — lifecycle flag required at call time)
+ *   devnet_down    (GATED — lifecycle flag; volume wipe requires extra flag)
+ *   devnet_reset   (GATED — both lifecycle + volume wipe flags required)
  *
  * Applies the pact-mcp security baseline inline:
  *   1. Root refusal.
@@ -77,7 +77,7 @@ import {
 } from './tools/reset.js';
 
 export const SERVER_NAME = 'pact-community-devnet';
-export const SERVER_VERSION = '0.1.1';
+export const SERVER_VERSION = '0.2.0';
 
 /** Env vars accepted from the parent process. */
 export const ALLOWED_ENV = [
@@ -303,7 +303,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
   });
 
   mcp.registerTool(
-    'devnet.status',
+    'devnet_status',
     {
       title: 'Devnet container status',
       description:
@@ -316,14 +316,14 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         openWorldHint: false
       }
     },
-    async (args) => wrap(auditLog, 'devnet.status', args, async () => {
+    async (args) => wrap(auditLog, 'devnet_status', args, async () => {
       const { content } = await status(args);
       return content[0] as StatusResult;
     })
   );
 
   mcp.registerTool(
-    'devnet.health',
+    'devnet_health',
     {
       title: 'Devnet Pact API health probe',
       description:
@@ -336,14 +336,14 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         openWorldHint: false
       }
     },
-    async (args) => wrap(auditLog, 'devnet.health', args, async () => {
+    async (args) => wrap(auditLog, 'devnet_health', args, async () => {
       const { content } = await health(args);
       return content[0] as HealthResult;
     })
   );
 
   mcp.registerTool(
-    'devnet.logs',
+    'devnet_logs',
     {
       title: 'Devnet container log tail',
       description:
@@ -356,14 +356,14 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         openWorldHint: false
       }
     },
-    async (args) => wrap(auditLog, 'devnet.logs', args, async () => {
+    async (args) => wrap(auditLog, 'devnet_logs', args, async () => {
       const { content } = await logs(args);
       return content[0] as LogsResult;
     })
   );
 
   mcp.registerTool(
-    'devnet.up',
+    'devnet_up',
     {
       title: 'Devnet start (GATED)',
       description:
@@ -376,14 +376,14 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         openWorldHint: false
       }
     },
-    async (args) => wrap(auditLog, 'devnet.up', args, async () => {
+    async (args) => wrap(auditLog, 'devnet_up', args, async () => {
       const { content } = await up(args);
       return content[0] as UpResult;
     }, { destructive: true })
   );
 
   mcp.registerTool(
-    'devnet.down',
+    'devnet_down',
     {
       title: 'Devnet stop + remove containers (GATED, DANGER)',
       description:
@@ -396,14 +396,14 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         openWorldHint: false
       }
     },
-    async (args) => wrap(auditLog, 'devnet.down', args, async () => {
+    async (args) => wrap(auditLog, 'devnet_down', args, async () => {
       const { content } = await down(args);
       return content[0] as DownResult;
     }, { destructive: true })
   );
 
   mcp.registerTool(
-    'devnet.reset',
+    'devnet_reset',
     {
       title: 'Devnet reset (GATED, DANGER — DATA LOSS)',
       description:
@@ -416,7 +416,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         openWorldHint: false
       }
     },
-    async (args) => wrap(auditLog, 'devnet.reset', args, async () => {
+    async (args) => wrap(auditLog, 'devnet_reset', args, async () => {
       const { content } = await reset(args);
       return content[0] as ResetResult;
     }, { destructive: true })
@@ -433,12 +433,12 @@ export function getToolSchemaObjects(): Record<
   { inputSchema: object }
 > {
   return {
-    'devnet.status': { inputSchema: StatusInputShape },
-    'devnet.health': { inputSchema: HealthInputShape },
-    'devnet.logs': { inputSchema: LogsInputShape },
-    'devnet.up': { inputSchema: UpInputShape },
-    'devnet.down': { inputSchema: DownInputShape },
-    'devnet.reset': { inputSchema: ResetInputShape }
+    'devnet_status': { inputSchema: StatusInputShape },
+    'devnet_health': { inputSchema: HealthInputShape },
+    'devnet_logs': { inputSchema: LogsInputShape },
+    'devnet_up': { inputSchema: UpInputShape },
+    'devnet_down': { inputSchema: DownInputShape },
+    'devnet_reset': { inputSchema: ResetInputShape }
   };
 }
 

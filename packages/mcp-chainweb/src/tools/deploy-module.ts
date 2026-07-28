@@ -1,5 +1,5 @@
 /**
- * @fileoverview chainweb.deploy_module - build, preflight, and submit a Pact module deploy.
+ * @fileoverview chainweb_deploy_module - build, preflight, and submit a Pact module deploy.
  *
  * Highest-risk tool in the v0.2 set. Guarded by construction:
  *
@@ -21,7 +21,7 @@
  *      signer's public key, and — if they want the server to submit —
  *      a `sigs` array of the upstream-computed signatures. Without `sigs`
  *      the tool runs preflight only and returns the unsigned envelope for
- *      the caller to sign and re-submit via `chainweb.send`.
+ *      the caller to sign and re-submit via `chainweb_send`.
  */
 
 import { z } from 'zod';

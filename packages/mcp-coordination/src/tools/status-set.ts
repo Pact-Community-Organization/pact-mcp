@@ -1,5 +1,5 @@
 /**
- * @fileoverview coord.status_set — set agent status.
+ * @fileoverview coord_status_set — set agent status.
  */
 
 import {

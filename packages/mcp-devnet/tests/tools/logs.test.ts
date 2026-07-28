@@ -24,7 +24,7 @@ afterEach(() => {
   while (workspaces.length > 0) cleanupTempWorkspace(workspaces.pop()!);
 });
 
-describe('devnet.logs tool', () => {
+describe('devnet_logs tool', () => {
   it('tails compose logs with default tail=500 and no service', async () => {
     const ws = createTempWorkspace({
       'pact-examples/docker-compose.forge.yml': VALID_COMPOSE_CONTENT

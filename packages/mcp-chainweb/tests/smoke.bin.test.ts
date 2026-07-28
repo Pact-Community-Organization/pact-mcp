@@ -69,11 +69,11 @@ describe('smoke: chainweb binary', () => {
     if (mock) await mock.close();
   });
 
-  test('registers chainweb.info and returns structured info payload', async () => {
+  test('registers chainweb_info and returns structured info payload', async () => {
     const { tools } = await client.listTools();
-    expect(tools.map((t) => t.name)).toContain('chainweb.info');
+    expect(tools.map((t) => t.name)).toContain('chainweb_info');
 
-    const result = await client.callTool({ name: 'chainweb.info', arguments: {} });
+    const result = await client.callTool({ name: 'chainweb_info', arguments: {} });
     expect(result.isError).toBeFalsy();
     const payload = JSON.parse((result.content as Array<{ text: string }>)[0]!.text);
     expect(payload.networkId).toBe('development');

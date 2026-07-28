@@ -291,12 +291,12 @@ describe('[coverage] wrap()/hashArgs()/errorCode()', () => {
   it('wrap() serialises successful payloads and records an audit entry', async () => {
     const { entries, logger } = fakeAudit();
     // @ts-expect-error — test-only fake logger.
-    const result = await wrap(logger, 'devnet.status', { agent: 'Developer' }, async () => ({
+    const result = await wrap(logger, 'devnet_status', { agent: 'Developer' }, async () => ({
       overall: 'up' as const
     }));
     expect(result.content[0]!.text).toContain('"overall":"up"');
     expect(entries).toHaveLength(1);
-    expect(entries[0]!.tool).toBe('devnet.status');
+    expect(entries[0]!.tool).toBe('devnet_status');
     expect(entries[0]!.exitStatus).toBe(0);
   });
 
@@ -305,7 +305,7 @@ describe('[coverage] wrap()/hashArgs()/errorCode()', () => {
     // @ts-expect-error — test-only fake logger.
     await wrap(
       logger,
-      'devnet.up',
+      'devnet_up',
       { agent: 'Developer' },
       async () => ({ started: true }),
       { destructive: true }
@@ -317,7 +317,7 @@ describe('[coverage] wrap()/hashArgs()/errorCode()', () => {
     const { entries, logger } = fakeAudit();
     await expect(
       // @ts-expect-error — test-only fake logger.
-      wrap(logger, 'devnet.status', { agent: 'Developer' }, async () => {
+      wrap(logger, 'devnet_status', { agent: 'Developer' }, async () => {
         throw new McpToolError('LIFECYCLE_FORBIDDEN', 'nope', false);
       })
     ).rejects.toThrowError(/nope/);
@@ -327,7 +327,7 @@ describe('[coverage] wrap()/hashArgs()/errorCode()', () => {
   it('wrap() tolerates missing agent arg (uses <unknown>)', async () => {
     const { entries, logger } = fakeAudit();
     // @ts-expect-error — test-only fake logger.
-    await wrap(logger, 'devnet.status', null, async () => ({ ok: true }), {
+    await wrap(logger, 'devnet_status', null, async () => ({ ok: true }), {
       destructive: true
     });
     expect(entries[0]!.tool).toMatch(/agent=<unknown>/);

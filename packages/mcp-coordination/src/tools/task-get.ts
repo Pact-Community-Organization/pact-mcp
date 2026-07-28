@@ -1,5 +1,5 @@
 /**
- * @fileoverview coord.task_get — fetch a single task.
+ * @fileoverview coord_task_get — fetch a single task.
  */
 
 import {
@@ -30,7 +30,7 @@ export function createTaskGetTool(deps: TaskGetDeps) {
     } catch (error) {
       if (error instanceof McpToolError && error.code === ErrorCodes.CORRUPT_STATE) {
         deps.audit.log({
-          tool: 'coord.task_get',
+          tool: 'coord_task_get',
           inputHash: `taskId:${input.taskId}`,
           exitStatus: ErrorCodes.CORRUPT_STATE,
           durationMs: 0

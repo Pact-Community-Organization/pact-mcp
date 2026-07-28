@@ -6,7 +6,12 @@
 export { startServer } from './server-baseline.js';
 export { createAuditLogger } from './audit-log.js';
 export { sanitizeToolOutput } from './sanitizer.js';
-export { verifyToolsLock, generateToolsLockEntry, resolveLockfilePath } from './lockfile.js';
+export {
+  verifyToolsLock,
+  generateToolsLockEntry,
+  resolveLockfilePath,
+  TOOL_NAME_PATTERN
+} from './lockfile.js';
 export { validateEnv } from './env-allowlist.js';
 export { createAllowlistedFetch } from './network-allowlist.js';
 export type { AllowlistedFetchOptions } from './network-allowlist.js';

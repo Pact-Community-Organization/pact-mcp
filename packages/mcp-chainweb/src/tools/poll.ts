@@ -1,5 +1,5 @@
 /**
- * @fileoverview chainweb.poll - poll /poll endpoint for tx results.
+ * @fileoverview chainweb_poll - poll /poll endpoint for tx results.
  *
  * Uses /poll (NOT /listen) because nginx on devnet enforces a hard 60s
  * upstream timeout, and /listen holds the connection open (504 bug in user

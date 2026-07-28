@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests for chainweb.principal_namespace.
+ * @fileoverview Tests for chainweb_principal_namespace.
  */
 
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
@@ -13,7 +13,7 @@ import {
 const KEY_A =
   '368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca';
 
-describe('chainweb.principal_namespace', () => {
+describe('chainweb_principal_namespace', () => {
   let mock: MockHandle;
 
   beforeAll(async () => {

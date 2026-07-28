@@ -1,5 +1,5 @@
 /**
- * @fileoverview chainweb.read_table - read a single Pact table row via /local.
+ * @fileoverview chainweb_read_table - read a single Pact table row via /local.
  *
  * Thin wrapper over the `/local` preflight machinery that executes
  *   `(read <module>.<table> "<key>")`

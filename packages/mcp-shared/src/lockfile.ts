@@ -64,6 +64,14 @@ interface ToolsLock {
  * @param lockfilePath Path to tools.lock.json (default: ./tools.lock.json)
  * @throws McpToolError on schema drift or lockfile issues
  */
+/**
+ * Tool-name pattern accepted by the Anthropic API: `^[a-zA-Z0-9_-]{1,64}$`.
+ * Notably excludes `.`, which reads naturally as a namespace separator and was
+ * shipped in 0.2.x — the resulting API rejection made every tool of the server
+ * unavailable rather than failing on the one bad name.
+ */
+export const TOOL_NAME_PATTERN = /^[a-zA-Z0-9_-]{1,64}$/;
+
 export function verifyToolsLock(
   serverName: string,
   registeredTools: Record<string, { inputSchema: object }>,
@@ -103,6 +111,20 @@ export function verifyToolsLock(
 
   // Verify each registered tool
   for (const [toolName, toolConfig] of Object.entries(registeredTools)) {
+    // A tool name outside this pattern is rejected by the Anthropic API, and a
+    // client that forwards the definitions gets the whole tools/list refused —
+    // so the server appears to start cleanly while exposing nothing at all.
+    // Fail loudly at startup instead of shipping a server with no usable tools.
+    if (!TOOL_NAME_PATTERN.test(toolName)) {
+      throw new McpToolError(
+        'TOOL_NAME_INVALID',
+        `Tool '${toolName}' (server '${serverName}') does not match ` +
+          `${TOOL_NAME_PATTERN.source}. The Anthropic API rejects names outside ` +
+          `this pattern — '.' is a common offender; use '_' instead.`,
+        false
+      );
+    }
+
     const lockEntry = serverLocks[toolName];
     if (!lockEntry) {
       throw new McpToolError(

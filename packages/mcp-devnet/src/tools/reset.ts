@@ -1,5 +1,5 @@
 /**
- * @fileoverview devnet.reset tool — GATED + DANGER. down -v + up --force-recreate.
+ * @fileoverview devnet_reset tool — GATED + DANGER. down -v + up --force-recreate.
  */
 
 import { z } from 'zod';

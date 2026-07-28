@@ -18,7 +18,7 @@ async function sendN(h: Harness, n: number): Promise<string[]> {
   return ids;
 }
 
-describe('coord.mailbox_read', () => {
+describe('coord_mailbox_read', () => {
   it('returns messages in send order with hasMore flag', async () => {
     await sendN(h, 3);
     const r = decodeHandlerResult(

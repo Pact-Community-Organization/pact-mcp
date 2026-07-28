@@ -1,5 +1,5 @@
 /**
- * @fileoverview devnet.up tool — GATED. Start a devnet stack.
+ * @fileoverview devnet_up tool — GATED. Start a devnet stack.
  */
 
 import { z } from 'zod';

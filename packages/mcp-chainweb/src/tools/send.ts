@@ -1,5 +1,5 @@
 /**
- * @fileoverview chainweb.send - POST a pre-signed transaction after preflight.
+ * @fileoverview chainweb_send - POST a pre-signed transaction after preflight.
  *
  * Security invariant: the server NEVER accepts private keys. The caller must
  * provide a `{cmd, hash, sigs}` tuple produced by their signing toolchain.

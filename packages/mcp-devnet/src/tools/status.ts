@@ -1,5 +1,5 @@
 /**
- * @fileoverview devnet.status tool — read-only container state query.
+ * @fileoverview devnet_status tool — read-only container state query.
  */
 
 import { z } from 'zod';

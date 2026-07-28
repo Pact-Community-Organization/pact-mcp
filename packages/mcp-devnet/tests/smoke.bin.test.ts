@@ -80,12 +80,12 @@ describe('smoke: devnet binary', () => {
     if (workspaceRoot) cleanupTempWorkspace(workspaceRoot);
   });
 
-  test('registers devnet.status and returns structured status payload', async () => {
+  test('registers devnet_status and returns structured status payload', async () => {
     const { tools } = await client.listTools();
-    expect(tools.map((t) => t.name)).toContain('devnet.status');
+    expect(tools.map((t) => t.name)).toContain('devnet_status');
 
     const result = await client.callTool({
-      name: 'devnet.status',
+      name: 'devnet_status',
       arguments: { agent: 'Developer' }
     });
 

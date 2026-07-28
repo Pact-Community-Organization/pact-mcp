@@ -96,12 +96,12 @@ describe('MCP pact server — integration', () => {
     const { tools } = await client.listTools();
     const names = tools.map((t) => t.name).sort();
     expect(names).toEqual([
-      'pact.fmt_check',
-      'pact.gas_estimate',
-      'pact.interface_diff',
-      'pact.module_scan',
-      'pact.repl_run',
-      'pact.repl_run_many'
+      'pact_fmt_check',
+      'pact_gas_estimate',
+      'pact_interface_diff',
+      'pact_module_scan',
+      'pact_repl_run',
+      'pact_repl_run_many'
     ]);
     for (const t of tools) {
       expect(t.inputSchema).toBeDefined();
@@ -124,9 +124,9 @@ describe('MCP pact server — integration', () => {
     expect(parsed.traps.length).toBe(5);
   });
 
-  test('tools/call pact.repl_run on simple.repl succeeds', async () => {
+  test('tools/call pact_repl_run on simple.repl succeeds', async () => {
     const result = await client.callTool({
-      name: 'pact.repl_run',
+      name: 'pact_repl_run',
       arguments: { file: 'simple.repl' }
     });
     expect(result.isError).toBeFalsy();
@@ -139,9 +139,9 @@ describe('MCP pact server — integration', () => {
     expect(payload.exitCode).toBe(0);
   });
 
-  test('tools/call pact.repl_run on broken.repl reports load failure', async () => {
+  test('tools/call pact_repl_run on broken.repl reports load failure', async () => {
     const result = await client.callTool({
-      name: 'pact.repl_run',
+      name: 'pact_repl_run',
       arguments: { file: 'broken.repl' }
     });
     expect(result.isError).toBe(true);
@@ -152,9 +152,9 @@ describe('MCP pact server — integration', () => {
     expect(payload.exitCode).toBe(1);
   });
 
-  test('tools/call pact.module_scan on a clean module passes', async () => {
+  test('tools/call pact_module_scan on a clean module passes', async () => {
     const result = await client.callTool({
-      name: 'pact.module_scan',
+      name: 'pact_module_scan',
       arguments: { file: 'module-clean.pact' }
     });
     expect(result.isError).toBeFalsy();
@@ -164,9 +164,9 @@ describe('MCP pact server — integration', () => {
     expect(payload.trapCount).toBe(0);
   });
 
-  test('tools/call pact.module_scan on a trap module reports critical', async () => {
+  test('tools/call pact_module_scan on a trap module reports critical', async () => {
     const result = await client.callTool({
-      name: 'pact.module_scan',
+      name: 'pact_module_scan',
       arguments: { file: 'module-trap-plus.pact' }
     });
     expect(result.isError).toBe(true);
@@ -176,9 +176,9 @@ describe('MCP pact server — integration', () => {
     expect(payload.traps.some((t: { kind: string }) => t.kind === 'NON_BINARY_PLUS')).toBe(true);
   });
 
-  test('tools/call pact.repl_run on ../ escape is rejected', async () => {
+  test('tools/call pact_repl_run on ../ escape is rejected', async () => {
     const result = await client.callTool({
-      name: 'pact.repl_run',
+      name: 'pact_repl_run',
       arguments: { file: '../../../etc/passwd' }
     });
     expect(result.isError).toBe(true);
@@ -186,9 +186,9 @@ describe('MCP pact server — integration', () => {
     expect(content.text).toMatch(/extension|workspace|outside/i);
   });
 
-  test('tools/call pact.repl_run_many runs a batch sequentially', async () => {
+  test('tools/call pact_repl_run_many runs a batch sequentially', async () => {
     const result = await client.callTool({
-      name: 'pact.repl_run_many',
+      name: 'pact_repl_run_many',
       arguments: { files: ['batch-1.repl', 'batch-2.repl'] }
     });
     expect(result.isError).toBeFalsy();
@@ -199,9 +199,9 @@ describe('MCP pact server — integration', () => {
     expect(payload.summary.failed).toBe(0);
   });
 
-  test('tools/call pact.repl_run_many with failFast stops early', async () => {
+  test('tools/call pact_repl_run_many with failFast stops early', async () => {
     const result = await client.callTool({
-      name: 'pact.repl_run_many',
+      name: 'pact_repl_run_many',
       arguments: {
         files: ['batch-1.repl', 'batch-fail.repl', 'batch-2.repl'],
         failFast: true
@@ -214,9 +214,9 @@ describe('MCP pact server — integration', () => {
     expect(payload.results.length).toBeLessThan(3);
   });
 
-  test('tools/call pact.gas_estimate parses probe output', async () => {
+  test('tools/call pact_gas_estimate parses probe output', async () => {
     const result = await client.callTool({
-      name: 'pact.gas_estimate',
+      name: 'pact_gas_estimate',
       arguments: { file: 'gas-probe.repl' }
     });
     expect(result.isError).toBeFalsy();
@@ -226,9 +226,9 @@ describe('MCP pact server — integration', () => {
     expect(payload.totalGas).toBeGreaterThan(0);
   });
 
-  test('tools/call pact.gas_estimate warns on missing probes', async () => {
+  test('tools/call pact_gas_estimate warns on missing probes', async () => {
     const result = await client.callTool({
-      name: 'pact.gas_estimate',
+      name: 'pact_gas_estimate',
       arguments: { file: 'gas-no-probe.repl' }
     });
     const content = (result.content as Array<{ type: string; text: string }>)[0]!;
@@ -237,9 +237,9 @@ describe('MCP pact server — integration', () => {
     expect(payload.warning).toMatch(/no gas probes/i);
   });
 
-  test('tools/call pact.interface_diff reports breaking change', async () => {
+  test('tools/call pact_interface_diff reports breaking change', async () => {
     const result = await client.callTool({
-      name: 'pact.interface_diff',
+      name: 'pact_interface_diff',
       arguments: {
         before: 'iface-before.pact',
         after: 'iface-after.pact'
@@ -254,9 +254,9 @@ describe('MCP pact server — integration', () => {
     expect(payload.changed.length).toBeGreaterThan(0);
   });
 
-  test('tools/call pact.fmt_check reports clean and dirty files', async () => {
+  test('tools/call pact_fmt_check reports clean and dirty files', async () => {
     const result = await client.callTool({
-      name: 'pact.fmt_check',
+      name: 'pact_fmt_check',
       arguments: { files: ['fmt-clean.pact', 'fmt-dirty.pact'] }
     });
     expect(result.isError).toBeFalsy();

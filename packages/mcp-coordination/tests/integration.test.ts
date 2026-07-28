@@ -85,16 +85,16 @@ describe('MCP coordination server — integration (stdio)', () => {
     const { tools } = await client.listTools();
     const names = tools.map((t) => t.name).sort();
     expect(names).toEqual([
-      'coord.mailbox_ack',
-      'coord.mailbox_read',
-      'coord.mailbox_send',
-      'coord.memory_append',
-      'coord.status_set',
-      'coord.task_complete',
-      'coord.task_create',
-      'coord.task_get',
-      'coord.task_list',
-      'coord.task_update'
+      'coord_mailbox_ack',
+      'coord_mailbox_read',
+      'coord_mailbox_send',
+      'coord_memory_append',
+      'coord_status_set',
+      'coord_task_complete',
+      'coord_task_create',
+      'coord_task_get',
+      'coord_task_list',
+      'coord_task_update'
     ]);
     for (const t of tools) {
       expect(t.inputSchema).toBeDefined();
@@ -108,7 +108,7 @@ describe('MCP coordination server — integration (stdio)', () => {
     fs.writeFileSync(path.join(workspaceRoot, artifactRel), 'hello');
 
     const createRes = await client.callTool({
-      name: 'coord.task_create',
+      name: 'coord_task_create',
       arguments: {
         title: 'Ship feature',
         description: 'End to end test',
@@ -123,27 +123,27 @@ describe('MCP coordination server — integration (stdio)', () => {
     expect(taskId).toMatch(/^T_/);
 
     const listRes = await client.callTool({
-      name: 'coord.task_list',
+      name: 'coord_task_list',
       arguments: { assignee: 'Developer' }
     });
     const listed = parseTextResult(listRes);
     expect((listed.tasks as Array<{ taskId: string }>).some((t) => t.taskId === taskId)).toBe(true);
 
     const getRes = await client.callTool({
-      name: 'coord.task_get',
+      name: 'coord_task_get',
       arguments: { taskId }
     });
     const got = parseTextResult(getRes);
     expect((got.task as { taskId: string }).taskId).toBe(taskId);
 
     const updateRes = await client.callTool({
-      name: 'coord.task_update',
+      name: 'coord_task_update',
       arguments: { taskId, updatedBy: 'Developer', status: 'in_progress', note: 'work' }
     });
     parseTextResult(updateRes);
 
     const completeRes = await client.callTool({
-      name: 'coord.task_complete',
+      name: 'coord_task_complete',
       arguments: {
         taskId,
         completedBy: 'Developer',
@@ -155,7 +155,7 @@ describe('MCP coordination server — integration (stdio)', () => {
     expect((completed.task as { status: string }).status).toBe('done');
 
     const sendRes = await client.callTool({
-      name: 'coord.mailbox_send',
+      name: 'coord_mailbox_send',
       arguments: {
         from: 'Developer', to: 'Tester', subject: 'ready', body: 'please review'
       }
@@ -165,27 +165,27 @@ describe('MCP coordination server — integration (stdio)', () => {
     expect(messageId).toMatch(/^M_/);
 
     const readRes = await client.callTool({
-      name: 'coord.mailbox_read',
+      name: 'coord_mailbox_read',
       arguments: { agent: 'Tester' }
     });
     const readRead = parseTextResult(readRes);
     expect((readRead.messages as unknown[]).length).toBe(1);
 
     const ackRes = await client.callTool({
-      name: 'coord.mailbox_ack',
+      name: 'coord_mailbox_ack',
       arguments: { agent: 'Tester', messageIds: [messageId] }
     });
     const acked = parseTextResult(ackRes);
     expect(acked.acknowledged).toBe(1);
 
     const statusRes = await client.callTool({
-      name: 'coord.status_set',
+      name: 'coord_status_set',
       arguments: { agent: 'Developer', state: 'idle', note: 'wrapping up' }
     });
     parseTextResult(statusRes);
 
     const memRes = await client.callTool({
-      name: 'coord.memory_append',
+      name: 'coord_memory_append',
       arguments: {
         scope: 'Developer',
         key: 'integration_pass',
@@ -201,7 +201,7 @@ describe('MCP coordination server — integration (stdio)', () => {
   test('invalid input raises a structured protocol error', async () => {
     // MCP SDK >=1.29.0: input validation errors return isError:true (not rejection)
     const r = await client.callTool({
-      name: 'coord.task_create',
+      name: 'coord_task_create',
       arguments: { title: 't', description: '', createdBy: 'Ghost', assignee: 'Developer' }
     });
     expect(r.isError).toBe(true);

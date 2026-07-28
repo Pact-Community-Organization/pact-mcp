@@ -70,7 +70,7 @@ import {
 } from './tools/memory-append.js';
 
 export const SERVER_NAME = 'pact-community-coordination';
-export const SERVER_VERSION = '0.1.1';
+export const SERVER_VERSION = '0.2.0';
 
 export const ALLOWED_ENV = [
   'PACT_COMMUNITY_WORKSPACE_ROOT',
@@ -164,7 +164,7 @@ export function buildMcpServerWithPaths(
   const handlers = buildHandlers(workspaceRoot, paths, auditLog);
 
   mcp.registerTool(
-    'coord.task_create',
+    'coord_task_create',
     {
       title: 'Create task',
       description: 'Create a new task in the coordination queue.',
@@ -176,11 +176,11 @@ export function buildMcpServerWithPaths(
         openWorldHint: false
       }
     },
-    (args) => wrap(auditLog, 'coord.task_create', args, () => handlers.taskCreate(args))
+    (args) => wrap(auditLog, 'coord_task_create', args, () => handlers.taskCreate(args))
   );
 
   mcp.registerTool(
-    'coord.task_list',
+    'coord_task_list',
     {
       title: 'List tasks',
       description: 'List task summaries matching optional filters.',
@@ -192,11 +192,11 @@ export function buildMcpServerWithPaths(
         openWorldHint: false
       }
     },
-    (args) => wrap(auditLog, 'coord.task_list', args, () => handlers.taskList(args))
+    (args) => wrap(auditLog, 'coord_task_list', args, () => handlers.taskList(args))
   );
 
   mcp.registerTool(
-    'coord.task_get',
+    'coord_task_get',
     {
       title: 'Get task',
       description: 'Fetch a single task by id.',
@@ -208,11 +208,11 @@ export function buildMcpServerWithPaths(
         openWorldHint: false
       }
     },
-    (args) => wrap(auditLog, 'coord.task_get', args, () => handlers.taskGet(args))
+    (args) => wrap(auditLog, 'coord_task_get', args, () => handlers.taskGet(args))
   );
 
   mcp.registerTool(
-    'coord.task_update',
+    'coord_task_update',
     {
       title: 'Update task',
       description: 'Atomically update a task under a file lock.',
@@ -224,11 +224,11 @@ export function buildMcpServerWithPaths(
         openWorldHint: false
       }
     },
-    (args) => wrap(auditLog, 'coord.task_update', args, () => handlers.taskUpdate(args))
+    (args) => wrap(auditLog, 'coord_task_update', args, () => handlers.taskUpdate(args))
   );
 
   mcp.registerTool(
-    'coord.task_complete',
+    'coord_task_complete',
     {
       title: 'Complete task',
       description: 'Mark a task done; validate every artifact path exists.',
@@ -240,11 +240,11 @@ export function buildMcpServerWithPaths(
         openWorldHint: false
       }
     },
-    (args) => wrap(auditLog, 'coord.task_complete', args, () => handlers.taskComplete(args))
+    (args) => wrap(auditLog, 'coord_task_complete', args, () => handlers.taskComplete(args))
   );
 
   mcp.registerTool(
-    'coord.mailbox_send',
+    'coord_mailbox_send',
     {
       title: 'Send mailbox message',
       description: 'Append a message to the recipient agent inbox.',
@@ -256,11 +256,11 @@ export function buildMcpServerWithPaths(
         openWorldHint: false
       }
     },
-    (args) => wrap(auditLog, 'coord.mailbox_send', args, () => handlers.mailboxSend(args))
+    (args) => wrap(auditLog, 'coord_mailbox_send', args, () => handlers.mailboxSend(args))
   );
 
   mcp.registerTool(
-    'coord.mailbox_read',
+    'coord_mailbox_read',
     {
       title: 'Read mailbox',
       description: 'Read an inbox with optional filters. Non-mutating.',
@@ -272,11 +272,11 @@ export function buildMcpServerWithPaths(
         openWorldHint: false
       }
     },
-    (args) => wrap(auditLog, 'coord.mailbox_read', args, () => handlers.mailboxRead(args))
+    (args) => wrap(auditLog, 'coord_mailbox_read', args, () => handlers.mailboxRead(args))
   );
 
   mcp.registerTool(
-    'coord.mailbox_ack',
+    'coord_mailbox_ack',
     {
       title: 'Acknowledge messages',
       description: 'Mark inbox messages as read.',
@@ -288,11 +288,11 @@ export function buildMcpServerWithPaths(
         openWorldHint: false
       }
     },
-    (args) => wrap(auditLog, 'coord.mailbox_ack', args, () => handlers.mailboxAck(args))
+    (args) => wrap(auditLog, 'coord_mailbox_ack', args, () => handlers.mailboxAck(args))
   );
 
   mcp.registerTool(
-    'coord.status_set',
+    'coord_status_set',
     {
       title: 'Set agent status',
       description: 'Write the agent status atomically.',
@@ -304,11 +304,11 @@ export function buildMcpServerWithPaths(
         openWorldHint: false
       }
     },
-    (args) => wrap(auditLog, 'coord.status_set', args, () => handlers.statusSet(args))
+    (args) => wrap(auditLog, 'coord_status_set', args, () => handlers.statusSet(args))
   );
 
   mcp.registerTool(
-    'coord.memory_append',
+    'coord_memory_append',
     {
       title: 'Append memory entry',
       description: 'Append a memory entry to a scoped JSONL log.',
@@ -320,7 +320,7 @@ export function buildMcpServerWithPaths(
         openWorldHint: false
       }
     },
-    (args) => wrap(auditLog, 'coord.memory_append', args, () => handlers.memoryAppend(args))
+    (args) => wrap(auditLog, 'coord_memory_append', args, () => handlers.memoryAppend(args))
   );
 
   return mcp;
@@ -328,16 +328,16 @@ export function buildMcpServerWithPaths(
 
 export function getToolSchemaObjects(): Record<string, { inputSchema: object }> {
   return {
-    'coord.task_create': { inputSchema: TaskCreateInputShape },
-    'coord.task_list': { inputSchema: TaskListInputShape },
-    'coord.task_get': { inputSchema: TaskGetInputShape },
-    'coord.task_update': { inputSchema: TaskUpdateInputShape },
-    'coord.task_complete': { inputSchema: TaskCompleteInputShape },
-    'coord.mailbox_send': { inputSchema: MailboxSendInputShape },
-    'coord.mailbox_read': { inputSchema: MailboxReadInputShape },
-    'coord.mailbox_ack': { inputSchema: MailboxAckInputShape },
-    'coord.status_set': { inputSchema: StatusSetInputShape },
-    'coord.memory_append': { inputSchema: MemoryAppendInputShape }
+    'coord_task_create': { inputSchema: TaskCreateInputShape },
+    'coord_task_list': { inputSchema: TaskListInputShape },
+    'coord_task_get': { inputSchema: TaskGetInputShape },
+    'coord_task_update': { inputSchema: TaskUpdateInputShape },
+    'coord_task_complete': { inputSchema: TaskCompleteInputShape },
+    'coord_mailbox_send': { inputSchema: MailboxSendInputShape },
+    'coord_mailbox_read': { inputSchema: MailboxReadInputShape },
+    'coord_mailbox_ack': { inputSchema: MailboxAckInputShape },
+    'coord_status_set': { inputSchema: StatusSetInputShape },
+    'coord_memory_append': { inputSchema: MemoryAppendInputShape }
   };
 }
 

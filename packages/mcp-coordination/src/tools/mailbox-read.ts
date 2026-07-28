@@ -1,5 +1,5 @@
 /**
- * @fileoverview coord.mailbox_read — non-mutating inbox read.
+ * @fileoverview coord_mailbox_read — non-mutating inbox read.
  */
 
 import {
@@ -30,7 +30,7 @@ export function createMailboxReadTool(deps: MailboxReadDeps) {
     );
     if (corruptCount > 0) {
       deps.audit.log({
-        tool: 'coord.mailbox_read',
+        tool: 'coord_mailbox_read',
         inputHash: `agent:${input.agent}`,
         exitStatus: `CORRUPT_LINES:${corruptCount}`,
         durationMs: 0

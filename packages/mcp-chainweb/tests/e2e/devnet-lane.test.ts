@@ -57,14 +57,14 @@ describeIf('devnet e2e lane (opt-in)', () => {
   });
 
   test('info + local + keys prove read-path against a live devnet', async () => {
-    const info = await client.callTool({ name: 'chainweb.info', arguments: {} });
+    const info = await client.callTool({ name: 'chainweb_info', arguments: {} });
     expect(info.isError).toBeFalsy();
     const infoPayload = JSON.parse((info.content as Array<{ text: string }>)[0]!.text);
     expect(infoPayload.networkId).toBe('development');
     expect(Array.isArray(infoPayload.chainIds)).toBe(true);
 
     const local = await client.callTool({
-      name: 'chainweb.local',
+      name: 'chainweb_local',
       arguments: {
         chainId: '0',
         code: '(+ 1 2)',
@@ -77,7 +77,7 @@ describeIf('devnet e2e lane (opt-in)', () => {
     expect(localPayload.status).toBe('success');
 
     const keys = await client.callTool({
-      name: 'chainweb.keys',
+      name: 'chainweb_keys',
       arguments: {
         chainId: '0',
         module: 'coin',
@@ -110,7 +110,7 @@ describeIf('devnet e2e lane (opt-in)', () => {
 
     const chainId = parsed.chainId ?? '0';
     const send = await client.callTool({
-      name: 'chainweb.send',
+      name: 'chainweb_send',
       arguments: {
         chainId,
         signedTx: parsed.signedTx
@@ -121,7 +121,7 @@ describeIf('devnet e2e lane (opt-in)', () => {
     expect(typeof sendPayload.requestKey).toBe('string');
 
     const poll = await client.callTool({
-      name: 'chainweb.poll',
+      name: 'chainweb_poll',
       arguments: {
         chainId,
         requestKeys: [sendPayload.requestKey],

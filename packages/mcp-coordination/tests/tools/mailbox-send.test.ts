@@ -6,7 +6,7 @@ let h: Harness;
 beforeEach(async () => { h = await createHarness(); });
 afterEach(() => h.cleanup());
 
-describe('coord.mailbox_send', () => {
+describe('coord_mailbox_send', () => {
   it('appends a message to recipient inbox', async () => {
     const r = decodeHandlerResult(
       await h.handlers.mailboxSend({

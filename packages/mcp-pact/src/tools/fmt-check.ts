@@ -1,5 +1,5 @@
 /**
- * @fileoverview pact.fmt_check tool implementation
+ * @fileoverview pact_fmt_check tool implementation
  * @description Conservative formatting check for .pact and .repl files.
  *              Read-only — NEVER writes. Detects trailing whitespace, tabs,
  *              excess blank lines, missing final newline, and CRLF endings.

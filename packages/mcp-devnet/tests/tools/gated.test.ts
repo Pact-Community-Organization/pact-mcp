@@ -45,7 +45,7 @@ function seed(): { ws: string; bin: (spec: Parameters<typeof createFakeDocker>[0
   };
 }
 
-describe('devnet.up (GATED)', () => {
+describe('devnet_up (GATED)', () => {
   it('throws LIFECYCLE_FORBIDDEN when lifecycle flag is false', async () => {
     const { ws, bin } = seed();
     const tool = createUpTool({
@@ -109,7 +109,7 @@ process.exit(0);
   });
 });
 
-describe('devnet.down (GATED)', () => {
+describe('devnet_down (GATED)', () => {
   it('throws LIFECYCLE_FORBIDDEN when lifecycle flag is false', async () => {
     const { ws, bin } = seed();
     const tool = createDownTool({
@@ -178,7 +178,7 @@ process.exit(0);
   });
 });
 
-describe('devnet.reset (GATED)', () => {
+describe('devnet_reset (GATED)', () => {
   it('throws LIFECYCLE_FORBIDDEN when lifecycle is off', async () => {
     const { ws, bin } = seed();
     const tool = createResetTool({

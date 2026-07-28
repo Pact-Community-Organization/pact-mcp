@@ -93,24 +93,24 @@ describe('[integration] stdio transport end-to-end', () => {
     const result = await client!.listTools();
     const names = result.tools.map((t) => t.name).sort();
     expect(names).toEqual(
-      ['devnet.down', 'devnet.health', 'devnet.logs', 'devnet.reset', 'devnet.status', 'devnet.up'].sort()
+      ['devnet_down', 'devnet_health', 'devnet_logs', 'devnet_reset', 'devnet_status', 'devnet_up'].sort()
     );
   });
 
   it('marks mutating tools with destructiveHint:true', async () => {
     const result = await client!.listTools();
     const byName = Object.fromEntries(result.tools.map((t) => [t.name, t]));
-    expect(byName['devnet.up']!.annotations?.destructiveHint).toBe(true);
-    expect(byName['devnet.down']!.annotations?.destructiveHint).toBe(true);
-    expect(byName['devnet.reset']!.annotations?.destructiveHint).toBe(true);
-    expect(byName['devnet.status']!.annotations?.readOnlyHint).toBe(true);
-    expect(byName['devnet.health']!.annotations?.readOnlyHint).toBe(true);
-    expect(byName['devnet.logs']!.annotations?.readOnlyHint).toBe(true);
+    expect(byName['devnet_up']!.annotations?.destructiveHint).toBe(true);
+    expect(byName['devnet_down']!.annotations?.destructiveHint).toBe(true);
+    expect(byName['devnet_reset']!.annotations?.destructiveHint).toBe(true);
+    expect(byName['devnet_status']!.annotations?.readOnlyHint).toBe(true);
+    expect(byName['devnet_health']!.annotations?.readOnlyHint).toBe(true);
+    expect(byName['devnet_logs']!.annotations?.readOnlyHint).toBe(true);
   });
 
-  it('devnet.status returns structured JSON content via stdio', async () => {
+  it('devnet_status returns structured JSON content via stdio', async () => {
     const r = await client!.callTool({
-      name: 'devnet.status',
+      name: 'devnet_status',
       arguments: { agent: 'Developer' }
     });
     expect(r.isError).toBeFalsy();
@@ -119,9 +119,9 @@ describe('[integration] stdio transport end-to-end', () => {
     expect(parsed.overall).toBe('up');
   });
 
-  it('devnet.up is rejected as LIFECYCLE_FORBIDDEN when flag is off', async () => {
+  it('devnet_up is rejected as LIFECYCLE_FORBIDDEN when flag is off', async () => {
     const r = await client!.callTool({
-      name: 'devnet.up',
+      name: 'devnet_up',
       arguments: { agent: 'Developer' }
     });
     // Error is communicated via isError:true (SDK protocol).
@@ -133,7 +133,7 @@ describe('[integration] stdio transport end-to-end', () => {
   it('invalid argv (unknown agent) is rejected with a protocol error', async () => {
     // MCP SDK >=1.29.0: input validation errors return isError:true (not rejection)
     const r = await client!.callTool({
-      name: 'devnet.status',
+      name: 'devnet_status',
       arguments: { agent: 'Rogue' }
     });
     expect(r.isError).toBe(true);

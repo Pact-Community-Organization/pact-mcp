@@ -50,23 +50,23 @@ describe('server in-process wrap()', () => {
   test('tools/list returns 11 tools', async () => {
     const { tools } = await mcpClient.listTools();
     expect(tools.map((t) => t.name).sort()).toEqual([
-      'chainweb.chain_time',
-      'chainweb.continue_pact',
-      'chainweb.deploy_module',
-      'chainweb.info',
-      'chainweb.keys',
-      'chainweb.local',
-      'chainweb.poll',
-      'chainweb.principal_namespace',
-      'chainweb.read_table',
-      'chainweb.send',
-      'chainweb.spv_proof'
+      'chainweb_chain_time',
+      'chainweb_continue_pact',
+      'chainweb_deploy_module',
+      'chainweb_info',
+      'chainweb_keys',
+      'chainweb_local',
+      'chainweb_poll',
+      'chainweb_principal_namespace',
+      'chainweb_read_table',
+      'chainweb_send',
+      'chainweb_spv_proof'
     ]);
   });
 
   test('info call succeeds end-to-end', async () => {
     const res = await mcpClient.callTool({
-      name: 'chainweb.info',
+      name: 'chainweb_info',
       arguments: {}
     });
     expect(res.isError).toBeFalsy();
@@ -78,7 +78,7 @@ describe('server in-process wrap()', () => {
 
   test('chain_time call succeeds', async () => {
     const res = await mcpClient.callTool({
-      name: 'chainweb.chain_time',
+      name: 'chainweb_chain_time',
       arguments: { chainId: '0' }
     });
     expect(res.isError).toBeFalsy();
@@ -91,7 +91,7 @@ describe('server in-process wrap()', () => {
       gas: 0
     });
     const res = await mcpClient.callTool({
-      name: 'chainweb.local',
+      name: 'chainweb_local',
       arguments: { chainId: '0', code: '(fail)' }
     });
     expect(res.isError).toBe(true);
@@ -106,7 +106,7 @@ describe('server in-process wrap()', () => {
     });
     mock.patch('send', { requestKeys: ['rk-ok'] });
     const res = await mcpClient.callTool({
-      name: 'chainweb.send',
+      name: 'chainweb_send',
       arguments: {
         chainId: '0',
         signedTx: {
@@ -127,7 +127,7 @@ describe('server in-process wrap()', () => {
 
   test('poll call succeeds', async () => {
     const res = await mcpClient.callTool({
-      name: 'chainweb.poll',
+      name: 'chainweb_poll',
       arguments: {
         chainId: '0',
         requestKeys: ['abc'],
@@ -141,7 +141,7 @@ describe('server in-process wrap()', () => {
   test('tool that throws McpToolError is reported via isError', async () => {
     mock.patch('info', { networkId: 'mainnet01', chainIds: [] });
     const res = await mcpClient.callTool({
-      name: 'chainweb.info',
+      name: 'chainweb_info',
       arguments: {}
     });
     expect(res.isError).toBe(true);
@@ -167,7 +167,7 @@ describe('server in-process wrap()', () => {
       gas: 50
     });
     const res = await mcpClient.callTool({
-      name: 'chainweb.read_table',
+      name: 'chainweb_read_table',
       arguments: {
         chainId: '0',
         module: 'n_abc.dao-token',
@@ -187,7 +187,7 @@ describe('server in-process wrap()', () => {
       gas: 20
     });
     const res = await mcpClient.callTool({
-      name: 'chainweb.keys',
+      name: 'chainweb_keys',
       arguments: { chainId: '0', module: 'n_abc.dao-token', table: 'accounts' }
     });
     expect(res.isError).toBeFalsy();
@@ -205,7 +205,7 @@ describe('server in-process wrap()', () => {
       gas: 100
     });
     const res = await mcpClient.callTool({
-      name: 'chainweb.principal_namespace',
+      name: 'chainweb_principal_namespace',
       arguments: {
         chainId: '0',
         keyset: { keys: [SIGNER_KEY], pred: 'keys-all' }
@@ -225,7 +225,7 @@ describe('server in-process wrap()', () => {
       gas: 12_000
     });
     const res = await mcpClient.callTool({
-      name: 'chainweb.deploy_module',
+      name: 'chainweb_deploy_module',
       arguments: {
         chainId: '0',
         module: {
@@ -248,7 +248,7 @@ describe('server in-process wrap()', () => {
       gas: 8_000
     });
     const res = await mcpClient.callTool({
-      name: 'chainweb.continue_pact',
+      name: 'chainweb_continue_pact',
       arguments: {
         pactId: 'pact-id-abc',
         step: 1,
@@ -267,7 +267,7 @@ describe('server in-process wrap()', () => {
 
   test('spv_proof returns a ready proof', async () => {
     const res = await mcpClient.callTool({
-      name: 'chainweb.spv_proof',
+      name: 'chainweb_spv_proof',
       arguments: {
         sourceChainId: '0',
         targetChainId: '1',
@@ -301,7 +301,7 @@ describe('server in-process wrap()', () => {
     await readonlyClient.connect(clientT);
 
     const res = await readonlyClient.callTool({
-      name: 'chainweb.send',
+      name: 'chainweb_send',
       arguments: {
         chainId: '0',
         signedTx: {

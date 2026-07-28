@@ -8,7 +8,11 @@
 import { describe, test, expect, beforeAll, beforeEach, afterEach } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
-import { safeTempDir, generateToolsLockEntry } from '@pact-community/mcp-shared';
+import {
+  safeTempDir,
+  generateToolsLockEntry,
+  TOOL_NAME_PATTERN
+} from '@pact-community/mcp-shared';
 import {
   resolveConfig,
   buildMcpServer,
@@ -70,12 +74,12 @@ describe('server', () => {
   test('getToolSchemaObjects returns all six tools', () => {
     const t = getToolSchemaObjects();
     expect(Object.keys(t).sort()).toEqual([
-      'pact.fmt_check',
-      'pact.gas_estimate',
-      'pact.interface_diff',
-      'pact.module_scan',
-      'pact.repl_run',
-      'pact.repl_run_many'
+      'pact_fmt_check',
+      'pact_gas_estimate',
+      'pact_interface_diff',
+      'pact_module_scan',
+      'pact_repl_run',
+      'pact_repl_run_many'
     ]);
     for (const v of Object.values(t)) {
       expect(v.inputSchema).toBeDefined();
@@ -89,8 +93,8 @@ describe('server', () => {
         version: 1,
         servers: {
           [SERVER_NAME]: {
-            'pact.repl_run': { schema: '{}', hash: 'sha256:deadbeef' },
-            'pact.module_scan': { schema: '{}', hash: 'sha256:deadbeef' }
+            'pact_repl_run': { schema: '{}', hash: 'sha256:deadbeef' },
+            'pact_module_scan': { schema: '{}', hash: 'sha256:deadbeef' }
           }
         }
       })
@@ -105,6 +109,53 @@ describe('server', () => {
     const config = resolveConfig();
     expect(config.lockfilePath.endsWith('tools.lock.json')).toBe(true);
     expect(path.isAbsolute(config.lockfilePath)).toBe(true);
+  });
+
+  describe('tool names (regression: #50)', () => {
+    test('every registered tool name is accepted by the Anthropic API', () => {
+      const names = Object.keys(getToolSchemaObjects());
+      expect(names.length).toBeGreaterThan(0);
+      for (const name of names) {
+        expect(
+          TOOL_NAME_PATTERN.test(name),
+          `tool '${name}' violates ${TOOL_NAME_PATTERN.source}`
+        ).toBe(true);
+      }
+    });
+
+    test('no tool name contains a dot', () => {
+      // 0.2.x shipped 'pact.repl_run' etc. The API rejects the whole tools/list,
+      // so a single dot made every tool on the server invisible to the client.
+      for (const name of Object.keys(getToolSchemaObjects())) {
+        expect(name).not.toContain('.');
+      }
+    });
+  });
+
+  describe('child locale (regression: #51)', () => {
+    test('forces C.UTF-8 when the parent env carries no locale at all', () => {
+      // beforeEach already strips the environment down to PATH/HOME plus the
+      // server's own vars — the same minimal env an MCP client hands the server.
+      expect(process.env['LC_ALL']).toBeUndefined();
+      expect(process.env['LANG']).toBeUndefined();
+
+      const { childEnv } = resolveConfig();
+      expect(childEnv['LC_ALL']).toBe('C.UTF-8');
+      expect(childEnv['LANG']).toBe('C.UTF-8');
+    });
+
+    test('replaces a non-UTF-8 locale rather than inheriting it', () => {
+      process.env['LC_ALL'] = 'C';
+      const { childEnv } = resolveConfig();
+      expect(childEnv['LC_ALL']).toBe('C.UTF-8');
+    });
+
+    test('honours a locale the caller already set to UTF-8', () => {
+      process.env['LANG'] = 'en_US.UTF-8';
+      const { childEnv } = resolveConfig();
+      expect(childEnv['LANG']).toBe('en_US.UTF-8');
+      expect(childEnv['LC_ALL']).toBeUndefined();
+    });
   });
 });
 

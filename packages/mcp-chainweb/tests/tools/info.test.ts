@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests for chainweb.info tool.
+ * @fileoverview Tests for chainweb_info tool.
  */
 
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
@@ -10,7 +10,7 @@ import {
   type MockHandle
 } from '../fixtures/mock-chainweb.js';
 
-describe('chainweb.info', () => {
+describe('chainweb_info', () => {
   let mock: MockHandle;
 
   beforeAll(async () => {

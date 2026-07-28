@@ -1,5 +1,5 @@
 /**
- * @fileoverview chainweb.chain_time - read the latest block header's time.
+ * @fileoverview chainweb_chain_time - read the latest block header's time.
  *
  * The chainweb-node REST API has no single "latest header" endpoint. The
  * documented pattern is:

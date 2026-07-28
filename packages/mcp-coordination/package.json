@@ -1,6 +1,6 @@
 {
   "name": "@pact-community/mcp-coordination",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "MCP server for Pact Community multi-agent coordination \u2014 task queue, mailbox, status, memory.",
   "type": "module",
   "private": true,

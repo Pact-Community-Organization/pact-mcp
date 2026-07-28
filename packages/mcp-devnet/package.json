@@ -1,6 +1,6 @@
 {
   "name": "@pact-community/mcp-devnet",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "MCP server for KDA-CE devnet lifecycle \u2014 gated docker compose tools for Developer/Tester/Security agents.",
   "type": "module",
   "private": true,

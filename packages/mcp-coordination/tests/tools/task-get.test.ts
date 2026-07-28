@@ -6,7 +6,7 @@ let h: Harness;
 beforeEach(async () => { h = await createHarness(); });
 afterEach(() => h.cleanup());
 
-describe('coord.task_get', () => {
+describe('coord_task_get', () => {
   it('fetches a task', async () => {
     const c = decodeHandlerResult(
       await h.handlers.taskCreate({

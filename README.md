@@ -123,8 +123,8 @@ API works against any Chainweb-compatible node: point
 
 Both servers enforce the same tested baseline (details in [SECURITY.md](SECURITY.md)):
 
-- **No private keys, ever.** `chainweb.send`, `chainweb.deploy_module`, and
-  `chainweb.continue_pact` require transactions to be signed externally (Ledger,
+- **No private keys, ever.** `chainweb_send`, `chainweb_deploy_module`, and
+  `chainweb_continue_pact` require transactions to be signed externally (Ledger,
   `@kadena/client`, …) and passed in pre-signed.
 - **Read-only public networks.** The `testnet06` and `mainnet` profiles block
   every write tool with `PROFILE_WRITE_BLOCKED`.

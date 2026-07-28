@@ -1,5 +1,5 @@
 /**
- * @fileoverview chainweb.keys - list keys of a Pact table via /local.
+ * @fileoverview chainweb_keys - list keys of a Pact table via /local.
  */
 
 import { z } from 'zod';

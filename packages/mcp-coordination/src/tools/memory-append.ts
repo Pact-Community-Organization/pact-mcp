@@ -1,5 +1,5 @@
 /**
- * @fileoverview coord.memory_append — append an entry to a scoped log.
+ * @fileoverview coord_memory_append — append an entry to a scoped log.
  */
 
 import { promises as fsp } from 'node:fs';

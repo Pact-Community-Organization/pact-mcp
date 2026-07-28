@@ -1,5 +1,5 @@
 /**
- * @fileoverview Unit tests for pact.repl_run_many tool
+ * @fileoverview Unit tests for pact_repl_run_many tool
  */
 
 import { describe, test, expect, beforeEach, vi } from 'vitest';
@@ -24,7 +24,7 @@ const make = (overrides: Partial<Parameters<typeof createReplRunManyTool>[0]> = 
     ...overrides
   });
 
-describe('pact.repl_run_many', () => {
+describe('pact_repl_run_many', () => {
   beforeEach(() => vi.clearAllMocks());
 
   test('runs all files sequentially and reports aggregate summary', async () => {

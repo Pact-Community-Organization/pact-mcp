@@ -30,8 +30,8 @@ describe('server metadata', () => {
   it('returns all 10 tools from getToolSchemaObjects', () => {
     const tools = getToolSchemaObjects();
     expect(Object.keys(tools)).toHaveLength(10);
-    expect(Object.keys(tools)).toContain('coord.task_create');
-    expect(Object.keys(tools)).toContain('coord.memory_append');
+    expect(Object.keys(tools)).toContain('coord_task_create');
+    expect(Object.keys(tools)).toContain('coord_memory_append');
   });
 });
 

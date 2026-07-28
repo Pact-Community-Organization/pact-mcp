@@ -21,12 +21,12 @@ workspace root) so tool input can never choose an arbitrary file:
 
 | Tool             | Annotation                       | Purpose                                                           |
 | ---------------- | -------------------------------- | ----------------------------------------------------------------- |
-| `devnet.status`  | `readOnlyHint=true`              | `docker compose ps` → structured container state                  |
-| `devnet.health`  | `readOnlyHint=true`              | HTTP probe of `/info` + `/chainweb/0.0/{net}/cut` on the agent port |
-| `devnet.logs`    | `readOnlyHint=true`              | Tail (up to 10k lines, capped at 1 MB)                            |
-| `devnet.up`      | `destructiveHint=true` **GATED** | `docker compose up -d [--force-recreate]` — 120 s timeout         |
-| `devnet.down`    | `destructiveHint=true` **GATED** | `docker compose down [-v]` — wipe requires extra flag             |
-| `devnet.reset`   | `destructiveHint=true` **GATED** | `down -v` + `up --force-recreate` — full fresh devnet (DATA LOSS) |
+| `devnet_status`  | `readOnlyHint=true`              | `docker compose ps` → structured container state                  |
+| `devnet_health`  | `readOnlyHint=true`              | HTTP probe of `/info` + `/chainweb/0.0/{net}/cut` on the agent port |
+| `devnet_logs`    | `readOnlyHint=true`              | Tail (up to 10k lines, capped at 1 MB)                            |
+| `devnet_up`      | `destructiveHint=true` **GATED** | `docker compose up -d [--force-recreate]` — 120 s timeout         |
+| `devnet_down`    | `destructiveHint=true` **GATED** | `docker compose down [-v]` — wipe requires extra flag             |
+| `devnet_reset`   | `destructiveHint=true` **GATED** | `down -v` + `up --force-recreate` — full fresh devnet (DATA LOSS) |
 
 ## Gating
 

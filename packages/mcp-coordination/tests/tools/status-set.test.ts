@@ -5,7 +5,7 @@ let h: Harness;
 beforeEach(async () => { h = await createHarness(); });
 afterEach(() => h.cleanup());
 
-describe('coord.status_set', () => {
+describe('coord_status_set', () => {
   it('writes agent status file', async () => {
     const r = decodeHandlerResult(
       await h.handlers.statusSet({ agent: 'Developer', state: 'working', note: 'n' })

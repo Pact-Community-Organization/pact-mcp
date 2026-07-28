@@ -1,5 +1,5 @@
 /**
- * @fileoverview chainweb.info - read node metadata + chain list.
+ * @fileoverview chainweb_info - read node metadata + chain list.
  *
  * Security invariant: refuses loudly if `networkId !== "development"` — this
  * server is devnet-only for the v1 MVP.

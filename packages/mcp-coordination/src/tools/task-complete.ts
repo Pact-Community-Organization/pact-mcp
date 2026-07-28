@@ -1,5 +1,5 @@
 /**
- * @fileoverview coord.task_complete — finalize a task, verify artifacts.
+ * @fileoverview coord_task_complete — finalize a task, verify artifacts.
  */
 
 import { promises as fsp } from 'node:fs';

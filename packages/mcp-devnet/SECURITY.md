@@ -9,7 +9,7 @@ Wrapping `docker compose` as an MCP tool surfaces three attack classes:
 2. **Filesystem escape** — a compose path that resolves outside the
    workspace, or a `service` name containing path separators, could cause
    a host-side read outside the intended boundary.
-3. **Privilege abuse** — an MCP client invokes `devnet.reset` and destroys
+3. **Privilege abuse** — an MCP client invokes `devnet_reset` and destroys
    named volumes the user did not mean to lose.
 
 All three classes are addressed by layered controls — no single control
@@ -35,7 +35,7 @@ is load-bearing.
 | Timeout + SIGKILL | `src/docker/spawn.ts` | SIGTERM → 5 s grace → SIGKILL → 500 ms force-resolve |
 | Output sanitization | `@pact-community/mcp-shared :: sanitizeToolOutput` | strips ANSI / control chars / secrets |
 | Network allowlist | `src/server.ts` | `createAllowlistedFetch([http://localhost:8081/2/3])` only |
-| DNS-rebind protection | `@pact-community/mcp-shared :: createAllowlistedFetch` | applies to `devnet.health` |
+| DNS-rebind protection | `@pact-community/mcp-shared :: createAllowlistedFetch` | applies to `devnet_health` |
 | Tool-schema drift | `src/server.ts :: verifyToolsLock` | mismatch vs `tools.lock.json` exits 13 |
 | Audit log | `src/server.ts :: wrap` | every tool call: `{tool, inputHash, exitStatus, durationMs}` in `~/.pact-community/mcp-audit.log` |
 
@@ -48,9 +48,9 @@ PACT_COMMUNITY_DEVNET_MODE=devnet
 PACT_COMMUNITY_WORKSPACE_ROOT=/abs/path
 ```
 
-Under this default, `devnet.up`, `devnet.down`, and `devnet.reset`
-**refuse to execute**. Only `devnet.status`, `devnet.health`, and
-`devnet.logs` will succeed.
+Under this default, `devnet_up`, `devnet_down`, and `devnet_reset`
+**refuse to execute**. Only `devnet_status`, `devnet_health`, and
+`devnet_logs` will succeed.
 
 ## Opting into destructive operations
 
@@ -71,7 +71,7 @@ Every successful or failed tool call writes exactly one entry to
 `~/.pact-community/mcp-audit.log`, via the shared `createAuditLogger`. The entry
 includes:
 
-- `tool` — e.g. `devnet.up [DESTRUCTIVE agent=Developer]` for gated calls
+- `tool` — e.g. `devnet_up [DESTRUCTIVE agent=Developer]` for gated calls
 - `inputHash` — first 32 chars of base64(JSON(args))
 - `exitStatus` — `0` on success, error code (e.g. `LIFECYCLE_FORBIDDEN`) on failure
 - `durationMs`

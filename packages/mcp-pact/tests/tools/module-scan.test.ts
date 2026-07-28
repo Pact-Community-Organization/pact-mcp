@@ -1,5 +1,5 @@
 /**
- * @fileoverview Unit tests for pact.module_scan tool
+ * @fileoverview Unit tests for pact_module_scan tool
  */
 
 import { describe, test, expect } from 'vitest';
@@ -9,7 +9,7 @@ import { createModuleScanTool } from '../../src/tools/module-scan.js';
 const fixtures = path.resolve(import.meta.dirname, '../fixtures');
 const scan = createModuleScanTool({ workspaceRoot: fixtures });
 
-describe('pact.module_scan', () => {
+describe('pact_module_scan', () => {
   test('passes a clean module with no traps', async () => {
     const result = await scan({ file: 'module-clean.pact' });
     const payload = result.content[0]!;

@@ -32,7 +32,7 @@ function makeWs(files?: Record<string, string>): string {
   return ws;
 }
 
-describe('devnet.status tool', () => {
+describe('devnet_status tool', () => {
   it('returns overall:missing when the compose file is absent', async () => {
     const ws = makeWs();
     const bin = makeFake({});

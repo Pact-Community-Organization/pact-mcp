@@ -78,18 +78,18 @@ describe('server in-process tool wrapper coverage', () => {
   test('tools/list returns all 6 tools', async () => {
     const { tools } = await mcpClient.listTools();
     expect(tools.map((t) => t.name).sort()).toEqual([
-      'devnet.down',
-      'devnet.health',
-      'devnet.logs',
-      'devnet.reset',
-      'devnet.status',
-      'devnet.up'
+      'devnet_down',
+      'devnet_health',
+      'devnet_logs',
+      'devnet_reset',
+      'devnet_status',
+      'devnet_up'
     ]);
   });
 
-  test('devnet.status reports container state from docker compose ps', async () => {
+  test('devnet_status reports container state from docker compose ps', async () => {
     const res = await mcpClient.callTool({
-      name: 'devnet.status',
+      name: 'devnet_status',
       arguments: { agent: 'Developer' }
     });
     expect(res.isError).toBeFalsy();
@@ -97,17 +97,17 @@ describe('server in-process tool wrapper coverage', () => {
     expect(payload['agent']).toBe('Developer');
   });
 
-  test('devnet.logs returns captured output', async () => {
+  test('devnet_logs returns captured output', async () => {
     const res = await mcpClient.callTool({
-      name: 'devnet.logs',
+      name: 'devnet_logs',
       arguments: { agent: 'Developer' }
     });
     expect(res.isError).toBeFalsy();
   });
 
-  test('devnet.health probes the devnet HTTP endpoints', async () => {
+  test('devnet_health probes the devnet HTTP endpoints', async () => {
     const res = await mcpClient.callTool({
-      name: 'devnet.health',
+      name: 'devnet_health',
       arguments: { agent: 'Developer' }
     });
     expect(res.isError).toBeFalsy();
@@ -115,7 +115,7 @@ describe('server in-process tool wrapper coverage', () => {
     expect(payload['agent']).toBe('Developer');
   });
 
-  test.each(['devnet.up', 'devnet.down', 'devnet.reset'])(
+  test.each(['devnet_up', 'devnet_down', 'devnet_reset'])(
     '%s is refused while lifecycle gating is off',
     async (name) => {
       const res = await mcpClient.callTool({
@@ -174,27 +174,27 @@ describe('lifecycle-enabled server exercises the gated branches', () => {
     cleanupTempWorkspace(workspace);
   });
 
-  test('devnet.up succeeds, with and without forceRecreate', async () => {
+  test('devnet_up succeeds, with and without forceRecreate', async () => {
     for (const forceRecreate of [false, true]) {
       const res = await mcpClient.callTool({
-        name: 'devnet.up',
+        name: 'devnet_up',
         arguments: { agent: 'Developer', forceRecreate }
       });
       expect(res.isError).toBeFalsy();
     }
   });
 
-  test('devnet.down without volume wipe succeeds', async () => {
+  test('devnet_down without volume wipe succeeds', async () => {
     const res = await mcpClient.callTool({
-      name: 'devnet.down',
+      name: 'devnet_down',
       arguments: { agent: 'Developer', wipeVolumes: false }
     });
     expect(res.isError).toBeFalsy();
   });
 
-  test('devnet.down with wipeVolumes is refused without the wipe flag', async () => {
+  test('devnet_down with wipeVolumes is refused without the wipe flag', async () => {
     const res = await mcpClient.callTool({
-      name: 'devnet.down',
+      name: 'devnet_down',
       arguments: { agent: 'Developer', wipeVolumes: true }
     });
     expect(res.isError).toBe(true);
@@ -202,24 +202,24 @@ describe('lifecycle-enabled server exercises the gated branches', () => {
     expect(text).toMatch(/volume wipe/i);
   });
 
-  test('devnet.reset is refused without the wipe flag', async () => {
+  test('devnet_reset is refused without the wipe flag', async () => {
     const res = await mcpClient.callTool({
-      name: 'devnet.reset',
+      name: 'devnet_reset',
       arguments: { agent: 'Developer' }
     });
     expect(res.isError).toBe(true);
   });
 
-  test('devnet.reset succeeds when both flags are on', async () => {
+  test('devnet_reset succeeds when both flags are on', async () => {
     const client = await connectWithFlags({ lifecycle: true, volumeWipe: true });
     try {
       const res = await client.callTool({
-        name: 'devnet.reset',
+        name: 'devnet_reset',
         arguments: { agent: 'Developer' }
       });
       expect(res.isError).toBeFalsy();
       const down = await client.callTool({
-        name: 'devnet.down',
+        name: 'devnet_down',
         arguments: { agent: 'Developer', wipeVolumes: true }
       });
       expect(down.isError).toBeFalsy();

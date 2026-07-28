@@ -1,5 +1,5 @@
 /**
- * @fileoverview Unit tests for pact.fmt_check tool
+ * @fileoverview Unit tests for pact_fmt_check tool
  */
 
 import { describe, test, expect } from 'vitest';
@@ -13,7 +13,7 @@ import {
 const fixtures = path.resolve(import.meta.dirname, '../fixtures');
 const fmt = createFmtCheckTool({ workspaceRoot: fixtures });
 
-describe('pact.fmt_check', () => {
+describe('pact_fmt_check', () => {
   test('clean file passes with zero issues', async () => {
     const r = await fmt({ files: ['fmt-clean.pact'] });
     const p = r.content[0]!;

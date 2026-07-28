@@ -55,18 +55,18 @@ describe('server in-process tool wrapper coverage', () => {
   test('tools/list returns all 6 tools', async () => {
     const { tools } = await mcpClient.listTools();
     expect(tools.map((t) => t.name).sort()).toEqual([
-      'pact.fmt_check',
-      'pact.gas_estimate',
-      'pact.interface_diff',
-      'pact.module_scan',
-      'pact.repl_run',
-      'pact.repl_run_many'
+      'pact_fmt_check',
+      'pact_gas_estimate',
+      'pact_interface_diff',
+      'pact_module_scan',
+      'pact_repl_run',
+      'pact_repl_run_many'
     ]);
   });
 
-  test('pact.repl_run succeeds on a passing fixture', async () => {
+  test('pact_repl_run succeeds on a passing fixture', async () => {
     const r = await mcpClient.callTool({
-      name: 'pact.repl_run',
+      name: 'pact_repl_run',
       arguments: { file: 'simple.repl' }
     });
     const payload = textPayload(r);
@@ -74,18 +74,18 @@ describe('server in-process tool wrapper coverage', () => {
     expect(r.isError ?? false).toBe(false);
   });
 
-  test('pact.repl_run surfaces tool errors for a missing file', async () => {
+  test('pact_repl_run surfaces tool errors for a missing file', async () => {
     // SDK >=1.29 catches handler throws and returns isError:true results.
     const r = await mcpClient.callTool({
-      name: 'pact.repl_run',
+      name: 'pact_repl_run',
       arguments: { file: 'does-not-exist.repl' }
     });
     expect(r.isError).toBe(true);
   });
 
-  test('pact.repl_run_many aggregates batch results', async () => {
+  test('pact_repl_run_many aggregates batch results', async () => {
     const r = await mcpClient.callTool({
-      name: 'pact.repl_run_many',
+      name: 'pact_repl_run_many',
       arguments: { files: ['batch-1.repl', 'batch-2.repl'] }
     });
     const payload = textPayload(r) as {
@@ -95,9 +95,9 @@ describe('server in-process tool wrapper coverage', () => {
     expect(payload.summary.passed).toBe(2);
   });
 
-  test('pact.module_scan passes on a clean module', async () => {
+  test('pact_module_scan passes on a clean module', async () => {
     const r = await mcpClient.callTool({
-      name: 'pact.module_scan',
+      name: 'pact_module_scan',
       arguments: { file: 'module-clean.pact' }
     });
     const payload = textPayload(r);
@@ -105,9 +105,9 @@ describe('server in-process tool wrapper coverage', () => {
     expect(r.isError ?? false).toBe(false);
   });
 
-  test('pact.module_scan flags a trapped module as isError', async () => {
+  test('pact_module_scan flags a trapped module as isError', async () => {
     const r = await mcpClient.callTool({
-      name: 'pact.module_scan',
+      name: 'pact_module_scan',
       arguments: { file: 'module-trap-mixed.pact' }
     });
     const payload = textPayload(r);
@@ -115,9 +115,9 @@ describe('server in-process tool wrapper coverage', () => {
     expect(r.isError).toBe(true);
   });
 
-  test('pact.gas_estimate reads gas probes', async () => {
+  test('pact_gas_estimate reads gas probes', async () => {
     const r = await mcpClient.callTool({
-      name: 'pact.gas_estimate',
+      name: 'pact_gas_estimate',
       arguments: { file: 'gas-probe.repl' }
     });
     const payload = textPayload(r);
@@ -125,9 +125,9 @@ describe('server in-process tool wrapper coverage', () => {
     expect(payload['file']).toBe('gas-probe.repl');
   });
 
-  test('pact.interface_diff compares two files', async () => {
+  test('pact_interface_diff compares two files', async () => {
     const r = await mcpClient.callTool({
-      name: 'pact.interface_diff',
+      name: 'pact_interface_diff',
       arguments: { before: 'iface-before.pact', after: 'iface-after.pact' }
     });
     const payload = textPayload(r);
@@ -135,9 +135,9 @@ describe('server in-process tool wrapper coverage', () => {
     expect(payload).toHaveProperty('breakingChange');
   });
 
-  test('pact.fmt_check reports clean and dirty files', async () => {
+  test('pact_fmt_check reports clean and dirty files', async () => {
     const r = await mcpClient.callTool({
-      name: 'pact.fmt_check',
+      name: 'pact_fmt_check',
       arguments: { files: ['fmt-clean.pact', 'fmt-dirty.pact'] }
     });
     const payload = textPayload(r) as {

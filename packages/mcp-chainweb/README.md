@@ -9,20 +9,20 @@ MCP server exposing eleven Chainweb HTTP tools for Pact development
 
 | Name | Purpose | Read-only | Destructive |
 |---|---|---|---|
-| `chainweb.info` | Fetch `/info`, validate network ID, enumerate chain IDs | ✅ | ❌ |
-| `chainweb.chain_time` | Current chain time in seconds for a given chain | ✅ | ❌ |
-| `chainweb.local` | `/local` Pact simulation with configurable `preflight` (default `true`), unwrapped result | ✅ | ❌ |
-| `chainweb.send` | Preflight then `/send` a pre-signed `{cmd,hash,sigs}` tx | ❌ | ✅ |
-| `chainweb.poll` | `/poll` (not `/listen` — nginx 504 trap) until keys resolve | ✅ | ❌ |
-| `chainweb.read_table` | Read a single Pact table row via `/local` (unwrapped) | ✅ | ❌ |
-| `chainweb.keys` | List row keys of a Pact table (`take` limited) | ✅ | ❌ |
-| `chainweb.principal_namespace` | Compute `n_<40hex>` principal namespace name from a keyset | ✅ | ❌ |
-| `chainweb.deploy_module` | Build UNSCOPED-signer module deploy (+ create-table same tx), preflight, optionally submit | ❌ | ✅ |
-| `chainweb.continue_pact` | Build scoped-signer defpact continuation, preflight, optionally submit | ❌ | ✅ |
-| `chainweb.spv_proof` | Fetch base64 SPV proof for a cross-chain tx (ready=false when pending) | ✅ | ❌ |
+| `chainweb_info` | Fetch `/info`, validate network ID, enumerate chain IDs | ✅ | ❌ |
+| `chainweb_chain_time` | Current chain time in seconds for a given chain | ✅ | ❌ |
+| `chainweb_local` | `/local` Pact simulation with configurable `preflight` (default `true`), unwrapped result | ✅ | ❌ |
+| `chainweb_send` | Preflight then `/send` a pre-signed `{cmd,hash,sigs}` tx | ❌ | ✅ |
+| `chainweb_poll` | `/poll` (not `/listen` — nginx 504 trap) until keys resolve | ✅ | ❌ |
+| `chainweb_read_table` | Read a single Pact table row via `/local` (unwrapped) | ✅ | ❌ |
+| `chainweb_keys` | List row keys of a Pact table (`take` limited) | ✅ | ❌ |
+| `chainweb_principal_namespace` | Compute `n_<40hex>` principal namespace name from a keyset | ✅ | ❌ |
+| `chainweb_deploy_module` | Build UNSCOPED-signer module deploy (+ create-table same tx), preflight, optionally submit | ❌ | ✅ |
+| `chainweb_continue_pact` | Build scoped-signer defpact continuation, preflight, optionally submit | ❌ | ✅ |
+| `chainweb_spv_proof` | Fetch base64 SPV proof for a cross-chain tx (ready=false when pending) | ✅ | ❌ |
 
-The server **never** accepts private keys. `chainweb.send`,
-`chainweb.deploy_module`, and `chainweb.continue_pact` require signatures
+The server **never** accepts private keys. `chainweb_send`,
+`chainweb_deploy_module`, and `chainweb_continue_pact` require signatures
 to be supplied by the caller (e.g. Ledger signer or upstream
 `@kadena/client`). Without `sigs`, the deploy/continue tools return the
 unsigned envelope for external signing.

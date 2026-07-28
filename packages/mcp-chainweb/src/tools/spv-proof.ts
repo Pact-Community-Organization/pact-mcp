@@ -1,8 +1,8 @@
 /**
- * @fileoverview chainweb.spv_proof - fetch an SPV proof for a cross-chain tx.
+ * @fileoverview chainweb_spv_proof - fetch an SPV proof for a cross-chain tx.
  *
  * Calls `POST /chain/<source>/pact/spv` with `{ requestKey, targetChainId }`.
- * The proof is a base64 string passed through to `chainweb.continue_pact`.
+ * The proof is a base64 string passed through to `chainweb_continue_pact`.
  *
  * When the proof is not yet ready (tx still in mempool or awaiting cut
  * confirmation), chainweb responds with a short status string. We surface

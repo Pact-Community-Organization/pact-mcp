@@ -15,16 +15,16 @@ validated directory pinned by `PACT_COMMUNITY_COORDINATION_ROOT`.
 
 | Tool                     | Purpose                                     |
 |--------------------------|---------------------------------------------|
-| `coord.task_create`      | Create a task.                              |
-| `coord.task_list`        | List task summaries (optional filters).     |
-| `coord.task_get`         | Read a single task by id.                   |
-| `coord.task_update`      | Atomically update a task under file lock.   |
-| `coord.task_complete`    | Mark done + verify artifact paths exist.    |
-| `coord.mailbox_send`     | Append a message to an agent inbox.         |
-| `coord.mailbox_read`     | Read inbox (non-mutating).                  |
-| `coord.mailbox_ack`      | Set `readAt` on selected messages.          |
-| `coord.status_set`       | Write agent status (idle/working/...).      |
-| `coord.memory_append`    | Append an entry to a scoped memory log.     |
+| `coord_task_create`      | Create a task.                              |
+| `coord_task_list`        | List task summaries (optional filters).     |
+| `coord_task_get`         | Read a single task by id.                   |
+| `coord_task_update`      | Atomically update a task under file lock.   |
+| `coord_task_complete`    | Mark done + verify artifact paths exist.    |
+| `coord_mailbox_send`     | Append a message to an agent inbox.         |
+| `coord_mailbox_read`     | Read inbox (non-mutating).                  |
+| `coord_mailbox_ack`      | Set `readAt` on selected messages.          |
+| `coord_status_set`       | Write agent status (idle/working/...).      |
+| `coord_memory_append`    | Append an entry to a scoped memory log.     |
 
 ## Environment
 

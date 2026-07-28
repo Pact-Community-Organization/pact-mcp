@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests for chainweb.continue_pact.
+ * @fileoverview Tests for chainweb_continue_pact.
  */
 
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
@@ -13,7 +13,7 @@ import {
 const SIGNER_KEY =
   '368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca';
 
-describe('chainweb.continue_pact', () => {
+describe('chainweb_continue_pact', () => {
   let mock: MockHandle;
 
   beforeAll(async () => {

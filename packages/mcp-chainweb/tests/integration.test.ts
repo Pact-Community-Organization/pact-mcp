@@ -99,17 +99,17 @@ describe('MCP chainweb server — integration', () => {
     const { tools } = await client.listTools();
     const names = tools.map((t) => t.name).sort();
     expect(names).toEqual([
-      'chainweb.chain_time',
-      'chainweb.continue_pact',
-      'chainweb.deploy_module',
-      'chainweb.info',
-      'chainweb.keys',
-      'chainweb.local',
-      'chainweb.poll',
-      'chainweb.principal_namespace',
-      'chainweb.read_table',
-      'chainweb.send',
-      'chainweb.spv_proof'
+      'chainweb_chain_time',
+      'chainweb_continue_pact',
+      'chainweb_deploy_module',
+      'chainweb_info',
+      'chainweb_keys',
+      'chainweb_local',
+      'chainweb_poll',
+      'chainweb_principal_namespace',
+      'chainweb_read_table',
+      'chainweb_send',
+      'chainweb_spv_proof'
     ]);
     for (const t of tools) {
       expect(t.inputSchema).toBeDefined();
@@ -117,9 +117,9 @@ describe('MCP chainweb server — integration', () => {
     }
   });
 
-  test('tools/call chainweb.info returns devnet data', async () => {
+  test('tools/call chainweb_info returns devnet data', async () => {
     const result = await client.callTool({
-      name: 'chainweb.info',
+      name: 'chainweb_info',
       arguments: {}
     });
     expect(result.isError).toBeFalsy();
@@ -130,9 +130,9 @@ describe('MCP chainweb server — integration', () => {
     expect(parsed.chainIds.length).toBeGreaterThan(0);
   });
 
-  test('tools/call chainweb.chain_time returns creationTimeSec', async () => {
+  test('tools/call chainweb_chain_time returns creationTimeSec', async () => {
     const result = await client.callTool({
-      name: 'chainweb.chain_time',
+      name: 'chainweb_chain_time',
       arguments: { chainId: '0' }
     });
     expect(result.isError).toBeFalsy();
@@ -144,7 +144,7 @@ describe('MCP chainweb server — integration', () => {
     expect(typeof parsed.blockHash).toBe('string');
   });
 
-  test('tools/call chainweb.local unwraps Pact types', async () => {
+  test('tools/call chainweb_local unwraps Pact types', async () => {
     mock.patch('local', {
       reqKey: 'rk',
       result: {
@@ -155,7 +155,7 @@ describe('MCP chainweb server — integration', () => {
       logs: 'log-hash'
     });
     const result = await client.callTool({
-      name: 'chainweb.local',
+      name: 'chainweb_local',
       arguments: { chainId: '0', code: '(+ 1 2)' }
     });
     expect(result.isError).toBeFalsy();
@@ -168,7 +168,7 @@ describe('MCP chainweb server — integration', () => {
     mock.patch('local', undefined);
   });
 
-  test('tools/call chainweb.send runs preflight then /send', async () => {
+  test('tools/call chainweb_send runs preflight then /send', async () => {
     mock.patch('local', {
       reqKey: 'pre',
       result: { status: 'success', data: true },
@@ -176,7 +176,7 @@ describe('MCP chainweb server — integration', () => {
     });
     mock.patch('send', { requestKeys: ['abc123'] });
     const result = await client.callTool({
-      name: 'chainweb.send',
+      name: 'chainweb_send',
       arguments: {
         chainId: '0',
         signedTx: {
@@ -196,7 +196,7 @@ describe('MCP chainweb server — integration', () => {
     mock.patch('send', undefined);
   });
 
-  test('tools/call chainweb.poll returns unwrapped results', async () => {
+  test('tools/call chainweb_poll returns unwrapped results', async () => {
     mock.patch('poll', {
       rk1: {
         reqKey: 'rk1',
@@ -206,7 +206,7 @@ describe('MCP chainweb server — integration', () => {
       }
     });
     const result = await client.callTool({
-      name: 'chainweb.poll',
+      name: 'chainweb_poll',
       arguments: {
         chainId: '0',
         requestKeys: ['rk1'],
@@ -225,7 +225,7 @@ describe('MCP chainweb server — integration', () => {
     mock.patch('poll', undefined);
   });
 
-  test('tools/call chainweb.local with failure surfaces isError', async () => {
+  test('tools/call chainweb_local with failure surfaces isError', async () => {
     mock.patch('local', {
       reqKey: 'rk',
       result: {
@@ -235,14 +235,14 @@ describe('MCP chainweb server — integration', () => {
       gas: 0
     });
     const result = await client.callTool({
-      name: 'chainweb.local',
+      name: 'chainweb_local',
       arguments: { chainId: '0', code: '(fail)' }
     });
     expect(result.isError).toBe(true);
     mock.patch('local', undefined);
   });
 
-  test('tools/call chainweb.read_table returns unwrapped row', async () => {
+  test('tools/call chainweb_read_table returns unwrapped row', async () => {
     mock.patch('local', {
       reqKey: 'rk',
       result: {
@@ -252,7 +252,7 @@ describe('MCP chainweb server — integration', () => {
       gas: 50
     });
     const result = await client.callTool({
-      name: 'chainweb.read_table',
+      name: 'chainweb_read_table',
       arguments: {
         chainId: '0',
         module: 'n_abc.dao-token',
@@ -269,14 +269,14 @@ describe('MCP chainweb server — integration', () => {
     mock.patch('local', undefined);
   });
 
-  test('tools/call chainweb.keys returns string array', async () => {
+  test('tools/call chainweb_keys returns string array', async () => {
     mock.patch('local', {
       reqKey: 'rk',
       result: { status: 'success', data: ['alice', 'bob'] },
       gas: 10
     });
     const result = await client.callTool({
-      name: 'chainweb.keys',
+      name: 'chainweb_keys',
       arguments: {
         chainId: '0',
         module: 'n_abc.dao-token',
@@ -293,7 +293,7 @@ describe('MCP chainweb server — integration', () => {
     mock.patch('local', undefined);
   });
 
-  test('tools/call chainweb.principal_namespace returns namespace', async () => {
+  test('tools/call chainweb_principal_namespace returns namespace', async () => {
     mock.patch('local', {
       reqKey: 'rk',
       result: {
@@ -303,7 +303,7 @@ describe('MCP chainweb server — integration', () => {
       gas: 5
     });
     const result = await client.callTool({
-      name: 'chainweb.principal_namespace',
+      name: 'chainweb_principal_namespace',
       arguments: {
         chainId: '0',
         keyset: {
@@ -322,14 +322,14 @@ describe('MCP chainweb server — integration', () => {
     mock.patch('local', undefined);
   });
 
-  test('tools/call chainweb.deploy_module preflight-only path', async () => {
+  test('tools/call chainweb_deploy_module preflight-only path', async () => {
     mock.patch('local', {
       reqKey: 'rk',
       result: { status: 'success', data: 'Loaded' },
       gas: 2_000
     });
     const result = await client.callTool({
-      name: 'chainweb.deploy_module',
+      name: 'chainweb_deploy_module',
       arguments: {
         chainId: '0',
         module: { code: '(module demo GOVERNANCE (defcap GOVERNANCE () true))' },
@@ -347,14 +347,14 @@ describe('MCP chainweb server — integration', () => {
     mock.patch('local', undefined);
   });
 
-  test('tools/call chainweb.continue_pact preflight-only path', async () => {
+  test('tools/call chainweb_continue_pact preflight-only path', async () => {
     mock.patch('localCont', {
       reqKey: 'rk',
       result: { status: 'success', data: 'step ok' },
       gas: 1_000
     });
     const result = await client.callTool({
-      name: 'chainweb.continue_pact',
+      name: 'chainweb_continue_pact',
       arguments: {
         pactId: 'pact-id-abc',
         step: 1,
@@ -373,10 +373,10 @@ describe('MCP chainweb server — integration', () => {
     mock.patch('localCont', undefined);
   });
 
-  test('tools/call chainweb.spv_proof returns ready=true with proof', async () => {
+  test('tools/call chainweb_spv_proof returns ready=true with proof', async () => {
     mock.patch('spv', 'eyJwcm9vZiI6ImJhc2U2NCJ9');
     const result = await client.callTool({
-      name: 'chainweb.spv_proof',
+      name: 'chainweb_spv_proof',
       arguments: {
         sourceChainId: '0',
         targetChainId: '1',

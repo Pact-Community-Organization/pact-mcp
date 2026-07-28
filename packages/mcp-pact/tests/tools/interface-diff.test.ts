@@ -1,5 +1,5 @@
 /**
- * @fileoverview Unit tests for pact.interface_diff tool + parser
+ * @fileoverview Unit tests for pact_interface_diff tool + parser
  */
 
 import { describe, test, expect } from 'vitest';
@@ -11,7 +11,7 @@ import { extractInterface } from '../../src/analysis/interface.js';
 const fixtures = path.resolve(import.meta.dirname, '../fixtures');
 const diff = createInterfaceDiffTool({ workspaceRoot: fixtures });
 
-describe('pact.interface_diff', () => {
+describe('pact_interface_diff', () => {
   test('identical modules produce only unchanged symbols', async () => {
     const r = await diff({
       before: 'iface-identical-a.pact',

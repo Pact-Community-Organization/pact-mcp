@@ -7,8 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **BREAKING** — every tool is renamed from `<server>.<tool>` to `<server>_<tool>`
+  (`pact.repl_run` -> `pact_repl_run`, `chainweb.local` -> `chainweb_local`, and so on
+  across all 33 tools). The Anthropic API requires tool names to match
+  `^[a-zA-Z0-9_-]{1,64}$`, which excludes `.`; a client forwarding the old definitions
+  had its request rejected, so **no tool of the server loaded at all**. Clients discover
+  tools dynamically and need no configuration change, but any saved prompt or script that
+  names a tool explicitly must be updated. (#50)
+
 ### Fixed
+- `mcp-pact`: the `pact` subprocess is now guaranteed a UTF-8 locale. MCP clients commonly
+  launch servers with a minimal environment where `LANG`/`LC_ALL` are unset, leaving the
+  GHC-compiled `pact` binary in the C locale — one non-ASCII byte in a `.pact`/`.repl` file
+  then aborted the whole load with `hGetContents: invalid argument`. A locale the caller
+  already set to UTF-8 is honoured; anything else is replaced with `C.UTF-8`. (#51)
 - `mcp-chainweb` (0.2.3): `testnet06` default endpoint updated to `api.testnet.chainweb-community.org` (old `api.testnet.chainweb.com` deprecated).
+
+### Added
+- `mcp-shared`: `verifyToolsLock` now rejects any tool name outside
+  `^[a-zA-Z0-9_-]{1,64}$` at server startup with `TOOL_NAME_INVALID`, so an invalid name
+  fails loudly instead of silently producing a server with no usable tools.
 
 ### Changed
 - Curated the published surface for community launch: `mcp-pact` and

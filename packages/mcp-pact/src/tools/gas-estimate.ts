@@ -1,6 +1,6 @@
 /**
- * @fileoverview pact.gas_estimate tool implementation
- * @description Convenience wrapper over pact.repl_run that parses gas-probe
+ * @fileoverview pact_gas_estimate tool implementation
+ * @description Convenience wrapper over pact_repl_run that parses gas-probe
  *              output from a .repl file. The .repl file is the source of
  *              truth — this tool does NOT inject probes; it only parses them.
  *

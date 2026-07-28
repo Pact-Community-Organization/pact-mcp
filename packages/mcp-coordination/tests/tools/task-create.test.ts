@@ -8,7 +8,7 @@ let h: Harness;
 beforeEach(async () => { h = await createHarness(); });
 afterEach(() => h.cleanup());
 
-describe('coord.task_create', () => {
+describe('coord_task_create', () => {
   it('creates a task with a fresh T_ id and writes the file', async () => {
     const r = await h.handlers.taskCreate({
       title: 'Ship feature',

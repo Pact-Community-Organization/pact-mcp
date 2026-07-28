@@ -1,5 +1,5 @@
 /**
- * @fileoverview pact.repl_run_many tool implementation
+ * @fileoverview pact_repl_run_many tool implementation
  * @description Sequentially runs multiple .repl files. Validates every path
  *              upfront, enforces a total wall-clock budget, and supports
  *              fail-fast semantics. Local-only. No network I/O. No shell.

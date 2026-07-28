@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests for chainweb.deploy_module.
+ * @fileoverview Tests for chainweb_deploy_module.
  */
 
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
@@ -16,7 +16,7 @@ const SMALL_MODULE = `(module demo GOVERNANCE
   (defcap GOVERNANCE () true)
   (defun hello () "world"))`;
 
-describe('chainweb.deploy_module', () => {
+describe('chainweb_deploy_module', () => {
   let mock: MockHandle;
 
   beforeAll(async () => {

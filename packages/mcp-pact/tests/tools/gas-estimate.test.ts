@@ -1,5 +1,5 @@
 /**
- * @fileoverview Unit tests for pact.gas_estimate tool
+ * @fileoverview Unit tests for pact_gas_estimate tool
  */
 
 import { describe, test, expect, beforeEach, vi } from 'vitest';
@@ -19,7 +19,7 @@ const mockSpawn = vi.mocked(spawnWithOutput);
 const fixtures = path.resolve(import.meta.dirname, '../fixtures');
 const gas = createGasEstimateTool({ workspaceRoot: fixtures, pactBin: 'pact' });
 
-describe('pact.gas_estimate', () => {
+describe('pact_gas_estimate', () => {
   beforeEach(() => vi.clearAllMocks());
 
   test('parses explicit Gas: lines', async () => {

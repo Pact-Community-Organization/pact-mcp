@@ -1,6 +1,6 @@
 /**
  * @fileoverview Test fixture — ephemeral HTTP server mocking the Chainweb API
- *               for devnet.health tests.
+ *               for devnet_health tests.
  */
 
 import http from 'node:http';

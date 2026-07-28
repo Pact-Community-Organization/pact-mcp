@@ -1,8 +1,8 @@
 /**
  * @fileoverview MCP Pact server - high-level McpServer wiring
  * @description Applies pact-mcp security baseline then registers six
- *              tools (pact.repl_run, pact.module_scan, pact.repl_run_many,
- *              pact.gas_estimate, pact.interface_diff, pact.fmt_check) and
+ *              tools (pact_repl_run, pact_module_scan, pact_repl_run_many,
+ *              pact_gas_estimate, pact_interface_diff, pact_fmt_check) and
  *              one resource (pact://traps) on the SDK 1.18 McpServer API.
  */
 
@@ -55,7 +55,7 @@ import {
 } from './resources/traps-catalog.js';
 
 export const SERVER_NAME = 'pact-community-pact';
-export const SERVER_VERSION = '0.2.2';
+export const SERVER_VERSION = '0.3.0';
 
 /** Environment variables the server accepts from its parent process. */
 export const ALLOWED_ENV = [
@@ -150,6 +150,29 @@ export function resolveConfig(): ResolvedConfig {
     }
   }
 
+  // 6. Guarantee the child a UTF-8 locale.
+  //
+  // pact is GHC-compiled and decodes source files using the locale's codeset.
+  // MCP clients routinely launch servers with a minimal environment in which
+  // LANG and LC_ALL are unset, which leaves the child in the C locale — and a
+  // single non-ASCII byte anywhere in a .pact/.repl file then aborts the whole
+  // load with "hGetContents: invalid argument (cannot decode byte sequence
+  // starting from 226)", pointing at low-level IO rather than the character.
+  //
+  // A locale the caller already set to UTF-8 is honoured; anything else is
+  // replaced, so decoding is deterministic regardless of launch context. Both
+  // vars are set to keep them consistent (LC_ALL alone would win, but a
+  // mismatched LANG is confusing to debug).
+  //
+  // C.UTF-8 is the portable choice on Linux, where these servers run and where
+  // CI verifies them. A platform without C.UTF-8 can override via LANG/LC_ALL,
+  // both of which are already on the child allowlist above.
+  const locale = (childEnv['LC_ALL'] ?? childEnv['LANG'] ?? '').toLowerCase();
+  if (!locale.includes('utf-8') && !locale.includes('utf8')) {
+    childEnv['LC_ALL'] = 'C.UTF-8';
+    childEnv['LANG'] = 'C.UTF-8';
+  }
+
   return { workspaceRoot, pactBin, lockfilePath, childEnv };
 }
 
@@ -191,7 +214,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
   });
 
   mcp.registerTool(
-    'pact.repl_run',
+    'pact_repl_run',
     {
       title: 'Run Pact REPL file',
       description:
@@ -210,7 +233,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         const result = await replRun(args);
         const payload = result.content[0] as ReplRunResult;
         auditLog.log({
-          tool: 'pact.repl_run',
+          tool: 'pact_repl_run',
           inputHash: hashArgs(args),
           exitStatus: payload.exitCode ?? -1,
           durationMs: Date.now() - startedAt
@@ -221,7 +244,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         };
       } catch (error) {
         auditLog.log({
-          tool: 'pact.repl_run',
+          tool: 'pact_repl_run',
           inputHash: hashArgs(args),
           exitStatus: errorCode(error),
           durationMs: Date.now() - startedAt
@@ -232,7 +255,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
   );
 
   mcp.registerTool(
-    'pact.module_scan',
+    'pact_module_scan',
     {
       title: 'Scan Pact module for critical traps',
       description:
@@ -251,7 +274,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         const result = await moduleScan(args);
         const payload = result.content[0] as ModuleScanResult;
         auditLog.log({
-          tool: 'pact.module_scan',
+          tool: 'pact_module_scan',
           inputHash: hashArgs(args),
           exitStatus: 0,
           durationMs: Date.now() - startedAt
@@ -262,7 +285,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         };
       } catch (error) {
         auditLog.log({
-          tool: 'pact.module_scan',
+          tool: 'pact_module_scan',
           inputHash: hashArgs(args),
           exitStatus: errorCode(error),
           durationMs: Date.now() - startedAt
@@ -273,7 +296,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
   );
 
   mcp.registerTool(
-    'pact.repl_run_many',
+    'pact_repl_run_many',
     {
       title: 'Run multiple Pact REPL files',
       description:
@@ -293,7 +316,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         const payload = result.content[0] as ReplRunManyResult;
         const anyFail = payload.summary.failed > 0;
         auditLog.log({
-          tool: 'pact.repl_run_many',
+          tool: 'pact_repl_run_many',
           inputHash: hashArgs(args),
           exitStatus: anyFail ? 1 : 0,
           durationMs: Date.now() - startedAt
@@ -304,7 +327,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         };
       } catch (error) {
         auditLog.log({
-          tool: 'pact.repl_run_many',
+          tool: 'pact_repl_run_many',
           inputHash: hashArgs(args),
           exitStatus: errorCode(error),
           durationMs: Date.now() - startedAt
@@ -315,7 +338,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
   );
 
   mcp.registerTool(
-    'pact.gas_estimate',
+    'pact_gas_estimate',
     {
       title: 'Estimate gas from a .repl with probes',
       description:
@@ -334,7 +357,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         const result = await gasEstimate(args);
         const payload = result.content[0] as GasEstimateResult;
         auditLog.log({
-          tool: 'pact.gas_estimate',
+          tool: 'pact_gas_estimate',
           inputHash: hashArgs(args),
           exitStatus: payload.exitCode ?? -1,
           durationMs: Date.now() - startedAt
@@ -345,7 +368,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         };
       } catch (error) {
         auditLog.log({
-          tool: 'pact.gas_estimate',
+          tool: 'pact_gas_estimate',
           inputHash: hashArgs(args),
           exitStatus: errorCode(error),
           durationMs: Date.now() - startedAt
@@ -356,7 +379,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
   );
 
   mcp.registerTool(
-    'pact.interface_diff',
+    'pact_interface_diff',
     {
       title: 'Diff the public API of two .pact files',
       description:
@@ -375,7 +398,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         const result = await interfaceDiff(args);
         const payload = result.content[0] as InterfaceDiffResult;
         auditLog.log({
-          tool: 'pact.interface_diff',
+          tool: 'pact_interface_diff',
           inputHash: hashArgs(args),
           exitStatus: payload.breakingChange ? 1 : 0,
           durationMs: Date.now() - startedAt
@@ -386,7 +409,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         };
       } catch (error) {
         auditLog.log({
-          tool: 'pact.interface_diff',
+          tool: 'pact_interface_diff',
           inputHash: hashArgs(args),
           exitStatus: errorCode(error),
           durationMs: Date.now() - startedAt
@@ -397,7 +420,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
   );
 
   mcp.registerTool(
-    'pact.fmt_check',
+    'pact_fmt_check',
     {
       title: 'Check Pact file formatting (dry-run)',
       description:
@@ -416,7 +439,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         const result = await fmtCheck(args);
         const payload = result.content[0] as FmtCheckResult;
         auditLog.log({
-          tool: 'pact.fmt_check',
+          tool: 'pact_fmt_check',
           inputHash: hashArgs(args),
           exitStatus: payload.summary.dirty > 0 ? 1 : 0,
           durationMs: Date.now() - startedAt
@@ -427,7 +450,7 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
         };
       } catch (error) {
         auditLog.log({
-          tool: 'pact.fmt_check',
+          tool: 'pact_fmt_check',
           inputHash: hashArgs(args),
           exitStatus: errorCode(error),
           durationMs: Date.now() - startedAt
@@ -460,12 +483,12 @@ export function getToolSchemaObjects(): Record<
   { inputSchema: object }
 > {
   return {
-    'pact.repl_run': { inputSchema: ReplRunInputShape },
-    'pact.module_scan': { inputSchema: ModuleScanInputShape },
-    'pact.repl_run_many': { inputSchema: ReplRunManyInputShape },
-    'pact.gas_estimate': { inputSchema: GasEstimateInputShape },
-    'pact.interface_diff': { inputSchema: InterfaceDiffInputShape },
-    'pact.fmt_check': { inputSchema: FmtCheckInputShape }
+    'pact_repl_run': { inputSchema: ReplRunInputShape },
+    'pact_module_scan': { inputSchema: ModuleScanInputShape },
+    'pact_repl_run_many': { inputSchema: ReplRunManyInputShape },
+    'pact_gas_estimate': { inputSchema: GasEstimateInputShape },
+    'pact_interface_diff': { inputSchema: InterfaceDiffInputShape },
+    'pact_fmt_check': { inputSchema: FmtCheckInputShape }
   };
 }
 

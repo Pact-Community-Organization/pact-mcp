@@ -42,22 +42,22 @@ describe('server in-process wrap() coverage', () => {
   test('tools/list returns 10 tools', async () => {
     const { tools } = await mcpClient.listTools();
     expect(tools.map((t) => t.name).sort()).toEqual([
-      'coord.mailbox_ack',
-      'coord.mailbox_read',
-      'coord.mailbox_send',
-      'coord.memory_append',
-      'coord.status_set',
-      'coord.task_complete',
-      'coord.task_create',
-      'coord.task_get',
-      'coord.task_list',
-      'coord.task_update'
+      'coord_mailbox_ack',
+      'coord_mailbox_read',
+      'coord_mailbox_send',
+      'coord_memory_append',
+      'coord_status_set',
+      'coord_task_complete',
+      'coord_task_create',
+      'coord_task_get',
+      'coord_task_list',
+      'coord_task_update'
     ]);
   });
 
-  test('tools/call coord.task_create succeeds', async () => {
+  test('tools/call coord_task_create succeeds', async () => {
     const r = await mcpClient.callTool({
-      name: 'coord.task_create',
+      name: 'coord_task_create',
       arguments: {
         title: 't', description: 'd', createdBy: 'Product', assignee: 'Developer'
       }
@@ -70,7 +70,7 @@ describe('server in-process wrap() coverage', () => {
   test('tools/call with invalid enum raises protocol error', async () => {
     // MCP SDK >=1.29.0: input validation errors return isError:true (not rejection)
     const r = await mcpClient.callTool({
-      name: 'coord.task_create',
+      name: 'coord_task_create',
       arguments: {
         title: 't', description: '', createdBy: 'Ghost', assignee: 'Developer'
       }
@@ -82,7 +82,7 @@ describe('server in-process wrap() coverage', () => {
 
   test('tools/call surfaces domain errors as isError content', async () => {
     const r = await mcpClient.callTool({
-      name: 'coord.task_get',
+      name: 'coord_task_get',
       arguments: { taskId: 'T_' + '0'.repeat(26) }
     });
     expect(r.isError).toBe(true);
@@ -92,7 +92,7 @@ describe('server in-process wrap() coverage', () => {
 
   test('full chain: create+update+complete+send+read+ack+status+memory via protocol', async () => {
     const cr = await mcpClient.callTool({
-      name: 'coord.task_create',
+      name: 'coord_task_create',
       arguments: {
         title: 'chain', description: '', createdBy: 'Product', assignee: 'Tester'
       }
@@ -102,7 +102,7 @@ describe('server in-process wrap() coverage', () => {
     const tid = created.taskId as string;
 
     const ur = await mcpClient.callTool({
-      name: 'coord.task_update',
+      name: 'coord_task_update',
       arguments: { taskId: tid, updatedBy: 'Tester', status: 'in_progress' }
     });
     expect(ur.content).toBeTruthy();
@@ -110,7 +110,7 @@ describe('server in-process wrap() coverage', () => {
     const artifact = 'a.txt';
     writeFileSync(path.join(workspaceRoot, artifact), 'x');
     const compR = await mcpClient.callTool({
-      name: 'coord.task_complete',
+      name: 'coord_task_complete',
       arguments: {
         taskId: tid, completedBy: 'Tester', artifacts: [artifact]
       }
@@ -120,7 +120,7 @@ describe('server in-process wrap() coverage', () => {
     expect(completed.task.status).toBe('done');
 
     const sendR = await mcpClient.callTool({
-      name: 'coord.mailbox_send',
+      name: 'coord_mailbox_send',
       arguments: { from: 'Developer', to: 'Tester', subject: 's', body: 'b' }
     });
     const sc = (sendR.content as Array<{ text: string }>)[0]!;
@@ -128,27 +128,27 @@ describe('server in-process wrap() coverage', () => {
     const mid = sent.messageId as string;
 
     const readR = await mcpClient.callTool({
-      name: 'coord.mailbox_read',
+      name: 'coord_mailbox_read',
       arguments: { agent: 'Tester' }
     });
     const rc = (readR.content as Array<{ text: string }>)[0]!;
     JSON.parse(rc.text);
 
     const ackR = await mcpClient.callTool({
-      name: 'coord.mailbox_ack',
+      name: 'coord_mailbox_ack',
       arguments: { agent: 'Tester', messageIds: [mid] }
     });
     const ac = (ackR.content as Array<{ text: string }>)[0]!;
     expect(JSON.parse(ac.text).acknowledged).toBe(1);
 
     const stR = await mcpClient.callTool({
-      name: 'coord.status_set',
+      name: 'coord_status_set',
       arguments: { agent: 'Developer', state: 'working', note: 'n' }
     });
     expect(stR.content).toBeTruthy();
 
     const memR = await mcpClient.callTool({
-      name: 'coord.memory_append',
+      name: 'coord_memory_append',
       arguments: {
         scope: 'Developer', key: 'ok_key', topic: 't', content: 'c', addedBy: 'Developer'
       }
@@ -157,7 +157,7 @@ describe('server in-process wrap() coverage', () => {
     expect(JSON.parse(mc.text).lineNumber).toBe(1);
 
     const listR = await mcpClient.callTool({
-      name: 'coord.task_list',
+      name: 'coord_task_list',
       arguments: { status: 'done' }
     });
     const lc = (listR.content as Array<{ text: string }>)[0]!;

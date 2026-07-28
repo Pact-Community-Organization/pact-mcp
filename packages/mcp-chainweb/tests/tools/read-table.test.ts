@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests for chainweb.read_table.
+ * @fileoverview Tests for chainweb_read_table.
  */
 
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
@@ -10,7 +10,7 @@ import {
   type MockHandle
 } from '../fixtures/mock-chainweb.js';
 
-describe('chainweb.read_table', () => {
+describe('chainweb_read_table', () => {
   let mock: MockHandle;
 
   beforeAll(async () => {

@@ -1,5 +1,5 @@
 /**
- * @fileoverview chainweb.principal_namespace - compute `n_<40 hex>` via /local.
+ * @fileoverview chainweb_principal_namespace - compute `n_<40 hex>` via /local.
  *
  * Uses `(ns.create-principal-namespace (read-keyset "ks"))` to derive the
  * deterministic principal namespace name from a keyset. The keyset is

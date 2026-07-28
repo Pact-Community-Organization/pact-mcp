@@ -14,12 +14,12 @@ MCP server for Pact 5 smart contract tooling. Provides REPL testing, module scan
 
 | Tool | Purpose | Annotations |
 |------|---------|-------------|
-| `pact.repl_run` | Run single .repl file | readOnly:false, destructive:false, idempotent:true |
-| `pact.repl_run_many` | Run a batch of .repl files sequentially | readOnly:false, destructive:false, idempotent:true |
-| `pact.module_scan` | Static analysis for traps | readOnly:true, destructive:false, idempotent:true |
-| `pact.gas_estimate` | Measure gas consumption | readOnly:true, destructive:false, idempotent:true |
-| `pact.interface_diff` | Compare file signatures | readOnly:true, destructive:false, idempotent:true |
-| `pact.fmt_check` | Check code formatting | readOnly:true, destructive:false, idempotent:true |
+| `pact_repl_run` | Run single .repl file | readOnly:false, destructive:false, idempotent:true |
+| `pact_repl_run_many` | Run a batch of .repl files sequentially | readOnly:false, destructive:false, idempotent:true |
+| `pact_module_scan` | Static analysis for traps | readOnly:true, destructive:false, idempotent:true |
+| `pact_gas_estimate` | Measure gas consumption | readOnly:true, destructive:false, idempotent:true |
+| `pact_interface_diff` | Compare file signatures | readOnly:true, destructive:false, idempotent:true |
+| `pact_fmt_check` | Check code formatting | readOnly:true, destructive:false, idempotent:true |
 
 ## Resources
 
@@ -70,7 +70,7 @@ npx @modelcontextprotocol/inspector npx -y @pact-community/mcp-pact
 {
   "method": "tools/call",
   "params": {
-    "name": "pact.repl_run",
+    "name": "pact_repl_run",
     "arguments": {
       "file": "pact/tests/dao-token.repl"
     }
@@ -83,7 +83,7 @@ npx @modelcontextprotocol/inspector npx -y @pact-community/mcp-pact
 {
   "method": "tools/call",
   "params": {
-    "name": "pact.repl_run_many",
+    "name": "pact_repl_run_many",
     "arguments": {
       "files": [
         "pact/tests/dao-types.repl",
@@ -119,7 +119,7 @@ Notes:
 {
   "method": "tools/call",
   "params": {
-    "name": "pact.module_scan",
+    "name": "pact_module_scan",
     "arguments": {
       "file": "pact/modules/dao-token.pact"
     }
@@ -129,7 +129,7 @@ Notes:
 
 ### Estimate Gas
 
-`pact.gas_estimate` is **read-only**: it does not inject gas probes. The `.repl`
+`pact_gas_estimate` is **read-only**: it does not inject gas probes. The `.repl`
 file must emit gas using any of these forms:
 
 - `(env-gaslimit N)` followed by `(env-gas 0) … (env-gas)` — prints `Gas: <n>`
@@ -140,7 +140,7 @@ file must emit gas using any of these forms:
 {
   "method": "tools/call",
   "params": {
-    "name": "pact.gas_estimate",
+    "name": "pact_gas_estimate",
     "arguments": {
       "file": "pact/tests/gas/transfer.repl",
       "gasLimit": 150000
@@ -176,7 +176,7 @@ changes before merge.
 {
   "method": "tools/call",
   "params": {
-    "name": "pact.interface_diff",
+    "name": "pact_interface_diff",
     "arguments": {
       "before": "pact/modules/dao-token.pact",
       "after":  "pact/modules/dao-token.next.pact"
@@ -211,7 +211,7 @@ Read-only style check. Never writes files.
 {
   "method": "tools/call",
   "params": {
-    "name": "pact.fmt_check",
+    "name": "pact_fmt_check",
     "arguments": {
       "files": [
         "pact/modules/dao-token.pact",

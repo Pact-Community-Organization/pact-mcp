@@ -127,17 +127,17 @@ describe('server', () => {
   test('getToolSchemaObjects returns exactly the 11 v0.2 tools', () => {
     const t = getToolSchemaObjects();
     expect(Object.keys(t).sort()).toEqual([
-      'chainweb.chain_time',
-      'chainweb.continue_pact',
-      'chainweb.deploy_module',
-      'chainweb.info',
-      'chainweb.keys',
-      'chainweb.local',
-      'chainweb.poll',
-      'chainweb.principal_namespace',
-      'chainweb.read_table',
-      'chainweb.send',
-      'chainweb.spv_proof'
+      'chainweb_chain_time',
+      'chainweb_continue_pact',
+      'chainweb_deploy_module',
+      'chainweb_info',
+      'chainweb_keys',
+      'chainweb_local',
+      'chainweb_poll',
+      'chainweb_principal_namespace',
+      'chainweb_read_table',
+      'chainweb_send',
+      'chainweb_spv_proof'
     ]);
   });
 

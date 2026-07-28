@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests for chainweb.spv_proof.
+ * @fileoverview Tests for chainweb_spv_proof.
  */
 
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
@@ -10,7 +10,7 @@ import {
   type MockHandle
 } from '../fixtures/mock-chainweb.js';
 
-describe('chainweb.spv_proof', () => {
+describe('chainweb_spv_proof', () => {
   let mock: MockHandle;
 
   beforeAll(async () => {

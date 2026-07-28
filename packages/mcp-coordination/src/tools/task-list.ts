@@ -1,5 +1,5 @@
 /**
- * @fileoverview coord.task_list — list task summaries under filters.
+ * @fileoverview coord_task_list — list task summaries under filters.
  */
 
 import { promises as fsp } from 'node:fs';
@@ -51,7 +51,7 @@ export function createTaskListTool(deps: TaskListDeps) {
       } catch {
         corruptCount += 1;
         deps.audit.log({
-          tool: 'coord.task_list',
+          tool: 'coord_task_list',
           inputHash: `corrupt:${entry}`,
           exitStatus: 'CORRUPT_STATE',
           durationMs: 0
@@ -62,7 +62,7 @@ export function createTaskListTool(deps: TaskListDeps) {
       if (!result.success) {
         corruptCount += 1;
         deps.audit.log({
-          tool: 'coord.task_list',
+          tool: 'coord_task_list',
           inputHash: `schema-fail:${entry}`,
           exitStatus: 'CORRUPT_STATE',
           durationMs: 0

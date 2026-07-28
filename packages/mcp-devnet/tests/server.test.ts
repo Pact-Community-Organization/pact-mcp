@@ -20,7 +20,7 @@ describe('getToolSchemaObjects', () => {
   it('exposes exactly 6 tool schemas', () => {
     const schemas = getToolSchemaObjects();
     expect(Object.keys(schemas).sort()).toEqual(
-      ['devnet.down', 'devnet.health', 'devnet.logs', 'devnet.reset', 'devnet.status', 'devnet.up'].sort()
+      ['devnet_down', 'devnet_health', 'devnet_logs', 'devnet_reset', 'devnet_status', 'devnet_up'].sort()
     );
   });
 });

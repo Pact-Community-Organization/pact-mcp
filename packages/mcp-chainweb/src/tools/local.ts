@@ -1,5 +1,5 @@
 /**
- * @fileoverview chainweb.local - local preflight execution of arbitrary Pact.
+ * @fileoverview chainweb_local - local preflight execution of arbitrary Pact.
  *
  * Side-effect-free: executes against the node's local read-only pact service.
  * The server returns whatever Pact result the node computed, with all Pact

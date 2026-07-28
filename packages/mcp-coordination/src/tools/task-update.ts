@@ -1,5 +1,5 @@
 /**
- * @fileoverview coord.task_update — atomic task mutation under a file lock.
+ * @fileoverview coord_task_update — atomic task mutation under a file lock.
  */
 
 import {

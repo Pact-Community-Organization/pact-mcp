@@ -1,5 +1,5 @@
 /**
- * @fileoverview coord.mailbox_send — append a message to an inbox.
+ * @fileoverview coord_mailbox_send — append a message to an inbox.
  */
 
 import {

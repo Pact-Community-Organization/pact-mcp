@@ -1,5 +1,5 @@
 /**
- * @fileoverview devnet.health tool — HTTP health probe against the devnet
+ * @fileoverview devnet_health tool — HTTP health probe against the devnet
  *               Pact API endpoint (deeper than container state).
  */
 
