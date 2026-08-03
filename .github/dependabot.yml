@@ -1,15 +1,25 @@
 # Dependabot configuration for the pact-mcp monorepo.
-# Monthly grouped updates for every workspace package plus GitHub Actions,
-# capped per ecosystem to keep notification volume low.
+#
+# ONE npm entry covers the whole pnpm workspace via `directories` (plural).
+# This matters: dependabot grouping only applies WITHIN a single entry, so the
+# previous layout — six separate entries, one per workspace package — produced
+# one PR per package for every shared dependency. A single @modelcontextprotocol/sdk
+# bump became five PRs, and because only "/" and "/packages/mcp-shared" defined a
+# dev-dependencies group, vitest/typescript arrived as ~8 more. That is how this
+# repo reached 18 open PRs for what were really three changes.
+#
+# Majors are deliberately NOT grouped (see dev-dependencies below): a group that
+# mixes majors is all-or-nothing to merge, so one breaking bump blocks the rest.
 
 version: 2
 updates:
-  # Root workspace dependencies
   - package-ecosystem: "npm"
-    directory: "/"
+    directories:
+      - "/"
+      - "/packages/*"
     schedule:
       interval: "monthly"
-    open-pull-requests-limit: 3
+    open-pull-requests-limit: 5
     commit-message:
       prefix: "chore"
       prefix-development: "chore"
@@ -25,6 +35,14 @@ updates:
       modelcontextprotocol:
         patterns:
           - "@modelcontextprotocol/*"
+      kadena:
+        patterns:
+          - "@kadena/*"
+      zod:
+        patterns:
+          - "zod"
+      # minor + patch only. Majors (e.g. typescript 6 -> 7) come as their own PR
+      # so they get reviewed on their own merits instead of riding along.
       dev-dependencies:
         patterns:
           - "@types/*"
@@ -34,115 +52,13 @@ updates:
           - "eslint"
           - "prettier"
         update-types:
-          - "major"
           - "minor"
           - "patch"
 
-  - package-ecosystem: "npm"
-    directory: "/packages/mcp-shared"
-    schedule:
-      interval: "monthly"
-    open-pull-requests-limit: 3
-    commit-message:
-      prefix: "chore"
-      prefix-development: "chore"
-      include: "scope"
-    ignore:
-      # vite is pinned to 6.x for vitest 4 compatibility
-      - dependency-name: "vite"
-        update-types: ["version-update:semver-major"]
-      # typings track the supported Node range (engines >=20.11, CI up to 24)
-      - dependency-name: "@types/node"
-        update-types: ["version-update:semver-major"]
-    groups:
-      modelcontextprotocol:
-        patterns:
-          - "@modelcontextprotocol/*"
-      zod:
-        patterns:
-          - "zod"
-      dev-dependencies:
-        patterns:
-          - "@types/*"
-          - "typescript"
-          - "vitest"
-          - "@vitest/*"
-        update-types:
-          - "major"
-          - "minor"
-          - "patch"
-
-  - package-ecosystem: "npm"
-    directory: "/packages/mcp-pact"
-    schedule:
-      interval: "monthly"
-    open-pull-requests-limit: 3
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    ignore:
-      - dependency-name: "@types/node"
-        update-types: ["version-update:semver-major"]
-    groups:
-      kadena:
-        patterns:
-          - "@kadena/*"
-      modelcontextprotocol:
-        patterns:
-          - "@modelcontextprotocol/*"
-
-  - package-ecosystem: "npm"
-    directory: "/packages/mcp-chainweb"
-    schedule:
-      interval: "monthly"
-    open-pull-requests-limit: 3
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    ignore:
-      - dependency-name: "@types/node"
-        update-types: ["version-update:semver-major"]
-    groups:
-      kadena:
-        patterns:
-          - "@kadena/*"
-      modelcontextprotocol:
-        patterns:
-          - "@modelcontextprotocol/*"
-
-  - package-ecosystem: "npm"
-    directory: "/packages/mcp-coordination"
-    schedule:
-      interval: "monthly"
-    open-pull-requests-limit: 3
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    ignore:
-      - dependency-name: "@types/node"
-        update-types: ["version-update:semver-major"]
-    groups:
-      modelcontextprotocol:
-        patterns:
-          - "@modelcontextprotocol/*"
-
-  - package-ecosystem: "npm"
-    directory: "/packages/mcp-devnet"
-    schedule:
-      interval: "monthly"
-    open-pull-requests-limit: 3
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    ignore:
-      - dependency-name: "@types/node"
-        update-types: ["version-update:semver-major"]
-    groups:
-      modelcontextprotocol:
-        patterns:
-          - "@modelcontextprotocol/*"
-
-  # GitHub Actions — keeps SHA-pinned actions current
+  # GitHub Actions — keeps SHA-pinned actions current.
+  # Every `uses:` in this repo is SHA-pinned, which is correct, but a pin is only
+  # as good as the SHA: an unresolvable pin fails the job at "Set up job" before
+  # `continue-on-error` can apply. See issue #71.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -154,3 +70,10 @@ updates:
     labels:
       - dependencies
       - github-actions
+    groups:
+      actions:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"

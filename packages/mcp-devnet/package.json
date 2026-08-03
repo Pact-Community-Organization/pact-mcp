@@ -28,7 +28,7 @@
     "clean": "rm -rf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.29.0",
+    "@modelcontextprotocol/sdk": "1.30.0",
     "@pact-community/mcp-shared": "workspace:*",
     "zod": "4.4.3"
   },
