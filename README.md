@@ -25,12 +25,37 @@ baseline, and no tool ever touches a private key.
 }
 ```
 
+
+## Modular Plugin Architecture & Prover Connector
+
+In alignment with the modern, modular direction of the Model Context Protocol (MCP) ecosystem, complex verification and AST parsing engines are decoupled from the core server.
+
+The `pact_seal_klub_prover` tool operates as a **Connector Bridge** to the standalone **`@not-bob/seal-klub-prover`** plugin module.
+
+### Getting & Connecting the Standalone Prover Plugin
+
+- **Repository**: [https://github.com/NOtBobs-Emporium-Of-Wonder/Pact5-Seal-Klub-prover-v2.0](https://github.com/NOtBobs-Emporium-Of-Wonder/Pact5-Seal-Klub-prover-v2.0)
+- **Engine Capabilities**:
+  - AST S-Expression Tokenizer & Parser
+  - 16 Formal Invariant & Security Verification Rules
+  - SMT Balance Column Conservation Solver (delta = 0.0)
+  - NIST FIPS 205 SLH-DSA Post-Quantum Principal Compatibility
+  - Autonomous Agent-to-Agent (A2A) Iterative Self-Healing Loop
+
+#### Quick Install:
+```bash
+git clone https://github.com/NOtBobs-Emporium-Of-Wonder/Pact5-Seal-Klub-prover-v2.0.git
+cd Pact5-Seal-Klub-prover-v2.0
+pnpm install && pnpm build
+pnpm link --global
+```
+
 ## Servers
 
 | Server | Install | Tools | What it does |
 |--------|---------|-------|--------------|
-| **Pact Tooling** — [`@pact-community/mcp-pact`](packages/mcp-pact/) | [![npm](https://img.shields.io/npm/v/@pact-community/mcp-pact.svg)](https://www.npmjs.com/package/@pact-community/mcp-pact) | 6 | REPL test runs, critical-trap scanning, gas estimation, interface diff, format checks |
-| **Chainweb API** — [`@pact-community/mcp-chainweb`](packages/mcp-chainweb/) | [![npm](https://img.shields.io/npm/v/@pact-community/mcp-chainweb.svg)](https://www.npmjs.com/package/@pact-community/mcp-chainweb) | 11 | `/local` simulation, pre-signed `/send`, poll, table reads, SPV proofs, module deploys |
+| **Pact Tooling** — [`@pact-community/mcp-pact`](packages/mcp-pact/) | [![npm](https://img.shields.io/npm/v/@pact-community/mcp-pact.svg)](https://www.npmjs.com/package/@pact-community/mcp-pact) | 10 | REPL testing, AST traps, gas estimation, contract generator, catalog explorer & **Pact5-seal_Klub-Prover-v2.0** formal verification |
+| **Chainweb API** — [`@pact-community/mcp-chainweb`](packages/mcp-chainweb/) | [![npm](https://img.shields.io/npm/v/@pact-community/mcp-chainweb.svg)](https://www.npmjs.com/package/@pact-community/mcp-chainweb) | 12 | `/local` simulation, `/send`, poll, table reads, SPV proofs, module deploys, NIST FIPS 205 PQ principal parsing |
 
 Both are listed in the official
 [MCP registry](https://registry.modelcontextprotocol.io) as

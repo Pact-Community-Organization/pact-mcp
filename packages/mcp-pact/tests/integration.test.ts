@@ -92,7 +92,7 @@ describe('MCP pact server — integration', () => {
     if (client) await client.close();
   });
 
-  test('tools/list returns all six registered tools', async () => {
+  test('tools/list returns all seven registered tools', async () => {
     const { tools } = await client.listTools();
     const names = tools.map((t) => t.name).sort();
     expect(names).toEqual([
@@ -101,7 +101,8 @@ describe('MCP pact server — integration', () => {
       'pact_interface_diff',
       'pact_module_scan',
       'pact_repl_run',
-      'pact_repl_run_many'
+      'pact_repl_run_many',
+      'pact_seal_klub_prover'
     ]);
     for (const t of tools) {
       expect(t.inputSchema).toBeDefined();

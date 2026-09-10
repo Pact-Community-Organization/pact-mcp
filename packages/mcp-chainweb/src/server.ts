@@ -91,6 +91,11 @@ import {
   SpvProofInputShape,
   type SpvProofResult
 } from './tools/spv-proof.js';
+import {
+  createParsePrincipalTool,
+  ParsePrincipalInputShape,
+  type ParsePrincipalResult
+} from './tools/parse-principal.js';
 
 export const SERVER_NAME = 'pact-community-chainweb';
 export const SERVER_VERSION = '0.3.0';
@@ -336,6 +341,7 @@ export function buildMcpServerWithClient(
   const deployModule = createDeployModuleTool({ client });
   const continuePact = createContinuePactTool({ client });
   const spvProof = createSpvProofTool({ client });
+  const parsePrincipal = createParsePrincipalTool();
 
   mcp.registerTool(
     'chainweb_info',
@@ -572,6 +578,27 @@ export function buildMcpServerWithClient(
       })
   );
 
+  mcp.registerTool(
+    'chainweb_parse_principal',
+    {
+      title: 'Parse and validate Kadena principal (Ed25519, WebAuthn, Post-Quantum SLH-DSA)',
+      description:
+        'Parse, classify, and validate Kadena account principals: k: (Ed25519), w: (WebAuthn), q: (NIST FIPS 205 SLH-DSA Post-Quantum), x: (SLH-DSA Multi-Sig), n_ (Principal Namespace), r: (Keyset Ref), c: (Capability), and u: (User Guard).',
+      inputSchema: ParsePrincipalInputShape,
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false
+      }
+    },
+    async (args) =>
+      wrap(auditLog, 'chainweb_parse_principal', args, async () => {
+        const { content } = await parsePrincipal(args);
+        return content[0] as ParsePrincipalResult;
+      })
+  );
+
   return mcp;
 }
 
@@ -592,7 +619,8 @@ export function getToolSchemaObjects(): Record<
     },
     'chainweb_deploy_module': { inputSchema: DeployModuleInputShape },
     'chainweb_continue_pact': { inputSchema: ContinuePactInputShape },
-    'chainweb_spv_proof': { inputSchema: SpvProofInputShape }
+    'chainweb_spv_proof': { inputSchema: SpvProofInputShape },
+    'chainweb_parse_principal': { inputSchema: ParsePrincipalInputShape }
   };
 }
 

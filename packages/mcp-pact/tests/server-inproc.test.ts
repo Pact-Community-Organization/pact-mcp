@@ -52,7 +52,7 @@ describe('server in-process tool wrapper coverage', () => {
     if (mcpClient) await mcpClient.close();
   });
 
-  test('tools/list returns all 6 tools', async () => {
+  test('tools/list returns all 7 tools', async () => {
     const { tools } = await mcpClient.listTools();
     expect(tools.map((t) => t.name).sort()).toEqual([
       'pact_fmt_check',
@@ -60,7 +60,8 @@ describe('server in-process tool wrapper coverage', () => {
       'pact_interface_diff',
       'pact_module_scan',
       'pact_repl_run',
-      'pact_repl_run_many'
+      'pact_repl_run_many',
+      'pact_seal_klub_prover'
     ]);
   });
 

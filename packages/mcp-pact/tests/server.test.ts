@@ -71,7 +71,7 @@ describe('server', () => {
     expect(typeof (mcp as unknown as { close: unknown }).close).toBe('function');
   });
 
-  test('getToolSchemaObjects returns all six tools', () => {
+  test('getToolSchemaObjects returns all seven tools', () => {
     const t = getToolSchemaObjects();
     expect(Object.keys(t).sort()).toEqual([
       'pact_fmt_check',
@@ -79,7 +79,8 @@ describe('server', () => {
       'pact_interface_diff',
       'pact_module_scan',
       'pact_repl_run',
-      'pact_repl_run_many'
+      'pact_repl_run_many',
+      'pact_seal_klub_prover'
     ]);
     for (const v of Object.values(t)) {
       expect(v.inputSchema).toBeDefined();

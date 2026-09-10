@@ -1,0 +1,61 @@
+;; hello-world-test.repl — PCO library template test suite
+;;
+;; Self-contained: no external sandbox needed. Exercises the actual module
+;; functions and the ADMIN capability, with assertions (expect/expect-failure).
+
+(env-data {"hello-world-admin": ["admin-key"], "user-keyset": ["user-key"]})
+(env-sigs [{"key": "admin-key", "caps": []}])
+(env-chain-data {"block-time": (time "2026-07-05T00:00:00Z")})
+
+;; ---------------------------------------------------------------------------
+;; Setup
+;; ---------------------------------------------------------------------------
+(begin-tx "setup")
+(define-keyset "hello-world-admin" (read-keyset "hello-world-admin"))
+(load "../hello-world.pact")
+(create-table messages)
+(commit-tx)
+
+;; ---------------------------------------------------------------------------
+;; Greeting (pure function)
+;; ---------------------------------------------------------------------------
+(begin-tx "greeting")
+(expect "personalized greeting"
+  "Hello, Alice! Welcome to Pact."
+  (hello-world.hello-world "Alice"))
+(expect "empty name still formats"
+  "Hello, ! Welcome to Pact."
+  (hello-world.hello-world ""))
+(commit-tx)
+
+;; ---------------------------------------------------------------------------
+;; Message storage — ADMIN capability enforced
+;; ---------------------------------------------------------------------------
+(begin-tx "store-and-read")
+(env-sigs [{"key": "admin-key", "caps": []}])
+(hello-world.store-message "first message")
+(expect "stored message roundtrip"
+  (format "Message: first message at {}" [(time "2026-07-05T00:00:00Z")])
+  (hello-world.get-message (hash "first message")))
+(commit-tx)
+
+(begin-tx "store-requires-admin")
+;; a non-admin key must NOT be able to write
+(env-sigs [{"key": "user-key", "caps": []}])
+(expect-failure "non-admin cannot store" "Keyset failure"
+  (hello-world.store-message "unauthorized write"))
+(rollback-tx)
+
+(begin-tx "duplicate-message")
+(env-sigs [{"key": "admin-key", "caps": []}])
+;; key is (hash message): storing identical content twice must fail on insert
+(expect-failure "duplicate message rejected"
+  (hello-world.store-message "first message"))
+(rollback-tx)
+
+(begin-tx "missing-message")
+(expect-failure "reading a missing hash fails"
+  (hello-world.get-message "no-such-hash"))
+(rollback-tx)
+
+"All hello-world template tests passed"

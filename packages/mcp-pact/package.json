@@ -29,15 +29,16 @@
     "clean": "rm -rf dist tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.30.0",
+    "@modelcontextprotocol/sdk": "1.29.0",
     "@pact-community/mcp-shared": "workspace:*",
-    "zod": "4.4.3"
+    "zod": "4.4.3",
+    "@not-bob/seal-klub-prover": "link:../../../seal-klub-prover-plugin"
   },
   "devDependencies": {
     "@types/node": "25.9.4",
-    "@vitest/coverage-v8": "4.1.10",
-    "typescript": "7.0.2",
-    "vitest": "4.1.10"
+    "@vitest/coverage-v8": "4.1.9",
+    "typescript": "6.0.3",
+    "vitest": "4.1.9"
   },
   "author": "Pact Community",
   "license": "Apache-2.0",

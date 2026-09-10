@@ -10,6 +10,31 @@ MCP server for Pact 5 smart contract tooling. Provides REPL testing, module scan
 - **Interface Diff**: Compare function signatures across Pact files
 - **Format Checking**: Basic code style validation
 
+
+## Modular Plugin Architecture & Prover Connector
+
+In alignment with the modern, modular direction of the Model Context Protocol (MCP) ecosystem, complex verification and AST parsing engines are decoupled from the core server.
+
+The `pact_seal_klub_prover` tool operates as a **Connector Bridge** to the standalone **`@not-bob/seal-klub-prover`** plugin module.
+
+### Getting & Connecting the Standalone Prover Plugin
+
+- **Repository**: [https://github.com/NOtBobs-Emporium-Of-Wonder/Pact5-Seal-Klub-prover-v2.0](https://github.com/NOtBobs-Emporium-Of-Wonder/Pact5-Seal-Klub-prover-v2.0)
+- **Engine Capabilities**:
+  - AST S-Expression Tokenizer & Parser
+  - 16 Formal Invariant & Security Verification Rules
+  - SMT Balance Column Conservation Solver (delta = 0.0)
+  - NIST FIPS 205 SLH-DSA Post-Quantum Principal Compatibility
+  - Autonomous Agent-to-Agent (A2A) Iterative Self-Healing Loop
+
+#### Quick Install:
+```bash
+git clone https://github.com/NOtBobs-Emporium-Of-Wonder/Pact5-Seal-Klub-prover-v2.0.git
+cd Pact5-Seal-Klub-prover-v2.0
+pnpm install && pnpm build
+pnpm link --global
+```
+
 ## Tools
 
 | Tool | Purpose | Annotations |
@@ -20,6 +45,10 @@ MCP server for Pact 5 smart contract tooling. Provides REPL testing, module scan
 | `pact_gas_estimate` | Measure gas consumption | readOnly:true, destructive:false, idempotent:true |
 | `pact_interface_diff` | Compare file signatures | readOnly:true, destructive:false, idempotent:true |
 | `pact_fmt_check` | Check code formatting | readOnly:true, destructive:false, idempotent:true |
+| `pact_template_generate` | Generate tested, audited Pact 5 smart contract templates | readOnly:true, destructive:false, idempotent:true |
+| `pact_catalog_list` | Search & list audited smart contracts from Pact Contract Catalog | readOnly:true, destructive:false, idempotent:true |
+| `pact_catalog_get` | Fetch audited contract code, AUDIT report, README & REPL tests | readOnly:true, destructive:false, idempotent:true |
+| `pact_seal_klub_prover` | **Pact5-seal_Klub-Prover-v2.0**: Mathematical formal verification, SMT balance conservation proofs, capability authorization scoping, and NIST FIPS 205 post-quantum guards (*built by not_bob & seal_klub*) | readOnly:true, destructive:false, idempotent:true |
 
 ## Resources
 

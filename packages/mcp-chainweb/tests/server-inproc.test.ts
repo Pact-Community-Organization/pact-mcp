@@ -56,6 +56,7 @@ describe('server in-process wrap()', () => {
       'chainweb_info',
       'chainweb_keys',
       'chainweb_local',
+      'chainweb_parse_principal',
       'chainweb_poll',
       'chainweb_principal_namespace',
       'chainweb_read_table',

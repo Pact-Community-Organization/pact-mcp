@@ -50,6 +50,11 @@ import {
   type FmtCheckResult
 } from './tools/fmt-check.js';
 import {
+  createSealKlubProverTool,
+  SealKlubProverInputShape,
+  type SealKlubProverResult
+} from './tools/seal-klub-prover.js';
+import {
   readTrapsResource,
   TRAPS_RESOURCE_URI
 } from './resources/traps-catalog.js';
@@ -210,6 +215,9 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
     workspaceRoot: config.workspaceRoot
   });
   const fmtCheck = createFmtCheckTool({
+    workspaceRoot: config.workspaceRoot
+  });
+  const sealKlubProver = createSealKlubProverTool({
     workspaceRoot: config.workspaceRoot
   });
 
@@ -460,6 +468,47 @@ export function buildMcpServer(config: ResolvedConfig): McpServer {
     }
   );
 
+  mcp.registerTool(
+    'pact_seal_klub_prover',
+    {
+      title: 'Pact5-seal_Klub-Prover-v2.0 Formal Verification Engine',
+      description:
+        'Pact5-seal_Klub-Prover-v2.0: Mathematical formal verification and SMT invariant prover for Pact 5 smart contracts, balance conservation theorems, capability authorization scoping, and NIST FIPS 205 post-quantum guards. Built & contributed by not_bob & seal_klub.',
+      inputSchema: SealKlubProverInputShape,
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false
+      }
+    },
+    async (args) => {
+      const startedAt = Date.now();
+      try {
+        const result = await sealKlubProver(args);
+        const payload = result.content[0] as SealKlubProverResult;
+        auditLog.log({
+          tool: 'pact_seal_klub_prover',
+          inputHash: hashArgs(args),
+          exitStatus: payload.violationCount > 0 ? 1 : 0,
+          durationMs: Date.now() - startedAt
+        });
+        return {
+          content: [{ type: 'text' as const, text: JSON.stringify(payload) }],
+          isError: payload.violationCount > 0
+        };
+      } catch (error) {
+        auditLog.log({
+          tool: 'pact_seal_klub_prover',
+          inputHash: hashArgs(args),
+          exitStatus: errorCode(error),
+          durationMs: Date.now() - startedAt
+        });
+        throw error;
+      }
+    }
+  );
+
   mcp.registerResource(
     'traps-catalog',
     TRAPS_RESOURCE_URI,
@@ -488,7 +537,8 @@ export function getToolSchemaObjects(): Record<
     'pact_repl_run_many': { inputSchema: ReplRunManyInputShape },
     'pact_gas_estimate': { inputSchema: GasEstimateInputShape },
     'pact_interface_diff': { inputSchema: InterfaceDiffInputShape },
-    'pact_fmt_check': { inputSchema: FmtCheckInputShape }
+    'pact_fmt_check': { inputSchema: FmtCheckInputShape },
+    'pact_seal_klub_prover': { inputSchema: SealKlubProverInputShape }
   };
 }
 
@@ -509,3 +559,5 @@ function errorCode(error: unknown): string | number {
   if (error instanceof McpToolError) return error.code;
   return 1;
 }
+
+export { createHttpServer, PACT_SECURITY_RULES } from './http-server.js';
