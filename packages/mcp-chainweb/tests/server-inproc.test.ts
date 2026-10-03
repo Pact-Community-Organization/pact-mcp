@@ -316,7 +316,79 @@ describe('server in-process wrap()', () => {
     const payloadText = (res.content as Array<{ text: string }>)[0]!.text;
     expect(payloadText).toContain('PROFILE_WRITE_BLOCKED');
 
+    // The other two write tools are blocked the same way, and a blocked
+    // write never reaches the node — not even for its preflight.
+    const before = mock.requests.length;
+    const pubKey = 'a'.repeat(64);
+    const blocked = [
+      {
+        name: 'chainweb_deploy_module',
+        arguments: {
+          chainId: '0',
+          module: { code: '(module m G (defcap G () true))' },
+          signerKey: pubKey
+        }
+      },
+      {
+        name: 'chainweb_continue_pact',
+        arguments: {
+          pactId: 'pact-id',
+          step: 1,
+          targetChainId: '1',
+          signerKey: pubKey
+        }
+      }
+    ];
+    for (const call of blocked) {
+      const r = await readonlyClient.callTool(call);
+      expect(r.isError).toBe(true);
+      expect((r.content as Array<{ text: string }>)[0]!.text).toContain(
+        'PROFILE_WRITE_BLOCKED'
+      );
+    }
+    expect(mock.requests.length).toBe(before);
+
     await readonlyClient.close();
     await server.close();
+  });
+
+  test('chainweb_info works on a mainnet-profile server', async () => {
+    mock.patch('info', {
+      nodeApiVersion: '0.0',
+      nodeChains: ['0', '1'],
+      nodeNumberOfChains: 20,
+      nodePackageVersion: '3.2',
+      nodeVersion: 'mainnet01'
+    });
+    const httpClient = createChainwebClient({
+      baseUrl: mock.baseUrl,
+      networkId: 'mainnet01',
+      allowedOrigins: [],
+      additionalAllowedOrigins: [mock.origin]
+    });
+    const server = buildMcpServerWithClient(httpClient, {
+      profile: 'mainnet',
+      writesEnabled: false
+    });
+    const [clientT, serverT] = InMemoryTransport.createLinkedPair();
+    await (server as unknown as {
+      connect: (t: unknown) => Promise<void>;
+    }).connect(serverT);
+    const mainnetClient = new Client(
+      { name: 'mainnet-inproc', version: '0' },
+      { capabilities: {} }
+    );
+    await mainnetClient.connect(clientT);
+
+    const res = await mainnetClient.callTool({
+      name: 'chainweb_info',
+      arguments: {}
+    });
+    expect(res.isError).toBeFalsy();
+    expect(parsePayload(res)['networkId']).toBe('mainnet01');
+
+    await mainnetClient.close();
+    await server.close();
+    mock.patch('info', undefined);
   });
 });

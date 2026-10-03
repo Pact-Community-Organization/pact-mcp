@@ -74,7 +74,9 @@ export function createPrincipalNamespaceTool(
       .setNetworkId(config.client.networkId)
       .createTransaction();
 
-    const pre = await runLocalPreflight(config.client, input.chainId, tx);
+    const pre = await runLocalPreflight(config.client, input.chainId, tx, {
+      preflight: false
+    });
     if (pre.status === 'failure') {
       throw new McpToolError(
         'PRINCIPAL_NS_FAILED',

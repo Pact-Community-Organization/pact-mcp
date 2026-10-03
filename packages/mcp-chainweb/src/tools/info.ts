@@ -1,8 +1,9 @@
 /**
  * @fileoverview chainweb_info - read node metadata + chain list.
  *
- * Security invariant: refuses loudly if `networkId !== "development"` — this
- * server is devnet-only for the v1 MVP.
+ * Security invariant: refuses loudly if the node's network id differs from
+ * the one the server was configured for (the profile default, or
+ * `PACT_COMMUNITY_CHAINWEB_NETWORK_ID`).
  */
 
 import { z } from 'zod';
@@ -17,25 +18,31 @@ export interface InfoResult {
   nodeVersion: string;
   apiVersion: string;
   chainIds: string[];
-  /** Present iff /cut was reachable. Missing entries are omitted per-chain. */
+  /** Latest block height per chain. Present iff /cut was reachable. */
+  chainHeights?: Record<string, number>;
+  /**
+   * Present iff /cut was reachable. Filled only for cut entries that carry
+   * a `creationTime` — chainweb-node 3.2 sends height and hash only, so
+   * this is empty there; use `chainweb_chain_time` for block times.
+   */
   chainTimestamps?: Record<string, number>;
 }
 
 export interface InfoToolConfig {
   client: ChainwebClient;
-  /** Expected network id — defaults to `development` (devnet-only guarantee). */
+  /** Expected network id — defaults to the client's configured network id. */
   expectedNetworkId?: string;
 }
 
 interface RawInfo {
+  // chainweb-node 3.2 `/info` (measured on mainnet01 and devnet): the network
+  // id is `nodeVersion`; the node software version is `nodePackageVersion`.
   nodeVersion?: string;
+  nodePackageVersion?: string;
   nodeApiVersion?: string;
-  nodeApiVersionWithPatch?: string;
   nodeChains?: string[];
   nodeNumberOfChains?: number;
-  // chainweb-node exposes `nodeVersion` + `nodeApiVersion`; the devnet
-  // response additionally includes the networkId under `nodeVersion` or
-  // a separate field depending on version.
+  // Not sent by 3.2; honoured first if a node build does send them.
   networkId?: string;
   chainwebVersion?: string;
 }
@@ -49,7 +56,7 @@ interface RawCut {
  * McpServer.registerTool's callback signature (receives `args: unknown`).
  */
 export function createInfoTool(config: InfoToolConfig) {
-  const expected = config.expectedNetworkId ?? 'development';
+  const expected = config.expectedNetworkId ?? config.client.networkId;
   return async function info(
     args: unknown
   ): Promise<{ content: InfoResult[] }> {
@@ -57,15 +64,13 @@ export function createInfoTool(config: InfoToolConfig) {
 
     const raw = await config.client.getJson<RawInfo>('/info');
 
-    // chainweb-node devnet uses `nodeVersion` for e.g. "development"; some
-    // builds put the network id under `networkId` or `chainwebVersion`.
     const networkId =
       raw.networkId ?? raw.chainwebVersion ?? raw.nodeVersion ?? '';
     if (networkId !== expected) {
       throw new McpToolError(
         'NETWORK_ID_MISMATCH',
         sanitizeToolOutput(
-          `Refusing to operate on non-devnet network. Expected '${expected}', got '${networkId}'.`
+          `Refusing to operate: the node is on a different network than configured. Expected '${expected}', got '${networkId}'.`
         ).text,
         false
       );
@@ -77,15 +82,20 @@ export function createInfoTool(config: InfoToolConfig) {
         ? Array.from({ length: raw.nodeNumberOfChains }, (_, i) => String(i))
         : [];
 
-    // Best-effort /cut — if unreachable, omit chainTimestamps (not a failure).
+    // Best-effort /cut — if unreachable, omit the per-chain fields (not a failure).
     let chainTimestamps: Record<string, number> | undefined;
+    let chainHeights: Record<string, number> | undefined;
     try {
       const cut = await config.client.getJson<RawCut>(
         `/chainweb/0.0/${networkId}/cut`
       );
       if (cut.hashes && typeof cut.hashes === 'object') {
         chainTimestamps = {};
+        chainHeights = {};
         for (const [cid, entry] of Object.entries(cut.hashes)) {
+          if (entry && typeof entry.height === 'number') {
+            chainHeights[cid] = entry.height;
+          }
           if (entry && typeof entry.creationTime === 'number') {
             // cut entries (when populated) also give microseconds.
             chainTimestamps[cid] = Math.floor(entry.creationTime / 1_000_000);
@@ -98,12 +108,11 @@ export function createInfoTool(config: InfoToolConfig) {
 
     const result: InfoResult = {
       networkId,
-      nodeVersion: String(
-        raw.nodeApiVersionWithPatch ?? raw.nodeVersion ?? ''
-      ),
+      nodeVersion: String(raw.nodePackageVersion ?? ''),
       apiVersion: String(raw.nodeApiVersion ?? ''),
       chainIds
     };
+    if (chainHeights) result.chainHeights = chainHeights;
     if (chainTimestamps) result.chainTimestamps = chainTimestamps;
     return { content: [result] };
   };

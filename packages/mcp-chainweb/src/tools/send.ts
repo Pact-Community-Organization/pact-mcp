@@ -10,6 +10,10 @@
 import { z } from 'zod';
 import { McpToolError } from '@pact-community/mcp-shared';
 import type { ChainwebClient } from '../client/fetch.js';
+import {
+  runLocalPreflight,
+  extractErrorMessage
+} from '../client/preflight.js';
 
 export const SendInputShape = {
   chainId: z
@@ -42,11 +46,6 @@ export interface SendToolConfig {
   client: ChainwebClient;
 }
 
-interface RawLocalResponse {
-  result?: { status?: string };
-  gas?: number;
-}
-
 interface RawSendResponse {
   requestKeys?: string[];
 }
@@ -62,17 +61,15 @@ export function createSendTool(config: SendToolConfig) {
     const base = `/chainweb/0.0/${netId}/chain/${chainId}/pact/api/v1`;
 
     // Preflight FIRST. Signed tx → signatureVerification=true.
-    const localPath = `${base}/local?preflight=true&signatureVerification=true`;
-    const preflight = await config.client.postJson<RawLocalResponse>(
-      localPath,
-      input.signedTx
-    );
-    const gasUsed = typeof preflight.gas === 'number' ? preflight.gas : 0;
-    const status = preflight.result?.status;
-    if (status !== 'success') {
+    const pre = await runLocalPreflight(config.client, chainId, input.signedTx, {
+      preflight: true,
+      signatureVerification: true
+    });
+    const gasUsed = pre.gasUsed;
+    if (pre.status !== 'success') {
       throw new McpToolError(
         'PREFLIGHT_FAILED',
-        `Preflight returned status='${status}' — refusing to /send. gas=${gasUsed}`,
+        `Preflight failed — refusing to /send. gas=${gasUsed}: ${extractErrorMessage(pre.result).slice(0, 500)}`,
         false
       );
     }

@@ -123,6 +123,72 @@ describe('chainweb_local', () => {
     expect(req!.url).toContain('preflight=false');
   });
 
+  test('default is evaluate-only: the request asks for preflight=false', async () => {
+    mock.patch('local', undefined);
+    const tool = createLocalTool({ client: makeClient() });
+    const before = mock.requests.length;
+    const { content } = await tool({ chainId: '0', code: '(+ 1 2)' });
+    expect(content[0]!.status).toBe('success');
+    const req = mock.requests.slice(before).find((r) => /\/local/.test(r.url));
+    expect(req!.url).toContain('preflight=false');
+  });
+
+  test('preflight=true: reads the result from under preflightResult', async () => {
+    mock.patch('local', {
+      preflightResult: {
+        reqKey: 'rk',
+        result: { status: 'success', data: { int: 3 } },
+        gas: 97,
+        logs: 'hash'
+      },
+      preflightWarnings: ['a node warning']
+    });
+    const tool = createLocalTool({ client: makeClient() });
+    const before = mock.requests.length;
+    const { content } = await tool({
+      chainId: '0',
+      code: '(+ 1 2)',
+      preflight: true
+    });
+    const req = mock.requests.slice(before).find((r) => /\/local/.test(r.url));
+    expect(req!.url).toContain('preflight=true');
+    expect(content[0]).toEqual({
+      status: 'success',
+      result: 3,
+      gasUsed: 97,
+      logs: 'hash',
+      warnings: ['a node warning']
+    });
+    mock.patch('local', undefined);
+  });
+
+  test('preflight=true failure surfaces the node message, not an empty result', async () => {
+    mock.patch('local', {
+      preflightResult: {
+        reqKey: 'rk',
+        result: {
+          status: 'failure',
+          error: { message: 'Failed to buy gas: Keyset failure (keys-all)' }
+        },
+        gas: 150000,
+        logs: null
+      },
+      preflightWarnings: []
+    });
+    const tool = createLocalTool({ client: makeClient() });
+    const { content } = await tool({
+      chainId: '0',
+      code: '(+ 1 2)',
+      preflight: true
+    });
+    expect(content[0]!.status).toBe('failure');
+    expect(content[0]!.result).toMatchObject({
+      message: 'Failed to buy gas: Keyset failure (keys-all)'
+    });
+    expect(content[0]!.gasUsed).toBe(150000);
+    mock.patch('local', undefined);
+  });
+
   test('rejects gasLimit > 150_000', async () => {
     const tool = createLocalTool({ client: makeClient() });
     await expect(

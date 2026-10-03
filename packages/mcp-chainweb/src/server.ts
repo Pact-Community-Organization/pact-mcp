@@ -93,7 +93,7 @@ import {
 } from './tools/spv-proof.js';
 
 export const SERVER_NAME = 'pact-community-chainweb';
-export const SERVER_VERSION = '0.3.0';
+export const SERVER_VERSION = '0.3.1';
 
 /** Environment variables the server accepts from its parent process. */
 export const ALLOWED_ENV = [
@@ -342,7 +342,7 @@ export function buildMcpServerWithClient(
     {
       title: 'Chainweb node info',
       description:
-        'Fetch /info and /cut from the configured chainweb profile. Refuses if the network id differs from the configured expectation.',
+        'Fetch /info and /cut from the configured chainweb profile: network id, node version, chain ids and the latest block height per chain. Refuses if the network id differs from the configured expectation.',
       inputSchema: InfoInputShape,
       annotations: {
         readOnlyHint: true,
@@ -380,9 +380,9 @@ export function buildMcpServerWithClient(
   mcp.registerTool(
     'chainweb_local',
     {
-      title: 'Chainweb local preflight',
+      title: 'Chainweb local execution',
       description:
-        'Execute Pact code against /local with preflight=true. Read-only. Returns unwrapped Pact values.',
+        'Execute Pact code against /local. Read-only: nothing is submitted. By default the code is only evaluated; set preflight=true to simulate a full transaction including the gas purchase. Returns unwrapped Pact values.',
       inputSchema: LocalInputShape,
       annotations: {
         readOnlyHint: true,
