@@ -65,14 +65,14 @@ export interface MockRequest {
   body: string;
 }
 
+// Field set of a real chainweb-node 3.2 `/info`: the network id is carried
+// by `nodeVersion`; the node software version by `nodePackageVersion`.
 const DEFAULT_INFO = {
   nodeVersion: 'development',
-  nodeApiVersion: 'pact5',
-  nodeApiVersionWithPatch: 'pact5',
+  nodeApiVersion: '0.0',
+  nodePackageVersion: '3.2.1',
   nodeChains: Array.from({ length: 20 }, (_, i) => String(i)),
-  nodeNumberOfChains: 20,
-  networkId: 'development',
-  chainwebVersion: 'development'
+  nodeNumberOfChains: 20
 };
 
 const DEFAULT_CUT = {
@@ -240,6 +240,18 @@ function handle(
   const localMatch =
     /^\/chainweb\/0\.0\/[^/]+\/chain\/\d+\/pact\/api\/v1\/local/.exec(url);
   if (method === 'POST' && localMatch) {
+    // A real node refuses a body whose `sigs` holds a null (measured on
+    // mainnet01, chainweb-node 3.2) — which is what an unsigned
+    // `createTransaction()` serializes to when it has a signer.
+    if (hasNullSig(body)) {
+      send(
+        res,
+        400,
+        'Error in $.sigs[0]: parsing UserSig failed, expected Object, but encountered Null',
+        'text/plain'
+      );
+      return;
+    }
     // Distinguish exec vs cont payload so tests can configure
     // distinct responses for deploy_module vs continue_pact scenarios.
     const isCont = isContinuationPayload(body);
@@ -250,7 +262,25 @@ function handle(
       isCont && state.localContStatus !== undefined
         ? state.localContStatus
         : state.localStatus ?? 200;
-    send(res, status, selected);
+    // A real node wraps the command result when asked for preflight
+    // (measured on chainweb-node 3.2 mainnet01 and 3.2.1 devnet):
+    //   preflight=false → { gas, result, reqKey, logs, metaData, ... }
+    //   preflight=true  → { preflightResult: { ...same... }, preflightWarnings: [] }
+    // Tests configure the bare command result; the mock applies the envelope
+    // so a parser that ignores it fails here exactly as it does on a node.
+    const wantsPreflight = /[?&]preflight=true(&|$)/.test(url);
+    const isCommandResult =
+      status === 200 &&
+      typeof selected === 'object' &&
+      selected !== null &&
+      !('preflightResult' in selected);
+    send(
+      res,
+      status,
+      wantsPreflight && isCommandResult
+        ? { preflightResult: selected, preflightWarnings: [] }
+        : selected
+    );
     return;
   }
 
@@ -294,6 +324,15 @@ function handle(
   }
 
   send(res, 404, { error: `No mock route for ${method} ${url}` });
+}
+
+function hasNullSig(body: string): boolean {
+  try {
+    const parsed = JSON.parse(body) as { sigs?: unknown };
+    return Array.isArray(parsed.sigs) && parsed.sigs.some((s) => s === null);
+  } catch {
+    return false;
+  }
 }
 
 /** Detect a continuation payload string in the Pact cmd body. */

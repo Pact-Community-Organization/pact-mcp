@@ -22,6 +22,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   GHC-compiled `pact` binary in the C locale — one non-ASCII byte in a `.pact`/`.repl` file
   then aborted the whole load with `hGetContents: invalid argument`. A locale the caller
   already set to UTF-8 is honoured; anything else is replaced with `C.UTF-8`. (#51)
+- `mcp-chainweb` (0.3.1): six of the eleven tools failed against every real node —
+  devnet included — while the test suite was green, because the test mock answered in a
+  shape no node uses. All measured against chainweb-node 3.2 (mainnet01 and a local
+  devnet):
+  - `/local?preflight=true` answers `{ preflightResult, preflightWarnings }`, not the bare
+    command result. The parser read `result` off the top level, so `chainweb_send`
+    refused every transaction (`PREFLIGHT_FAILED`, status `undefined`) and
+    `chainweb_deploy_module` / `chainweb_continue_pact` reported every preflight as
+    failed with an empty error. One shared parser now handles both shapes.
+  - An unsigned transaction that names a signer was posted with `sigs: [null]`, which a
+    node rejects with HTTP 400. Missing signatures are now sent as absent.
+  - `chainweb_read_table` and `chainweb_principal_namespace` asked for a full preflight,
+    which makes the node buy gas from the default sender and fail with
+    `Failed to buy gas: Keyset failure`. Reads are now evaluate-only, as `chainweb_keys`
+    already was.
+  - `chainweb_local` defaulted to `preflight=true` and failed the same way; the default is
+    now `false` (evaluate only). `preflight: true` is still available for simulating a
+    full transaction and needs an existing `sender` whose key is in `signers`; its node
+    warnings are returned as `warnings`.
+  - `chainweb_info` compared the node against the hard-coded network id `development`
+    and so refused on `testnet06`, on `mainnet`, and on any devnet configured through
+    `PACT_COMMUNITY_CHAINWEB_NETWORK_ID`. It now checks the configured network id. Its
+    `nodeVersion` returned the network id a second time and now returns the node
+    software version; `chainHeights` (latest block height per chain) is new, since a
+    3.2 node's `/cut` carries no block times and `chainTimestamps` is empty there.
+  - `chainweb_send` now includes the node's own error in `PREFLIGHT_FAILED`.
+  - The test mock now applies the preflight envelope and rejects null signatures as a
+    node does, and the parser is pinned by response bodies captured from mainnet01.
 - `mcp-chainweb` (0.2.3): `testnet06` default endpoint updated to `api.testnet.chainweb-community.org` (old `api.testnet.chainweb.com` deprecated).
 
 ### Added

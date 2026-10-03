@@ -1,20 +1,24 @@
 /**
- * @fileoverview chainweb_local - local preflight execution of arbitrary Pact.
+ * @fileoverview chainweb_local - local execution of arbitrary Pact.
  *
  * Side-effect-free: executes against the node's local read-only pact service.
  * The server returns whatever Pact result the node computed, with all Pact
  * JSON-boundary types unwrapped via {@link unwrapPactValue}.
  *
  * Query params on /local:
- *   preflight=true             → run full validation (gas, signer caps, etc)
- *   signatureVerification=false → caller does not need to sign for local reads
+ *   preflight=false (default)  → evaluate the code only; what a read wants.
+ *   preflight=true             → simulate the whole transaction, gas purchase
+ *                                included: `sender` must exist and its key
+ *                                must be listed in `signers`, or the node
+ *                                answers "Failed to buy gas".
+ *   signatureVerification=false → signers are named, never signed for.
  */
 
 import { z } from 'zod';
 import { Pact } from '@kadena/client';
-import { sanitizeToolOutput } from '@pact-community/mcp-shared';
 import type { ChainwebClient } from '../client/fetch.js';
-import { unwrapPactValue, type PactValue } from '../client/unwrap.js';
+import type { PactValue } from '../client/unwrap.js';
+import { runLocalPreflight } from '../client/preflight.js';
 
 export const LocalInputShape = {
   chainId: z
@@ -34,7 +38,9 @@ export const LocalInputShape = {
     .min(1)
     .max(256)
     .optional()
-    .describe('Sender account for gas accounting (default: sender00).'),
+    .describe(
+      'Sender account in the transaction metadata (default: sender00). Only checked when preflight is true.'
+    ),
   signers: z
     .array(
       z.object({
@@ -53,7 +59,9 @@ export const LocalInputShape = {
       })
     )
     .optional()
-    .describe('Optional signer list for capability scoping in preflight.'),
+    .describe(
+      'Optional signer list (public keys + capabilities). Never signed for; lets keyset and capability checks pass in the simulation.'
+    ),
   gasLimit: z
     .number()
     .int()
@@ -64,7 +72,9 @@ export const LocalInputShape = {
   preflight: z
     .boolean()
     .optional()
-    .describe('Whether to run full preflight checks (default: true).')
+    .describe(
+      'false (default): evaluate the code only — use this for reads. true: simulate the full transaction including the gas purchase; needs an existing sender whose key is in signers.'
+    )
 };
 export const LocalInputSchema = z.object(LocalInputShape);
 
@@ -75,6 +85,8 @@ export interface LocalResult {
   gasUsed: number;
   /** Raw pact log entries, if present. */
   logs: PactValue;
+  /** Node warnings; present only when a preflight=true run reported any. */
+  warnings?: string[];
 }
 
 export interface LocalToolConfig {
@@ -83,17 +95,6 @@ export interface LocalToolConfig {
   defaultSender?: string;
   /** Default gas price in KDA. */
   gasPrice?: number;
-}
-
-interface RawLocalResponse {
-  result?:
-    | { status?: 'success'; data?: unknown }
-    | { status?: 'failure'; error?: unknown };
-  gas?: number;
-  logs?: unknown;
-  txId?: unknown;
-  reqKey?: string;
-  preflightWarnings?: unknown[];
 }
 
 export function createLocalTool(config: LocalToolConfig) {
@@ -135,66 +136,19 @@ export function createLocalTool(config: LocalToolConfig) {
       .setNetworkId(config.client.networkId)
       .createTransaction();
 
-    const preflight = input.preflight ?? true;
-    const path =
-      `/chainweb/0.0/${config.client.networkId}/chain/${input.chainId}` +
-      `/pact/api/v1/local?preflight=${preflight}&signatureVerification=false`;
-    const raw = await config.client.postJson<RawLocalResponse>(path, tx);
-
-    const gasUsed = typeof raw.gas === 'number' ? raw.gas : 0;
-    const logs = unwrapPactValue(raw.logs ?? null);
-
-    const result = raw.result;
-    if (result && (result as { status?: string }).status === 'success') {
-      return {
-        content: [
-          {
-            status: 'success',
-            result: unwrapPactValue(
-              (result as { data?: unknown }).data ?? null
-            ),
-            gasUsed,
-            logs
-          }
-        ]
-      };
-    }
-
-    const errRaw = (result as { error?: unknown } | undefined)?.error ?? result;
-    const unwrappedErr = unwrapPactValue(errRaw ?? null);
-    // Sanitize string fields within the error.
-    const sanitized = sanitizeErrorShape(unwrappedErr);
+    const pre = await runLocalPreflight(config.client, input.chainId, tx, {
+      preflight: input.preflight ?? false
+    });
     return {
       content: [
         {
-          status: 'failure',
-          result: sanitized,
-          gasUsed,
-          logs
+          status: pre.status,
+          result: pre.result,
+          gasUsed: pre.gasUsed,
+          logs: pre.logs,
+          ...(pre.warnings.length > 0 ? { warnings: pre.warnings } : {})
         }
       ]
     };
   };
-}
-
-/**
- * Walk a Pact-value tree and run every string through the
- * injection-marker sanitizer. Chainweb node error strings can echo
- * user-submitted tx data — attacker-controllable.
- */
-function sanitizeErrorShape(v: PactValue): PactValue {
-  if (typeof v === 'string') {
-    return sanitizeToolOutput(v).text;
-  }
-  if (Array.isArray(v)) {
-    return v.map(sanitizeErrorShape);
-  }
-  if (v && typeof v === 'object') {
-    const out: Record<string, PactValue> = {};
-    for (const [k, val] of Object.entries(v)) {
-      out[k] = sanitizeErrorShape(val);
-    }
-    return out;
-  }
-  return v;
 }

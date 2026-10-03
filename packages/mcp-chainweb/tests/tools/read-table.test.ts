@@ -143,5 +143,8 @@ describe('chainweb_read_table', () => {
     expect(inner.payload.exec.code).toBe(
       '(read n_abc.dao-token.accounts "alice")'
     );
+    // A read must not ask the node to buy gas: the default sender signs
+    // nothing, so preflight=true fails on every real network.
+    expect(last!.url).toContain('preflight=false');
   });
 });

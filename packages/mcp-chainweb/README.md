@@ -9,9 +9,9 @@ MCP server exposing eleven Chainweb HTTP tools for Pact development
 
 | Name | Purpose | Read-only | Destructive |
 |---|---|---|---|
-| `chainweb_info` | Fetch `/info`, validate network ID, enumerate chain IDs | ✅ | ❌ |
+| `chainweb_info` | Fetch `/info` and `/cut`: validate network ID, node version, chain IDs, latest block height per chain | ✅ | ❌ |
 | `chainweb_chain_time` | Current chain time in seconds for a given chain | ✅ | ❌ |
-| `chainweb_local` | `/local` Pact simulation with configurable `preflight` (default `true`), unwrapped result | ✅ | ❌ |
+| `chainweb_local` | Evaluate Pact code via `/local`, unwrapped result. `preflight` (default `false`) simulates a full transaction incl. gas purchase — needs an existing `sender` whose key is in `signers` | ✅ | ❌ |
 | `chainweb_send` | Preflight then `/send` a pre-signed `{cmd,hash,sigs}` tx | ❌ | ✅ |
 | `chainweb_poll` | `/poll` (not `/listen` — nginx 504 trap) until keys resolve | ✅ | ❌ |
 | `chainweb_read_table` | Read a single Pact table row via `/local` (unwrapped) | ✅ | ❌ |

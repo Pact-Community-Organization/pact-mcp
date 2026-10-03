@@ -111,7 +111,9 @@ export function createReadTableTool(config: ReadTableToolConfig) {
       .setNetworkId(config.client.networkId)
       .createTransaction();
 
-    const pre = await runLocalPreflight(config.client, input.chainId, tx);
+    const pre = await runLocalPreflight(config.client, input.chainId, tx, {
+      preflight: false
+    });
 
     if (pre.status === 'failure') {
       if (isRowNotFound(pre.result)) {

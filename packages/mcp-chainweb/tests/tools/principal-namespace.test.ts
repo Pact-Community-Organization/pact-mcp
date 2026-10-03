@@ -75,6 +75,8 @@ describe('chainweb_principal_namespace', () => {
     expect(innerCmd.payload.exec.code).toContain(
       '(ns.create-principal-namespace (read-keyset "ks"))'
     );
+    // Evaluate-only: no gas purchase, so no signer is needed.
+    expect(last!.url).toContain('preflight=false');
     expect(innerCmd.payload.exec.data.ks).toEqual({
       keys: [KEY_A],
       pred: 'keys-all'

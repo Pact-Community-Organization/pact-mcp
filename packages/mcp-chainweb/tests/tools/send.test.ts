@@ -59,8 +59,14 @@ describe('chainweb_send', () => {
     await expect(
       tool({ chainId: '0', signedTx: SIGNED_TX })
     ).rejects.toMatchObject({
-      code: 'PREFLIGHT_FAILED'
+      code: 'PREFLIGHT_FAILED',
+      // The node's own reason reaches the caller.
+      message: expect.stringContaining('bad')
     });
+    // The preflight really was a signed, full preflight.
+    const pre = mock.requests.slice(before).find((r) => /\/local/.test(r.url));
+    expect(pre!.url).toContain('preflight=true');
+    expect(pre!.url).toContain('signatureVerification=true');
     // Verify NO /send request was made.
     const after = mock.requests.slice(before);
     expect(after.some((r) => /\/send$/.test(r.url))).toBe(false);
