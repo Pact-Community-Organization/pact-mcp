@@ -66,7 +66,7 @@ jobs:
         run: pnpm -r --workspace-concurrency=1 test:coverage
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354  # v4.5.0
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5  # v4.5.0
         with:
           files: ./packages/*/coverage/lcov.info
           flags: unittests
